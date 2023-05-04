@@ -106,13 +106,123 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
+    public boolean[] oneColmove (int col,int row,Tile t,boolean Merge){
+        int value;
+        int final_row=row;
+        boolean   is_Merge=false;
+        boolean   is_Changed=false;
+        boolean[] output=new boolean[2];
+        for(int j=row;j<board.size();j++) {
+            if(j>=3)
+                break;
+            else
+            {
+
+                Tile up_t=board.tile(col,j+1);
+                if(up_t==null||(up_t!=null&&adjacentValueCompare(t,up_t)))
+                {
+                    if(adjacentValueCompare(t,up_t))
+                    {
+                        if(Merge)
+                            break;
+                        score+=up_t.value()+t.value();
+                        is_Merge=true;
+                        output[0]=is_Merge;
+                    }
+
+
+
+                    if(j<3)
+                        final_row++;
+                    else
+                    {
+
+                        final_row=board.size()-1;
+
+                    }
+
+
+
+
+                }
+                else
+
+                    break;
+
+            }
+
+
+
+    }
+        board.move(col,final_row,t);
+    if(row!=final_row)
+    {
+        is_Changed=true;
+        output[1]=is_Changed;
+    }
+
+
+
+
+return output;
+    }
+
+
+
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
+        boolean is_Merge=false;
+boolean[] tilt_change=new boolean[2];
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        switch(side)
+        {
+            case NORTH:
+                board.setViewingPerspective(Side.NORTH);
+                break;
+            case EAST:
+                board.setViewingPerspective(Side.EAST);
+                break;
+            case SOUTH:
+                board.setViewingPerspective(Side.SOUTH);
+                break;
+            case WEST:
+                board.setViewingPerspective(Side.WEST);
+                break;
+        }
+
+if((atLeastOneMoveExists(this.board))&&!maxTileExists(this.board))
+{
+
+    //i表示列
+
+
+    for(int i=0;i<board.size();i++)
+    {
+        is_Merge=false;
+        for(int j=board.size()-1;j>=0;j--)
+        {
+            if(board.tile(i,j)!=null)
+            {
+                Tile t=board.tile(i,j);
+                tilt_change= oneColmove (i,j,t,tilt_change[0]);
+
+if(tilt_change[1])
+                changed=true;
+
+
+            }
+
+
+
+        }
+    }
+
+}
+        board.setViewingPerspective(Side.NORTH);
+
 
         checkGameOver();
         if (changed) {
@@ -138,7 +248,23 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        //b表示2048的面板，这个面板抽象成一个二维数组，b.size()相当于获得这个二维数组的第一维长度4（4*4矩阵）
+        //二维数组相当于存了四个数组指针，每一个指针又指向一个有四个元素的数组
+        for(int i=0;i<b.size();i++)
+
+
+        {
+            for(int j=0;j<b.size();j++)
+            {
+                if(b.tile(i,j)==null)
+                return true;
+
+
+            }
+        }
         return false;
+
+
     }
 
     /**
@@ -148,6 +274,21 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for(int i=0;i<b.size();i++)
+
+
+        {
+            for(int j=0;j<b.size();j++)
+            {
+                if(b.tile(i,j)==null)
+                    continue;
+                //若面板的某一格没有Tile对象，则需要忽略，不然会引起报错（不是程序逻辑问题，而是异常）
+                if(b.tile(i,j).value()==MAX_PIECE)
+                    return true;
+
+
+            }
+        }
         return false;
     }
 
@@ -157,8 +298,76 @@ public class Model extends Observable {
      * 1. There is at least one empty space on the board.
      * 2. There are two adjacent tiles with the same value.
      */
+    public static boolean adjacentValueCompare(Tile tile1,Tile tile2){
+    if(tile1!=null&&tile2!=null)
+    {
+        if(tile1.value()== tile2.value())
+            return true;
+        else
+            return false;
+    }
+    return false;
+    }
+
+    public static boolean adjacentCompare(Board b ,int i ,int j ,int up ,int down,int left,int right){
+        if(b.tile(i,j)!=null) {
+            if(adjacentValueCompare(b.tile(i,j),b.tile(i,up))&&up!=0)
+                return true;
+            if(adjacentValueCompare(b.tile(i,j),b.tile(i,down))&&down!=b.size()-1)
+                return true;
+            if(adjacentValueCompare(b.tile(i,j),b.tile(left,j))&&left!=0)
+                return true;
+            if(adjacentValueCompare(b.tile(i,j),b.tile(right,j))&&right!=b.size()-1)
+                return true;
+
+        }
+        return false;
+    }
+    public static int[] computeAdjacent(Board b,int i ,int j ){
+       int [] output=new int [4];
+       int up,down,left,right;
+
+
+        up=j-1;
+        if(up<0)
+            up=0;
+        down=j+1;
+        if(down>=b.size())
+            down=b.size()-1;
+
+        left=i-1;
+        if(left<0)
+            left=0;
+        right=i+1;
+        if(right>=b.size())
+            right=b.size()-1;
+        output[0]=up;
+        output[1]=down;
+        output[2]=left;
+        output[3]=right;
+        return output;
+    }
+
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        boolean existSameValue=false;
+
+        int [] adjacent;
+
+        for(int i=0;i<b.size();i++)
+
+//i是列，是col
+        {
+            for(int j=0;j<b.size();j++) {
+//j是行,是row
+
+                adjacent=computeAdjacent(b,i,j);
+                if(adjacentCompare(b , i ,j ,adjacent[0] ,adjacent[1],adjacent[2],adjacent[3]))
+                    existSameValue=true;
+            }
+        }
+        if((existSameValue)||maxTileExists(b)||(emptySpaceExists(b)))
+            return true;
         return false;
     }
 

@@ -35,7 +35,7 @@ public class TimeAList {
 
     public static void timeAListConstruction() {
         // TODO: YOUR CODE HERE
-        int N=1000;
+        int N=100;
         AList<Integer> ns=new AList<Integer>();
         AList<Double> times=new AList<Double>();
         AList<Integer> opCounts=new AList<Integer>();

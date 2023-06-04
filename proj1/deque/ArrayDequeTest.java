@@ -45,26 +45,42 @@ public class ArrayDequeTest {
 
         ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
 
-        Ad1.addLast(1);
-        Ad1.addLast(2);
-        Ad1.addLast(3);
-        Ad1.addLast(4);
-        Ad1.addLast(5);
-        Ad1.addLast(6);
-        Ad1.addLast(7);
-        Ad1.addLast(8);
-        Ad1.addLast(9);
-        Ad1.addLast(10);
-        Ad1.addLast(11);
-        Ad1.addFirst(12);
 
-        int str1=Ad1.get(1);
-        int str2=Ad1.get(12);
+        Ad1.addFirst(1);
+        Ad1.addFirst(2);
+        Ad1.addFirst(3);
+        Ad1.addFirst(4);
+        Ad1.addFirst(5);
+        Ad1.addFirst(6);
+        Ad1.addFirst(7);
+        Ad1.addFirst(8);
+        Ad1.addFirst(9);
+        Ad1.addFirst(10);
+        Ad1.addFirst(11);
+        Ad1.addFirst(12);
+        Ad1.addLast(13);
+        Ad1.addLast(14);
+        Ad1.addLast(15);
+        Ad1.addLast(16);
+        Ad1.addLast(17);
+
+for(int i=0;i<12;i++){
+    int str1=Ad1.get(i);
+    assertEquals(12-i,str1);
+
+}
+
+        for(int i=11;i<18;i++){
+            int str1=Ad1.get(i);
+            assertEquals(i+1,str1);
+
+        }
+
+
 
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
-        assertEquals(12,str1);
-        assertEquals(11,str2);
+
 
 
 

@@ -130,7 +130,7 @@ public class ArrayDeque<T>implements Deque<T> {
 
     public T get(int i){
         int p=nextFirst;
-        return items[(p+i)% items.length];
+        return items[(p+i+1)% items.length];
     }
     @Override
     public int size(){

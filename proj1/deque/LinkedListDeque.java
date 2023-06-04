@@ -1,13 +1,18 @@
 package deque;
 import java.util.Iterator;
 
-public class LinkedListDeque<Item>implements Deque<Item> {
+public class LinkedListDeque<T>implements Deque<T> {
+    private IntNode sentFront;//前端哨兵
+    private IntNode sentEnd;//后端哨兵
+    private int size;
+    private IntNode p_recur;
+
     private class IntNode {
-        public Item item;
+        public T item;
         public IntNode next;
         public IntNode previous;
 
-        public IntNode(Item i, IntNode n,IntNode p) {
+        public IntNode(T i, IntNode n,IntNode p) {
             item = i;
             next = n;
             previous=p;
@@ -15,10 +20,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     }
 
     /* The first item (if it exists) is at sentinel.next. */
-    private IntNode sentFront;//前端哨兵
-    private IntNode sentEnd;//后端哨兵
-    private int size;
-    private IntNode p_recur;
+
 
     /** Creates an empty timingtest.SLList. */
     //该双端队列用链表实现，双端队列只需要有前哨兵和后哨兵以及size即可进行操作
@@ -34,12 +36,12 @@ public class LinkedListDeque<Item>implements Deque<Item> {
         size = 0;
     }
 
-    public Item getRecursive(int index){
+    public T getRecursive(int index){
         if(isEmpty())
             return null;
 
         if(index==0){
-            Item i=p_recur.item;
+            T i=p_recur.item;
             p_recur=sentFront.next;
             return i;
         }
@@ -55,7 +57,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
     /** Adds x to the front of the list. *///在前端和后端插入元素，复杂度为1
     @Override
-    public void addFirst(Item x) {
+    public void addFirst(T x) {
         IntNode i=new IntNode(x, sentFront.next,sentFront);
         sentFront.next.previous=i;
         sentFront.next = i;
@@ -67,7 +69,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
         p_recur=sentFront.next;
     }
     @Override
-    public void addLast(Item x) {
+    public void addLast(T x) {
         IntNode i=new IntNode(x, sentEnd,sentEnd.previous);
         sentEnd.previous.next=i;
         sentEnd.previous = i;
@@ -83,7 +85,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
     //删除第一个元素
     @Override
-    public Item removeFirst() {
+    public T removeFirst() {
         if(isEmpty())
         {
             return null;
@@ -101,7 +103,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     }
     //删除最后一个元素
     @Override
-    public Item removeLast() {
+    public T removeLast() {
         if(isEmpty())
         {
             return null;
@@ -121,7 +123,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
     public void printDeque()
     {
-        Iterator<Item> i=iterator();
+        Iterator<T> i=iterator();
         while(i.hasNext()){
             System.out.print(i.next()+" ");
         }
@@ -139,12 +141,12 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     }
 
     /** Returns the first item in the list. */
-    public Item get(int index){
+    public T get(int index){
     if(isEmpty()) {
     System.out.print("不存在");
     return null;
     }else{
-        Item temp=null;
+        T temp=null;
         IntNode p=sentFront.next;
         for(int i=0;i<index;i++){
            p=p.next;
@@ -157,8 +159,8 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
 
 
-    public Iterator<Item> iterator(){
-        Iterator<Item> i=new Iterator<Item>() {
+    public Iterator<T> iterator(){
+        Iterator<T> i=new Iterator<T>() {
             private IntNode p=sentFront.next;;
             @Override
             public boolean hasNext() {
@@ -170,10 +172,10 @@ public class LinkedListDeque<Item>implements Deque<Item> {
             }
 
             @Override
-            public Item next() {
+            public T next() {
                 if(hasNext()&&p!=sentEnd){
 
-                    Item item=p.item;
+                    T item=p.item;
                     p=p.next;
                     return item;
                 }

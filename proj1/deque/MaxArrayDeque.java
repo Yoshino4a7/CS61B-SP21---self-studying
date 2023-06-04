@@ -1,24 +1,29 @@
 package deque;
 
-
-
 import java.util.Iterator;
 
-public class ArrayDeque<T>implements Deque<T> {
+import java.util.Comparator;
+
+public class MaxArrayDeque<Item>implements Deque<Item> {
+
     //实现双端循环队列
-    private T [] items;
+    private Item [] items;
     private int nextFirst;
     private int nextEnd;
     private int size;
 
-    public  ArrayDeque(){
-        items=(T [])new Object[8];
+    public  MaxArrayDeque(){
+        items=(Item [])new Object[8];
         size=0;
         nextFirst=7;
         nextEnd=0;
     }
-    public ArrayDeque(int capacity){
-        items=(T [])new Object[capacity];
+
+    public MaxArrayDeque(Comparator<Item> c){
+
+    }
+    public MaxArrayDeque(int capacity){
+        items=(Item [])new Object[capacity];
         nextFirst=capacity-1;
 
         nextEnd=0;
@@ -27,7 +32,7 @@ public class ArrayDeque<T>implements Deque<T> {
     }
     //更新数组的size值（size表示数组列表中，有效存储数据的单元个数）
     private void resize(int capacity){
-        T[] a=(T[])new Object[capacity];
+        Item[] a=(Item[])new Object[capacity];
         //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
 
 
@@ -39,7 +44,7 @@ public class ArrayDeque<T>implements Deque<T> {
         items=a;//让指向原数组的指针指向更新了size的数组
     }
     @Override
-    public void addFirst(T x){
+    public void addFirst(Item x){
         if(size==items.length){
             resize(size*2);
         }
@@ -53,7 +58,7 @@ public class ArrayDeque<T>implements Deque<T> {
 
     }
     @Override
-    public void addLast(T x){
+    public void addLast(Item x){
         if(size==items.length){
             resize(size*2);
         }
@@ -67,7 +72,7 @@ public class ArrayDeque<T>implements Deque<T> {
 
     }
     @Override
-    public T removeFirst(){
+    public Item removeFirst(){
         if(isEmpty())
         {
             System.out.print("have no element");
@@ -81,15 +86,15 @@ public class ArrayDeque<T>implements Deque<T> {
         {
             remove=remove% items.length;
         }
-        T i=items[remove];
+        Item i=items[remove];
         items[remove]=null;
         size=size-1;
         nextFirst=remove;
 
-    return i;
+        return i;
     }
     @Override
-    public T removeLast(){
+    public Item removeLast(){
         if(isEmpty())
         {
             System.out.print("have no element");
@@ -103,7 +108,7 @@ public class ArrayDeque<T>implements Deque<T> {
         {
             remove=items.length-1;
         }
-        T i=items[remove];
+        Item i=items[remove];
         items[remove]=null;
         size=size-1;
         nextEnd=remove;
@@ -111,7 +116,7 @@ public class ArrayDeque<T>implements Deque<T> {
         return i;
     }
 
-    public T getLast(){
+    public Item getLast(){
         int last=nextEnd-1;
         if(last<0)
         {
@@ -119,7 +124,7 @@ public class ArrayDeque<T>implements Deque<T> {
         }
         return items[last];
     }
-    public T getFirst(){
+    public Item getFirst(){
         int first=nextFirst+1;
         if(first>=items.length)
         {
@@ -128,7 +133,7 @@ public class ArrayDeque<T>implements Deque<T> {
         return items[first];
     }
 
-    public T get(int i){
+    public Item get(int i){
         int p=nextFirst;
         return items[(p+i)% items.length];
     }
@@ -136,21 +141,21 @@ public class ArrayDeque<T>implements Deque<T> {
     public int size(){
         return size;
     }
-   @Override
+    @Override
     public void printDeque(){
-//        Iterator<T> i=iterator();
+//        Iterator<Item> i=iterator();
 //       while(i.hasNext()){
 //           System.out.print(i.next()+" ");
 //       }
-       int i=0;
-       while(i< items.length)
-       {
-           System.out.print(items[i]+" ");
-           i++;
-       }
+        int i=0;
+        while(i< items.length)
+        {
+            System.out.print(items[i]+" ");
+            i++;
+        }
     }
-    public Iterator<T> iterator(){
-        Iterator<T> i=new Iterator<T>() {
+    public Iterator<Item> iterator(){
+        Iterator<Item> i=new Iterator<Item>() {
             private int first=(nextFirst+1)%items.length;
             private int end=first-1;
 
@@ -166,10 +171,10 @@ public class ArrayDeque<T>implements Deque<T> {
             }
 
             @Override
-            public T next() {
+            public Item next() {
                 if(hasNext()){
 
-                    T item=items[first];
+                    Item item=items[first];
                     first++;
                     if(first>= items.length)
                     {
@@ -199,8 +204,4 @@ public class ArrayDeque<T>implements Deque<T> {
             return false;
         }
     }
-
-    }
-
-
-
+}

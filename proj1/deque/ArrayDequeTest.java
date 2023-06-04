@@ -43,24 +43,28 @@ public class ArrayDequeTest {
 
 //        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
-        ArrayDeque<String> Ad1 = new ArrayDeque<String>();
+        ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
 
-        Ad1.addLast("a");
-        Ad1.addLast("b");
-        Ad1.addFirst("c");
-        Ad1.addLast("d");
-        Ad1.addLast("e");
-        Ad1.addFirst("f");
-        Ad1.addLast("g");
-        Ad1.addLast("h");
+        Ad1.addLast(1);
+        Ad1.addLast(2);
+        Ad1.addLast(3);
+        Ad1.addLast(4);
+        Ad1.addLast(5);
+        Ad1.addLast(6);
+        Ad1.addLast(7);
+        Ad1.addLast(8);
+        Ad1.addLast(9);
+        Ad1.addLast(10);
+        Ad1.addLast(11);
+        Ad1.addFirst(12);
 
-        String str1=Ad1.getFirst();
-        String str2=Ad1.getLast();
+        int str1=Ad1.get(1);
+        int str2=Ad1.get(12);
 
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
-        assertEquals("f",str1);
-        assertEquals("h",str2);
+        assertEquals(12,str1);
+        assertEquals(11,str2);
 
 
 

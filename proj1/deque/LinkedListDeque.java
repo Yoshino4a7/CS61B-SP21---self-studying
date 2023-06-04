@@ -205,7 +205,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 //        return i;
 //    }
     public boolean equals(Object o){
-        if(o instanceof LinkedListDeque)//instanceof可以判断o对象是否为LinkedListDeque类
+        if(o == this)//instanceof可以判断o对象是否为LinkedListDeque类
         {
             return true;
         }else{

@@ -58,6 +58,42 @@ public class LinkedListDequeTest {
     }
 
     @Test
+    /** Adds a few things to the list, checking isEmpty() and size() are correct,
+     * finally printing the results.
+     *
+     * && is the "and" operation. */
+    public void getTest() {
+
+//        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
+
+        LinkedListDeque<Integer> Ad1 = new LinkedListDeque<Integer>();
+
+        Ad1.addLast(1);
+        Ad1.addLast(2);
+        Ad1.addLast(3);
+        Ad1.addLast(4);
+        Ad1.addLast(5);
+        Ad1.addLast(6);
+        Ad1.addLast(7);
+        Ad1.addLast(8);
+        Ad1.addLast(9);
+        Ad1.addLast(10);
+        Ad1.addLast(11);
+        Ad1.addFirst(12);
+
+        int str1=Ad1.get(1);
+        int str2=Ad1.get(12);
+
+        System.out.println("Printing out deque: ");
+        Ad1.printDeque();
+        assertEquals(12,str1);
+        assertEquals(11,str2);
+
+
+
+    }
+
+    @Test
     /* Tests removing from an empty deque */
     public void removeEmptyTest() {
 

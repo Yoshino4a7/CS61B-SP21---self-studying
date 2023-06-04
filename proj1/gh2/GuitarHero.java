@@ -534,32 +534,25 @@ public class GuitarHero {
                 char key = StdDraw.nextKeyTyped();
                 int i =keyboard.indexOf(key);
                 ;
-                if(i!=-1)
-                {  if(StdDraw.isKeyPressed(65)){
-                    GuitarStringA[i].decayD();
-                }
 
-                else
-                {
-
-                    GuitarStringA[i].decayR();
-
-                }
-
-                    updateKeyboard(i,key);
-                    StdDraw.show();
-                    GuitarStringA[i].pluck();
+if(i!=-1){
+    updateKeyboard(i,key);
+    StdDraw.show();
+    GuitarStringA[i].pluck();
 
 
 
-                    StdDraw.enableDoubleBuffering();
-                    keyboard_paint(i);
-                    StdDraw.show();
+    StdDraw.enableDoubleBuffering();
+    keyboard_paint(i);
+    StdDraw.show();
+}
 
 
 
 
-                }
+
+
+
 
 
 
@@ -639,7 +632,7 @@ public class GuitarHero {
             double x_actually=x_w+(i_white_loop)*7*halfWidth_w *2+i_white* halfWidth_w *2;
             StdDraw.filledRectangle(x_actually,y_w,halfWidth_w,halfHeight_w);
             StdDraw.show();
-            StdDraw.pause(15);
+
             return x_actually;
 
         }
@@ -662,6 +655,8 @@ public class GuitarHero {
         double x_factor_w=0.04;
         double x_factor_b=0.04;
         boolean loop=false;
+
+        StdDraw.pause(7);
 
 if (i!=-1) {
     StdDraw.setPenColor(StdDraw.WHITE);
@@ -751,7 +746,7 @@ if (i!=-1) {
         double x_factor_w=0.04;
         double x_factor_b=0.04;
         boolean loop=false;
-
+        StdDraw.pause(7);
 
         if(i!=-1){
              StdDraw.setPenColor(StdDraw.BLACK);

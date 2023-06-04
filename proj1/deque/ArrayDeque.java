@@ -1,6 +1,6 @@
 package deque;
 
-import net.sf.saxon.expr.FirstItemExpression;
+
 
 import java.util.Iterator;
 

@@ -35,6 +35,9 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     }
 
     public Item getRecursive(int index){
+        if(isEmpty())
+            return null;
+
         if(index==0){
             Item i=p_recur.item;
             p_recur=sentFront.next;
@@ -152,13 +155,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     }
     }
 
-    public Item getFirst(){
-        return sentFront.next.item;
-    }
 
-    public Item getEnd(){
-        return sentEnd.previous.item;
-    }
 
     public Iterator<Item> iterator(){
         Iterator<Item> i=new Iterator<Item>() {

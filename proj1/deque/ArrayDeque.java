@@ -189,35 +189,8 @@ public class ArrayDeque<Item>implements Deque<Item> {
         };
         return i;
     }
-    public static void main(String[] args) {
-        /* Creates a list of one integer, namely 10 */
-        ArrayDeque<Integer> Ld=new ArrayDeque<Integer>();
-        Ld.addFirst(1);
-        Ld.addFirst(2);
-        Ld.addFirst(3);
-        Ld.addFirst(4);
-
-        Ld.addLast(7);
-        Ld.addLast(7);
-        Ld.addLast(7);
-        Ld.addLast(7);
-
-        Ld.addLast(6);
-        Ld.addLast(6);
-        Ld.addLast(6);
-        Ld.addLast(6);
-        Ld.addLast(6);
-        Ld.addFirst(5);
-        Ld.addFirst(5);
-
-
-
-        Iterator<Integer> i =Ld.iterator();
-        while(i.hasNext()){
-            System.out.print(i.next()+" ");
-        }
 
     }
 
 
-}
+

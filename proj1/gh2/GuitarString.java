@@ -13,14 +13,14 @@ public class GuitarString {
      * means the values cannot be changed at runtime. We'll discuss this and
      * other topics in lecture on Friday. */
     private static final int SR = 44100;      // Sampling Rate
-    private static double DECAY = .996; // energy decay factor
+    private static final  double DECAY = .996; // energy decay factor
 
     public void decayD(){
-        DECAY=1.0;
+
     };
 
     public void decayR(){
-        DECAY=.996;
+
     };
 
     /* Buffer for storing sound data. */
@@ -68,12 +68,7 @@ public class GuitarString {
             buffer.addLast(r);
             i++;
         }
-//        buffer.printDeque();
-//        System.out.println("");
-//        System.out.print(buffer.get(1)+" ");
-//        System.out.print(buffer.get(2)+" ");
-//        System.out.print(buffer.get(3)+" ");
-//        System.out.print(buffer.get(4)+" ");
+
 
 
     }
@@ -88,9 +83,7 @@ public class GuitarString {
         double sample=sample();
         buffer.removeFirst();
         buffer.addLast(sample);
-//        System.out.print(buffer.get(11));
-//        System.out.println("");
-//        buffer.printDeque();
+
 
     }
 
@@ -99,8 +92,7 @@ public class GuitarString {
         // TODO: Return the correct thing.
         double front_1=buffer.get(1);
         double front_2=buffer.get(2);
-//        System.out.println("");
-//        System.out.println(front_1+"+"+front_2+"="+(front_1+front_2)/2*DECAY);
+
 
 
         return (front_1+front_2)/2*DECAY;
@@ -108,15 +100,6 @@ public class GuitarString {
 
     }
 
-    public static void main(String[] args) {
-        GuitarString buffer=new GuitarString(4000);
-        buffer.pluck();
-        buffer.tic();
 
-        System.out.println("");
-
-
-
-    }
 }
     // TODO: Remove all comments that say TODO when you're done.

@@ -30,18 +30,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
         size = 0;
     }
-    public LinkedListDeque(Item x) {
-        sentFront = new IntNode(null, null,null);
-        sentEnd = new IntNode(null, null,null);
-
-        sentFront.next=sentEnd;
-        sentEnd.previous=sentFront;
-        IntNode i=new IntNode(x,sentEnd,sentFront);
-        sentFront.next=i;
-        sentEnd.previous=i;
-        size = 1;
-
-    }
+ 
 
 
     /** Adds x to the front of the list. *///在前端和后端插入元素，复杂度为1
@@ -102,18 +91,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
     }
     @Override
-//    public void printDeque()
-//    {
-//        IntNode p=sentFront.next;
-//        while(p!=sentEnd)
-//        {
-//            System.out.print(p.item+" ");
-//            p=p.next;
-//
-//
-//        }
-//        //λ表达式，（s）为forEachRemaining函数遍历过程获得的每一个元素，将s作为参数传递到λ表达式中->指向的函数
-//    }
+
 
     public void printDeque()
     {
@@ -186,24 +164,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
         return i;
     }
 
-//    public Iterator<Item> iterator(){
-//        Iterator<Item> i=new Iterator<Item>() {
-//            @Override
-//            public boolean hasNext() {
-//                if(size<=0)
-//                return false;
-//                else{
-//                    return true;
-//                }
-//            }
-//
-//            @Override
-//            public Item next() {
-//                return sentFront.next.item;
-//            }
-//        };
-//        return i;
-//    }
+
     public boolean equals(Object o){
         if(o == this)//instanceof可以判断o对象是否为LinkedListDeque类
         {

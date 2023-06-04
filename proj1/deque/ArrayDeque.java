@@ -191,6 +191,15 @@ public class ArrayDeque<Item>implements Deque<Item> {
         return i;
     }
 
+    public boolean equals(Object o){
+        if(o instanceof ArrayDeque)//instanceof可以判断o对象是否为ArrayDeque类
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     }
 
 

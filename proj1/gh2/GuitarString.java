@@ -90,8 +90,8 @@ public class GuitarString {
     /* Return the double at the front of the buffer. */
     public double sample() {
         // TODO: Return the correct thing.
-        double front_1=buffer.get(1);
-        double front_2=buffer.get(2);
+        double front_1=buffer.get(0);
+        double front_2=buffer.get(1);
 
 
 

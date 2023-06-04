@@ -81,8 +81,8 @@ public class LinkedListDequeTest {
         Ad1.addLast(11);
         Ad1.addFirst(12);
 
-        int str1=Ad1.get(1);
-        int str2=Ad1.get(12);
+        int str1=Ad1.get(0);
+        int str2=Ad1.get(11);
 
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
@@ -93,6 +93,44 @@ public class LinkedListDequeTest {
 
     }
 
+    @Test
+    public void getRecurseTest() {
+
+//        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
+
+        LinkedListDeque<Integer> Ad1 = new LinkedListDeque<Integer>();
+
+        Ad1.addLast(1);
+        Ad1.addLast(2);
+        Ad1.addLast(3);
+        Ad1.addLast(4);
+        Ad1.addLast(5);
+        Ad1.addLast(6);
+        Ad1.addLast(7);
+        Ad1.addLast(8);
+        Ad1.addLast(9);
+        Ad1.addLast(10);
+        Ad1.addLast(11);
+        Ad1.addLast(12);
+
+        Ad1.addLast(13);
+        Ad1.addLast(14);
+        Ad1.addLast(15);
+        Ad1.addLast(16);
+        Ad1.addLast(17);
+        Ad1.addLast(18);
+        Ad1.addLast(19);
+
+        int str1=Ad1.getRecursive(17);
+        int str2=Ad1.getRecursive(13);
+
+
+        assertEquals(18,str1);
+        assertEquals(14,str2);
+
+
+
+    }
     @Test
     /* Tests removing from an empty deque */
     public void removeEmptyTest() {

@@ -18,6 +18,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     private IntNode sentFront;//前端哨兵
     private IntNode sentEnd;//后端哨兵
     private int size;
+    private IntNode p_recur;
 
     /** Creates an empty timingtest.SLList. */
     //该双端队列用链表实现，双端队列只需要有前哨兵和后哨兵以及size即可进行操作
@@ -28,10 +29,26 @@ public class LinkedListDeque<Item>implements Deque<Item> {
         sentFront.next=sentEnd;
         sentEnd.previous=sentFront;
 
+        p_recur=sentFront.next;
+
         size = 0;
     }
- 
 
+    public Item getRecursive(int index){
+        if(index==0){
+            Item i=p_recur.item;
+            p_recur=sentFront.next;
+            return i;
+        }
+        else
+        {
+            p_recur=p_recur.next;
+
+            System.out.print(p_recur.item+" ");
+            return getRecursive(index-1);
+        }
+
+    }
 
     /** Adds x to the front of the list. *///在前端和后端插入元素，复杂度为1
     @Override
@@ -44,17 +61,21 @@ public class LinkedListDeque<Item>implements Deque<Item> {
         {
             sentEnd.previous=sentFront.next;
         }
+        p_recur=sentFront.next;
     }
     @Override
     public void addLast(Item x) {
         IntNode i=new IntNode(x, sentEnd,sentEnd.previous);
         sentEnd.previous.next=i;
         sentEnd.previous = i;
+
         size = size + 1;
         if(size==1)
         {
             sentFront.next=sentEnd.previous;
+            p_recur=sentFront.next;
         }
+
     }
 
     //删除第一个元素
@@ -71,6 +92,8 @@ public class LinkedListDeque<Item>implements Deque<Item> {
         sentFront.next=temp;
         temp.previous=sentFront;
         size=size-1;
+
+        p_recur=sentFront.next;
         return i.item;
     }
     //删除最后一个元素
@@ -119,7 +142,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
     return null;
     }else{
         Item temp=null;
-        IntNode p=sentFront;
+        IntNode p=sentFront.next;
         for(int i=0;i<index;i++){
            p=p.next;
         }
@@ -166,7 +189,7 @@ public class LinkedListDeque<Item>implements Deque<Item> {
 
 
     public boolean equals(Object o){
-        if(o == this)//instanceof可以判断o对象是否为LinkedListDeque类
+        if(o instanceof LinkedListDeque)//instanceof可以判断o对象是否为LinkedListDeque类
         {
             return true;
         }else{

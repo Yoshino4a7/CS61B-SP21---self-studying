@@ -196,6 +196,8 @@ public class GuitarHero {
     }
 
     public static void keyboard_paint(int key){
+
+
         double halfWidth_w=0.02;
         double halfHeight_w=0.15;
 
@@ -215,6 +217,7 @@ public class GuitarHero {
         StdDraw.line(x_w-halfWidth_w,y_w-halfHeight_w,x_w+halfWidth_w*2*21+halfWidth_w,y_w-halfHeight_w);
         StdDraw.line(x_w-halfWidth_w,y_w+halfHeight_w,x_w+halfWidth_w*2*21+halfWidth_w,y_w+halfHeight_w);
 
+        StdDraw.filledRectangle(x_b+0.56+x_factor_b*6,y_b,halfWidth_b,halfHeight_b);
         switch(key/12){
             case 2:{
                 StdDraw.setPenColor(StdDraw.WHITE);
@@ -310,7 +313,6 @@ public class GuitarHero {
 
 
                 }
-
 
 
 

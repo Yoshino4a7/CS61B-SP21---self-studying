@@ -22,6 +22,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
     //更新数组的size值（size表示数组列表中，有效存储数据的单元个数）
     private void resize(int capacity){
+
         T[] a=(T[])new Object[capacity];
         //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
 
@@ -35,46 +36,60 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
     }
 
     private void resize_remove(int capacity){
-        T[] a=(T[])new Object[capacity];
+
         //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
-        int sp=(nextFirst+1)%items.length;
-        int dp_size;
+        if(capacity<8)
+        {
+            capacity=8;
+        }
+
+        T[] a=(T[])new Object[capacity];
         if(nextEnd>nextFirst)
         {
-            dp_size=nextEnd-1-nextFirst;
+            int sp=(nextFirst+1)% items.length;
+            int dp=0;
+            int dp_size=size;
+            System.arraycopy(items,sp,a,dp, dp_size);
+
+
         }
-        else{
-            dp_size= items.length-sp;
+
+        if(nextEnd<nextFirst)
+        {
+            int sp=(nextFirst+1)% items.length;
+
+            if(nextFirst==items.length-1)
+            {
+                int dp=0;
+                int dp_size=size;
+                System.arraycopy(items,sp,a,dp, dp_size);
+            }
+            else{
+                int dp=0;
+                int dp_size=items.length-nextFirst;
+                System.arraycopy(items,sp,a,dp, dp_size);
+
+                dp=dp+dp_size;
+                dp_size=size-dp_size;
+                System.arraycopy(items,sp,a,dp, dp_size);
+            }
+
+
+
+
         }
 
-
-        int dp=capacity-dp_size;
-
-        int sp2=nextEnd-size+dp_size;
-        int dp2=sp2;
-
-
-        System.arraycopy(items,sp,a,dp, dp_size);
-        if(nextEnd<=nextFirst)
-
-        System.arraycopy(items,sp2,a,dp2, size-dp_size);
         items=a;//让指向原数组的指针指向更新了size的数组
-        nextFirst=(dp-1);//nextEnd-1才是数组的最后一个位置，这样计算出来的新数组的nextFirst才是正确位置
-        if(nextFirst<0)
-            nextFirst=capacity-1;
+        nextFirst=capacity-1;//nextEnd-1才是数组的最后一个位置，这样计算出来的新数组的nextFirst才是正确位置
 
-
-        nextEnd=nextFirst;
-
-
-
-
-
+        nextEnd=size;
 
 
     }
     @Override
     public void addFirst(T x){
+
+
         if(size==items.length){
             resize(size*2);
         }

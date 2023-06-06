@@ -104,23 +104,50 @@ for(int i=0;i<12;i++){
     public void remove_BigTest(){
         ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
         int get_num;
-        for(int i=0;i<100;i++)
+        int get_num2;
+        for(int i=0;i<1000000;i++)
         {
             Ad2.addLast(i);
 
         }
-        for(int j=0;j<100;j++)
+        for(int j=0;j<1000000;j++)
         {
             get_num=Ad2.get(j);
             assertEquals(j,get_num);
 
         }
 
-        for(int i=0;i<100;i++)
+        for(int i=0;i<1000000;i++)
         {
-            Ad2.removeLast();
+
+            get_num=Ad2.removeFirst();
+
+
 
         }
+
+        for(int i=0;i<32;i++)
+        {
+            Ad2.addLast(i);
+
+        }
+        for(int i=0;i<32;i++)
+        {
+            Ad2.removeFirst();
+
+        }
+        for(int i=0;i<4;i++)
+        {
+            Ad2.addLast(i);
+
+        }
+        for(int j=0;j<4;j++)
+        {
+            get_num=Ad2.get(j);
+            assertEquals(j,get_num);
+
+        }
+
     }
 
 

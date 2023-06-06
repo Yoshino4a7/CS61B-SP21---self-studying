@@ -157,70 +157,95 @@ public class LinkedListDeque<T>implements Deque<T> {
     }
     }
 
+    private class linkIterator<T> implements Iterator<T>{
+        private IntNode p=sentFront.next;;
+        @Override
+        public boolean hasNext() {
 
+            if(p!=null&&p!=sentEnd)
+                return true;
+            else
+                return false;
+        }
+
+        @Override
+        public T next() {
+            if(hasNext()&&p!=sentEnd){
+
+                T item=(T)p.item;
+                p=p.next;
+                return item;
+            }
+
+            else return null;
+        }
+    }
 
     public Iterator<T> iterator(){
-        Iterator<T> i=new Iterator<T>() {
-            private IntNode p=sentFront.next;;
-            @Override
-            public boolean hasNext() {
+        Iterator<T> i=new linkIterator<T>() ;
 
-                if(p!=null&&p!=sentEnd)
-                return true;
-                else
-                    return false;
-            }
 
-            @Override
-            public T next() {
-                if(hasNext()&&p!=sentEnd){
-
-                    T item=p.item;
-                    p=p.next;
-                    return item;
-                }
-
-                else return null;
-            }
-        };
         return i;
     }
 
 
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
 
-
-        if(o instanceof LinkedListDeque)//instanceof可以判断o对象是否为ArrayDeque类
-        {
-            return true;
-        }else
-        {
+        if (o == null) {
+            System.out.print("is null");
             return false;
         }
-    }
-    public boolean equals(ArrayDeque<T> o){
+        LinkedListDeque<T> a;
+        ArrayDeque<T> b;
+        if (o instanceof LinkedListDeque) {
+            a = (LinkedListDeque<T>) o;
+            if(a.size()!=size()){
+                return false;
+            }
 
+            Iterator<T> i_a=a.iterator();
 
+            Iterator<T> i=iterator();
 
-        Iterator<T> a=o.iterator();
-
-        Iterator<T> i=iterator();
-
-        if(size()==o.size()){
-            while(a.hasNext()&&i.hasNext())
+            while(i_a.hasNext()&&i.hasNext())
             {
-                if(i.next().equals(a.next()))
+                if(i.next().equals(i_a.next()))
                     continue;
                 else
                     return false;
             }
-            return true;
+        }
+        else if (o instanceof ArrayDeque) {
+            b = (ArrayDeque<T>) o;
+
+
+            if(b.size()!=size()){
+                return false;
+            }
+
+            Iterator<T> i_b=b.iterator();
+
+            Iterator<T> i=iterator();
+
+            while(i_b.hasNext()&&i.hasNext())
+            {
+                if(i.next().equals(i_b.next()))
+                    continue;
+                else
+                    return false;
+            }
         }
         else{
             return false;
         }
+        return true;
+
+
+
 
     }
+
+
 
     /** Returns the size of the list. */
     @Override

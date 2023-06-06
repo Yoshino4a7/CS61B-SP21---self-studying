@@ -4,7 +4,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T>implements Deque<T> {
+public class ArrayDeque<T>implements  Deque<T>{
     //实现双端循环队列
     private T [] items;
     private int nextFirst;
@@ -17,14 +17,7 @@ public class ArrayDeque<T>implements Deque<T> {
         nextFirst=7;
         nextEnd=0;
     }
-    public ArrayDeque(int capacity){
-        items=(T [])new Object[capacity];
-        nextFirst=capacity-1;
 
-        nextEnd=0;
-        size=0;
-
-    }
     //更新数组的size值（size表示数组列表中，有效存储数据的单元个数）
     private void resize(int capacity){
         T[] a=(T[])new Object[capacity];
@@ -142,45 +135,44 @@ public class ArrayDeque<T>implements Deque<T> {
 
 
 
+private class arrayIterator<T> implements Iterator<T>{
+    private int first=(nextFirst+1)%items.length;
+    private int end=first-1;
+
+    @Override
+    public boolean hasNext(){
+
+        if(items[first]!=null&&first!=end)
+            return true;
+        else
+            return false;
+    }
+    @Override
+    public T next(){
+        if(hasNext()){
+
+            T item=(T)items[first];
+            first++;
+            if(first>= items.length)
+            {
+                first=first%items.length;
+                end=end+1;
+            }
+            if(end<0)
+            {
+                end=size-1;
+            }
+
+            return item;
+        }
+
+        else
+            return null;
+    }
+}
+
     public Iterator<T> iterator(){
-        Iterator<T> i=new Iterator<T>() {
-            private int first=(nextFirst+1)%items.length;
-            private int end=first-1;
-
-            @Override
-            public boolean hasNext() {
-
-
-
-                if(items[first]!=null&&first!=end)
-                    return true;
-                else
-                    return false;
-            }
-
-            @Override
-            public T next() {
-                if(hasNext()){
-
-                    T item=items[first];
-                    first++;
-                    if(first>= items.length)
-                    {
-                        first=first%items.length;
-                        end=end+1;
-                    }
-                    if(end<0)
-                    {
-                        end=size-1;
-                    }
-
-                    return item;
-                }
-
-                else
-                    return null;
-            }
-        };
+        Iterator<T> i=new arrayIterator<T>();
         return i;
     }
 
@@ -198,40 +190,56 @@ public class ArrayDeque<T>implements Deque<T> {
     }
 
     public boolean equals(Object o){
-
-
-        if(o instanceof ArrayDeque)//instanceof可以判断o对象是否为ArrayDeque类
-        {
-            return true;
-        }else
-        {
+        if (o == null) {
+            System.out.print("is null");
             return false;
         }
-    }
-    public boolean equals(LinkedListDeque<T> o){
+        LinkedListDeque<T> a;
+        ArrayDeque<T> b;
+        if (o instanceof LinkedListDeque) {
+            a = (LinkedListDeque<T>) o;
+            if(a.size()!=size()){
+                return false;
+            }
 
-
-
-            Iterator<T> a=o.iterator();
+            Iterator<T> i_a=a.iterator();
 
             Iterator<T> i=iterator();
-    if(size()==o.size()){
-        while(a.hasNext()&&i.hasNext())
-        {
-            if(i.next().equals(a.next()))
-                continue;
-            else
+
+            while(i_a.hasNext()&&i.hasNext())
+            {
+                if(i.next().equals(i_a.next()))
+                    continue;
+                else
+                    return false;
+            }
+        }
+        else if (o instanceof ArrayDeque) {
+            b = (ArrayDeque<T>) o;
+
+
+            if(b.size()!=size()){
                 return false;
+            }
+
+            Iterator<T> i_b=b.iterator();
+
+            Iterator<T> i=iterator();
+
+            while(i_b.hasNext()&&i.hasNext())
+            {
+                if(i.next().equals(i_b.next()))
+                    continue;
+                else
+                    return false;
+            }
+        }
+        else{
+            return false;
         }
         return true;
     }
-    else{
-        return false;
-    }
 
-
-
-        }
 
     }
 

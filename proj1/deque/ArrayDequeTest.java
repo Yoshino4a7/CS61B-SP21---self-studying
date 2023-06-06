@@ -158,10 +158,67 @@ for(int i=0;i<12;i++){
 
 
 
-        System.out.println("");
+        Ad1.addLast(21);
+        Ad1.addLast(22);
+        Ad1.addLast(23);
+        Ad1.addLast(24);
+        Ad1.addLast(25);
+        Ad1.addLast(26);
+        Ad1.addLast(27);
+        Ad1.addLast(28);
+
+
+
+        Ad1.addFirst(11);
+        Ad1.addFirst(12);
+        Ad1.addFirst(13);
+        Ad1.addFirst(14);
+        Ad1.addFirst(15);
+        Ad1.addFirst(16);
+        Ad1.addFirst(17);
+        Ad1.addFirst(18);
+
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
 
+
+         str1=Ad1.removeFirst();
+         str2=Ad1.removeFirst();
+         str3=Ad1.removeFirst();
+         str4=Ad1.removeFirst();
+         str5=Ad1.removeFirst();
+         str6=Ad1.removeFirst();
+         str7=Ad1.removeFirst();
+         str8=Ad1.removeLast();
+
+         str9=Ad1.removeFirst();
+         str10=Ad1.removeFirst();
+         str11=Ad1.removeFirst();
+         str12=Ad1.removeFirst();
+         str13=Ad1.removeFirst();
+         str14=Ad1.removeFirst();
+         str15=Ad1.removeFirst();
+         str16=Ad1.removeLast();
+
+        assertEquals(18,str1);
+        assertEquals(17,str2);
+        assertEquals(16,str3);
+        assertEquals(15,str4);
+        assertEquals(14,str5);
+        assertEquals(13,str6);
+        assertEquals(12,str7);
+        assertEquals(28,str8);
+        assertEquals(27,str16);
+        assertEquals(11,str9);
+        assertEquals(21,str10);
+        assertEquals(22,str11);
+        assertEquals(23,str12);
+        assertEquals(24,str13);
+        assertEquals(25,str14);
+        assertEquals(26,str15);
+
+        System.out.println("Printing out deque: ");
+        Ad1.printDeque();
 
 
     }

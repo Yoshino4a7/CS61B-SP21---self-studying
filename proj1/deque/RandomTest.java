@@ -85,7 +85,7 @@ public class RandomTest {
     public void testArrayDequeRandomCall(){
         ArrayDeque<Integer> ADeque = new  ArrayDeque<>();
 
-        int N = 1000;
+        int N = 100000;
         for (int i = 0; i < N; i += 1) {
             int operationNumber = StdRandom.uniform(0, 6);
             switch(operationNumber)

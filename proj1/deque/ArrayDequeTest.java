@@ -44,7 +44,20 @@ public class ArrayDequeTest {
 //        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
+        ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
+        int get_num;
 
+        for(int i=0;i<10000;i++)
+        {
+            Ad2.addLast(i);
+
+        }
+        for(int j=0;j<10000;j++)
+        {
+            get_num=Ad2.get(j);
+            assertEquals(j,get_num);
+
+        }
 
         Ad1.addFirst(1);
         Ad1.addFirst(2);

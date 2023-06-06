@@ -120,11 +120,11 @@ public class LinkedListDequeTest {
         Ad1.addLast(6);
         Ad1.addLast(7);
         Ad1.addLast(8);
-        Ad1.addLast(9);
+
         Ad1.addLast(10);
         Ad1.addLast(11);
         Ad1.addLast(12);
-        Ad1.addLast(13);
+
 
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
@@ -132,6 +132,47 @@ public class LinkedListDequeTest {
         Ld1.printDeque();
         boolean b=Ad1.equals(Ld1);
         assertFalse("这两个列表不应该相等",b);
+
+    }
+    @Test
+    public void equalsBigTest(){
+
+        LinkedListDeque<Integer> Ld1 = new LinkedListDeque<Integer>();
+        for (int i = 0; i < 10000; i++) {
+            Ld1.addFirst(i);
+        }
+        for (int i = 0; i < 10; i++) {
+            Ld1.removeFirst();
+        }
+        for (int i = 0; i < 10; i++) {
+            Ld1.removeLast();
+        }
+
+
+        ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 10000; i++) {
+            Ad1.addFirst(i);
+        }
+        for (int i = 0; i < 10; i++) {
+            Ad1.removeFirst();
+        }
+        for (int i = 0; i < 10; i++) {
+            Ad1.removeLast();
+        }
+
+        boolean b=Ad1.equals(Ld1);
+        boolean c=Ld1.equals(Ad1);
+        assertEquals(true,b);
+        assertEquals(true,c);
+
+
+        for (int i = 0; i < 9900; i++) {
+            int d=Ad1.get(i);
+            int e=Ld1.get(i);
+            boolean h=(d==e);
+            assertEquals(true,h);
+        }
+
 
     }
     @Test

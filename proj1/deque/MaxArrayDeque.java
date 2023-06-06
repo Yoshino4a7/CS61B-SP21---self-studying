@@ -8,10 +8,7 @@ public class MaxArrayDeque<T>extends ArrayDeque<T> {
     private ArrayDeque<T> array;
     private Comparator<T> c;
 
-    public  MaxArrayDeque(){
-       super();
 
-    }
 
     public MaxArrayDeque(Comparator<T> a){
        super();

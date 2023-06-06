@@ -86,9 +86,6 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
             System.out.print("have no element");
             return null;
         }
-        if(size<items.length/4&&items.length>8){
-            resize_remove(items.length/4);
-        }
         int remove=nextFirst+1;
         if(remove>= items.length)
         {
@@ -96,8 +93,13 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
         }
         T i=items[remove];
         items[remove]=null;
-        size=size-1;
+
         nextFirst=remove;
+        size=size-1;
+        if(size<items.length/4&&items.length>8){
+            resize_remove(items.length/4);
+        }
+
 
     return i;
     }
@@ -108,9 +110,6 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
             System.out.print("have no element");
             return null;
         }
-        if(size<items.length/4&&items.length>8){
-            resize_remove(items.length/4);
-        }
         int remove=nextEnd-1;
         if(remove<0)
         {
@@ -118,8 +117,13 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
         }
         T i=items[remove];
         items[remove]=null;
-        size=size-1;
+
         nextEnd=remove;
+        size=size-1;
+        if(size<items.length/4&&items.length>8){
+            resize_remove(items.length/4);
+        }
+
 
         return i;
     }

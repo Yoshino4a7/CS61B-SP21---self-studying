@@ -1,7 +1,7 @@
 package deque;
 import java.util.Iterator;
 
-public class LinkedListDeque<T>implements Deque<T> {
+public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
     private IntNode sentFront;//前端哨兵
     private IntNode sentEnd;//后端哨兵
     private int size;

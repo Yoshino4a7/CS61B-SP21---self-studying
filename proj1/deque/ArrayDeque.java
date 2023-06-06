@@ -4,12 +4,14 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T>implements  Deque<T>{
+public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
     //实现双端循环队列
     private T [] items;
     private int nextFirst;
     private int nextEnd;
     private int size;
+
+
 
     public  ArrayDeque(){
         items=(T [])new Object[8];

@@ -232,7 +232,8 @@ private class arrayIterator<T> implements Iterator<T>{
 
     public boolean equals(Object o){
         if (o == null) {
-            System.out.print("is null");
+            if(this==null)
+                return true;
             return false;
         }
         LinkedListDeque<T> a;
@@ -244,13 +245,10 @@ private class arrayIterator<T> implements Iterator<T>{
             }
 
            int i=0;
-            boolean w;
-            int k;
-            int l;
+
             while(i<size)
             {
-              k=(int)a.get(i);
-              l=(int)this.get(i);
+
                 if(a.get(i).equals(this.get(i)))
                 {
                     i=i+1;

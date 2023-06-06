@@ -192,7 +192,8 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
     public boolean equals(Object o) {
 
         if (o == null) {
-            System.out.print("is null");
+            if(this==null)
+                return true;
             return false;
         }
         LinkedListDeque<T> a;
@@ -221,7 +222,7 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
             b = (ArrayDeque<T>) o;
 
 
-            if(b.size()!=size()){
+            if(b.size()!=this.size()){
                 return false;
             }
 

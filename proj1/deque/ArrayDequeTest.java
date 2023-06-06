@@ -63,6 +63,7 @@ public class ArrayDequeTest {
         Ad1.addLast(15);
         Ad1.addLast(16);
         Ad1.addLast(17);
+        Ad1.addLast(18);
 
 for(int i=0;i<12;i++){
     int str1=Ad1.get(i);
@@ -70,7 +71,7 @@ for(int i=0;i<12;i++){
 
 }
 
-        for(int i=11;i<18;i++){
+        for(int i=12;i<17;i++){
             int str1=Ad1.get(i);
             assertEquals(i+1,str1);
 
@@ -94,41 +95,69 @@ for(int i=0;i<12;i++){
 
 //        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
-        ArrayDeque<String> Ad1 = new ArrayDeque<String>();
+        ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
 
-        Ad1.addLast("a");
-        Ad1.addLast("b");
-        Ad1.addFirst("c");
-        Ad1.addLast("d");
-        Ad1.addLast("e");
-        Ad1.addFirst("f");
-        Ad1.addLast("g");
-        Ad1.addLast("h");
+        Ad1.addLast(1);
+        Ad1.addLast(2);
+        Ad1.addLast(3);
+        Ad1.addLast(4);
+        Ad1.addLast(5);
+        Ad1.addLast(6);
+        Ad1.addLast(7);
+        Ad1.addLast(8);
+
+
+
+        Ad1.addFirst(9);
+        Ad1.addFirst(10);
+        Ad1.addFirst(11);
+        Ad1.addFirst(12);
+        Ad1.addFirst(13);
+        Ad1.addFirst(14);
+        Ad1.addFirst(15);
+        Ad1.addFirst(16);
+
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
 
-        String str1=Ad1.removeFirst();
+        int str1=Ad1.removeFirst();
+        int str2=Ad1.removeFirst();
+        int str3=Ad1.removeFirst();
+        int str4=Ad1.removeFirst();
+        int str5=Ad1.removeFirst();
+        int str6=Ad1.removeFirst();
+        int str7=Ad1.removeFirst();
+        int str8=Ad1.removeLast();
 
-        String str2=Ad1.removeFirst();
-        String str3=Ad1.removeLast();
-        String str4=Ad1.removeFirst();
-
-        String str5=Ad1.removeFirst();
-        String str6=Ad1.removeLast();
-
-        String str7=Ad1.removeFirst();
-        String str8=Ad1.removeLast();
-
+        int str9=Ad1.removeFirst();
+        int str10=Ad1.removeFirst();
+        int str11=Ad1.removeFirst();
+        int str12=Ad1.removeFirst();
+        int str13=Ad1.removeFirst();
+        int str14=Ad1.removeFirst();
+        int str15=Ad1.removeFirst();
+        int str16=Ad1.removeLast();
 
 
-        assertEquals("f",str1);
-        assertEquals("c",str2);
-        assertEquals("h",str3);
-        assertEquals("a",str4);
-        assertEquals("b",str5);
-        assertEquals("g",str6);
-        assertEquals("d",str7);
-        assertEquals("e",str8);
+        assertEquals(16,str1);
+        assertEquals(15,str2);
+        assertEquals(14,str3);
+        assertEquals(13,str4);
+        assertEquals(12,str5);
+        assertEquals(11,str6);
+        assertEquals(10,str7);
+        assertEquals(8,str8);
+        assertEquals(7,str16);
+        assertEquals(9,str9);
+        assertEquals(1,str10);
+        assertEquals(2,str11);
+        assertEquals(3,str12);
+        assertEquals(4,str13);
+        assertEquals(5,str14);
+        assertEquals(6,str15);
+
+
+
         System.out.println("");
         System.out.println("Printing out deque: ");
         Ad1.printDeque();
@@ -169,25 +198,62 @@ for(int i=0;i<12;i++){
     }
 
     @Test
+    public void equalsTest(){
+        LinkedListDeque<Integer> Ld1 = new LinkedListDeque<Integer>();
+
+        Ld1.addLast(1);
+        Ld1.addLast(2);
+        Ld1.addLast(3);
+        Ld1.addLast(4);
+        Ld1.addLast(5);
+        Ld1.addLast(6);
+        Ld1.addLast(7);
+        Ld1.addLast(8);
+        Ld1.addLast(9);
+        Ld1.addLast(10);
+        Ld1.addLast(11);
+        Ld1.addLast(12);
+
+        ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
+
+        Ad1.addLast(1);
+        Ad1.addLast(2);
+        Ad1.addLast(3);
+        Ad1.addLast(4);
+        Ad1.addLast(5);
+        Ad1.addLast(6);
+        Ad1.addLast(7);
+        Ad1.addLast(8);
+        Ad1.addLast(9);
+        Ad1.addLast(10);
+        Ad1.addLast(11);
+        Ad1.addLast(12);
+
+
+        System.out.println("Printing out deque: ");
+        Ad1.printDeque();
+        System.out.println("Printing out deque: ");
+        Ld1.printDeque();
+        boolean b=Ad1.equals(Ld1);
+        assertTrue("这两个列表应该相等",b);
+
+    }
+
+    @Test
     /* Add large number of elements to deque; check if order is correct. */
     public void bigLLDequeTest() {
 
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i <5000000; i++) {
             Ad1.addLast(i);
         }
-        System.out.println("Printing out deque: ");
-        Ad1.printDeque();
-        for (int i = 0; i < 50; i++) {
-            int j=Ad1.getFirst();
+//        System.out.println("Printing out deque: ");
+//        Ad1.printDeque();
+        for (int i = 0; i < 5000000; i++) {
+            int j=Ad1.get(0);
             assertEquals("Should have the same value", j, Ad1.removeFirst(), 0.0);
-        }
-
-        for (int i = Ad1.size()-1; i > 50; i--) {
-            int j=Ad1.getLast();
-            assertEquals("Should have the same value", j, Ad1.removeLast(), 0.0);
         }
 
 

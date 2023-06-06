@@ -188,12 +188,38 @@ public class LinkedListDeque<T>implements Deque<T> {
 
 
     public boolean equals(Object o){
-        if(o instanceof LinkedListDeque)//instanceof可以判断o对象是否为LinkedListDeque类
+
+
+        if(o instanceof LinkedListDeque)//instanceof可以判断o对象是否为ArrayDeque类
         {
             return true;
-        }else{
+        }else
+        {
             return false;
         }
+    }
+    public boolean equals(ArrayDeque<T> o){
+
+
+
+        Iterator<T> a=o.iterator();
+
+        Iterator<T> i=iterator();
+
+        if(size()==o.size()){
+            while(a.hasNext()&&i.hasNext())
+            {
+                if(i.next().equals(a.next()))
+                    continue;
+                else
+                    return false;
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
 
     /** Returns the size of the list. */

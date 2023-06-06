@@ -94,6 +94,47 @@ public class LinkedListDequeTest {
     }
 
     @Test
+    public void equalsTest(){
+        LinkedListDeque<Integer> Ld1 = new LinkedListDeque<Integer>();
+
+        Ld1.addLast(1);
+        Ld1.addLast(2);
+        Ld1.addLast(3);
+        Ld1.addLast(4);
+        Ld1.addLast(5);
+        Ld1.addLast(6);
+        Ld1.addLast(7);
+        Ld1.addLast(8);
+        Ld1.addLast(9);
+        Ld1.addLast(10);
+        Ld1.addLast(11);
+        Ld1.addLast(12);
+
+        ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
+
+        Ad1.addLast(1);
+        Ad1.addLast(2);
+        Ad1.addLast(3);
+        Ad1.addLast(4);
+        Ad1.addLast(5);
+        Ad1.addLast(6);
+        Ad1.addLast(7);
+        Ad1.addLast(8);
+        Ad1.addLast(9);
+        Ad1.addLast(10);
+        Ad1.addLast(11);
+        Ad1.addLast(12);
+        Ad1.addLast(13);
+
+        System.out.println("Printing out deque: ");
+        Ad1.printDeque();
+        System.out.println("Printing out deque: ");
+        Ld1.printDeque();
+        boolean b=Ad1.equals(Ld1);
+        assertFalse("这两个列表不应该相等",b);
+
+    }
+    @Test
     public void getRecurseTest() {
 
 //        System.out.println("Make sure to uncomment the lines below (and delete this print statement).");

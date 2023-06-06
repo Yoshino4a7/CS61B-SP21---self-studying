@@ -4,26 +4,31 @@ import java.util.Iterator;
 
 import java.util.Comparator;
 
-public class MaxArrayDeque<Item>implements Deque<Item> {
+public class MaxArrayDeque<T>implements Deque<T> {
 
     //实现双端循环队列
-    private Item [] items;
+    private T [] items;
     private int nextFirst;
     private int nextEnd;
     private int size;
+    private Comparator<T> c;
 
     public  MaxArrayDeque(){
-        items=(Item [])new Object[8];
+        items=(T [])new Object[8];
         size=0;
         nextFirst=7;
         nextEnd=0;
     }
 
-    public MaxArrayDeque(Comparator<Item> c){
-
+    public MaxArrayDeque(Comparator<T> a){
+        items=(T [])new Object[8];
+        size=0;
+        nextFirst=7;
+        nextEnd=0;
+        c=a;
     }
     public MaxArrayDeque(int capacity){
-        items=(Item [])new Object[capacity];
+        items=(T [])new Object[capacity];
         nextFirst=capacity-1;
 
         nextEnd=0;
@@ -32,7 +37,7 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
     }
     //更新数组的size值（size表示数组列表中，有效存储数据的单元个数）
     private void resize(int capacity){
-        Item[] a=(Item[])new Object[capacity];
+        T[] a=(T[])new Object[capacity];
         //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
 
 
@@ -43,8 +48,26 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
 
         items=a;//让指向原数组的指针指向更新了size的数组
     }
+
+    private void resize_remove(int capacity){
+        T[] a=(T[])new Object[capacity];
+        //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
+
+
+        System.arraycopy(items,(nextFirst+1)%items.length,a,0, size);
+        items=a;//让指向原数组的指针指向更新了size的数组
+        nextFirst=a.length-1;//nextEnd-1才是数组的最后一个位置，这样计算出来的新数组的nextFirst才是正确位置
+        nextEnd=size;
+
+
+
+
+
+
+
+    }
     @Override
-    public void addFirst(Item x){
+    public void addFirst(T x){
         if(size==items.length){
             resize(size*2);
         }
@@ -58,7 +81,7 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
 
     }
     @Override
-    public void addLast(Item x){
+    public void addLast(T x){
         if(size==items.length){
             resize(size*2);
         }
@@ -72,21 +95,21 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
 
     }
     @Override
-    public Item removeFirst(){
+    public T removeFirst(){
         if(isEmpty())
         {
             System.out.print("have no element");
             return null;
         }
-        if(size<=items.length/4&&items.length>8){
-            resize(items.length/4);
+        if(size<items.length/4&&items.length>8){
+            resize_remove(items.length/4);
         }
         int remove=nextFirst+1;
         if(remove>= items.length)
         {
             remove=remove% items.length;
         }
-        Item i=items[remove];
+        T i=items[remove];
         items[remove]=null;
         size=size-1;
         nextFirst=remove;
@@ -94,21 +117,21 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
         return i;
     }
     @Override
-    public Item removeLast(){
+    public T removeLast(){
         if(isEmpty())
         {
             System.out.print("have no element");
             return null;
         }
-        if(size<=items.length/4&&items.length>8){
-            resize(items.length/4);
+        if(size<items.length/4&&items.length>8){
+            resize_remove(items.length/4);
         }
         int remove=nextEnd-1;
         if(remove<0)
         {
             remove=items.length-1;
         }
-        Item i=items[remove];
+        T i=items[remove];
         items[remove]=null;
         size=size-1;
         nextEnd=remove;
@@ -116,46 +139,21 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
         return i;
     }
 
-    public Item getLast(){
-        int last=nextEnd-1;
-        if(last<0)
-        {
-            last=0;
-        }
-        return items[last];
-    }
-    public Item getFirst(){
-        int first=nextFirst+1;
-        if(first>=items.length)
-        {
-            first=first%items.length;
-        }
-        return items[first];
-    }
 
-    public Item get(int i){
+
+    public T get(int i){
         int p=nextFirst;
-        return items[(p+i)% items.length];
+        return items[(p+i+1)% items.length];
     }
     @Override
     public int size(){
         return size;
     }
-    @Override
-    public void printDeque(){
-//        Iterator<Item> i=iterator();
-//       while(i.hasNext()){
-//           System.out.print(i.next()+" ");
-//       }
-        int i=0;
-        while(i< items.length)
-        {
-            System.out.print(items[i]+" ");
-            i++;
-        }
-    }
-    public Iterator<Item> iterator(){
-        Iterator<Item> i=new Iterator<Item>() {
+
+
+
+    public Iterator<T> iterator(){
+        Iterator<T> i=new Iterator<T>() {
             private int first=(nextFirst+1)%items.length;
             private int end=first-1;
 
@@ -171,10 +169,10 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
             }
 
             @Override
-            public Item next() {
+            public T next() {
                 if(hasNext()){
 
-                    Item item=items[first];
+                    T item=items[first];
                     first++;
                     if(first>= items.length)
                     {
@@ -196,12 +194,95 @@ public class MaxArrayDeque<Item>implements Deque<Item> {
         return i;
     }
 
+    public void printDeque(){
+        Iterator<T> i=iterator();
+        while(i.hasNext()){
+            System.out.print(i.next()+" ");
+        }
+//        int i=0;
+//        while(i< items.length)
+//        {
+//            System.out.print(items[i]+" ");
+//            i++;
+//        }
+    }
+
     public boolean equals(Object o){
+
+
         if(o instanceof ArrayDeque)//instanceof可以判断o对象是否为ArrayDeque类
         {
             return true;
-        }else{
+        }else
+        {
             return false;
         }
     }
+    public boolean equals(LinkedListDeque<T> o){
+
+
+
+        Iterator<T> a=o.iterator();
+
+        Iterator<T> i=iterator();
+        if(size()==o.size()){
+            while(a.hasNext()&&i.hasNext())
+            {
+                if(i.next().equals(a.next()))
+                    continue;
+                else
+                    return false;
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+
+
+
+    }
+
+
+    public T max(){
+        int max_index=(nextFirst+1)% items.length;
+       int i=max_index;
+        while(i!=nextEnd)
+        {
+            if(c.compare(items[max_index],items[i])>0)
+            {
+                i=(i+1)% items.length;
+                continue;
+            }
+            else{
+
+                max_index=i;
+                i=(i+1)% items.length;
+            }
+
+
+        }
+        return items[max_index];
+    }
+
+    public T max(Comparator<T> comparator){
+        int max_index=(nextFirst+1)% items.length;
+        int i=max_index;
+        while(i!=nextEnd)
+        {
+            if(comparator.compare(items[max_index],items[i])>0)
+            {
+                i=(i+1)% items.length;
+                continue;
+            }
+            else{
+                max_index=i;
+                i=(i+1)% items.length;
+            }
+
+
+        }
+        return items[max_index];
+    }
+
 }

@@ -38,6 +38,24 @@ public class ArrayDeque<T>implements Deque<T> {
 
         items=a;//让指向原数组的指针指向更新了size的数组
     }
+
+    private void resize_remove(int capacity){
+        T[] a=(T[])new Object[capacity];
+        //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
+
+
+        System.arraycopy(items,(nextFirst+1)%items.length,a,0, size);
+        items=a;//让指向原数组的指针指向更新了size的数组
+        nextFirst=a.length-1;//nextEnd-1才是数组的最后一个位置，这样计算出来的新数组的nextFirst才是正确位置
+        nextEnd=size;
+
+
+
+
+
+
+
+    }
     @Override
     public void addFirst(T x){
         if(size==items.length){
@@ -73,8 +91,8 @@ public class ArrayDeque<T>implements Deque<T> {
             System.out.print("have no element");
             return null;
         }
-        if(size<=items.length/4&&items.length>8){
-            resize(items.length/4);
+        if(size<items.length/4&&items.length>8){
+            resize_remove(items.length/4);
         }
         int remove=nextFirst+1;
         if(remove>= items.length)
@@ -95,8 +113,8 @@ public class ArrayDeque<T>implements Deque<T> {
             System.out.print("have no element");
             return null;
         }
-        if(size<=items.length/4&&items.length>8){
-            resize(items.length/4);
+        if(size<items.length/4&&items.length>8){
+            resize_remove(items.length/4);
         }
         int remove=nextEnd-1;
         if(remove<0)
@@ -111,22 +129,7 @@ public class ArrayDeque<T>implements Deque<T> {
         return i;
     }
 
-    public T getLast(){
-        int last=nextEnd-1;
-        if(last<0)
-        {
-            last=0;
-        }
-        return items[last];
-    }
-    public T getFirst(){
-        int first=nextFirst+1;
-        if(first>=items.length)
-        {
-            first=first%items.length;
-        }
-        return items[first];
-    }
+
 
     public T get(int i){
         int p=nextFirst;
@@ -136,19 +139,9 @@ public class ArrayDeque<T>implements Deque<T> {
     public int size(){
         return size;
     }
-   @Override
-    public void printDeque(){
-//        Iterator<T> i=iterator();
-//       while(i.hasNext()){
-//           System.out.print(i.next()+" ");
-//       }
-       int i=0;
-       while(i< items.length)
-       {
-           System.out.print(items[i]+" ");
-           i++;
-       }
-    }
+
+
+
     public Iterator<T> iterator(){
         Iterator<T> i=new Iterator<T>() {
             private int first=(nextFirst+1)%items.length;
@@ -191,16 +184,58 @@ public class ArrayDeque<T>implements Deque<T> {
         return i;
     }
 
+    public void printDeque(){
+        Iterator<T> i=iterator();
+       while(i.hasNext()){
+           System.out.print(i.next()+" ");
+       }
+//        int i=0;
+//        while(i< items.length)
+//        {
+//            System.out.print(items[i]+" ");
+//            i++;
+//        }
+    }
+
     public boolean equals(Object o){
+
+
         if(o instanceof ArrayDeque)//instanceof可以判断o对象是否为ArrayDeque类
         {
             return true;
-        }else{
+        }else
+        {
             return false;
         }
     }
+    public boolean equals(LinkedListDeque<T> o){
+
+
+
+            Iterator<T> a=o.iterator();
+
+            Iterator<T> i=iterator();
+    if(size()==o.size()){
+        while(a.hasNext()&&i.hasNext())
+        {
+            if(i.next().equals(a.next()))
+                continue;
+            else
+                return false;
+        }
+        return true;
+    }
+    else{
+        return false;
+    }
+
+
+
+        }
 
     }
+
+
 
 
 

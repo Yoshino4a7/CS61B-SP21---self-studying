@@ -15,13 +15,6 @@ public class GuitarString {
     private static final int SR = 44100;      // Sampling Rate
     private static final  double DECAY = .996; // energy decay factor
 
-    public void decayD(){
-
-    };
-
-    public void decayR(){
-
-    };
 
     /* Buffer for storing sound data. */
     // TODO: uncomment the following line once you're ready to start this portion

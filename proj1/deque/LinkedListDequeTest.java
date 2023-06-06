@@ -162,9 +162,9 @@ public class LinkedListDequeTest {
 
         boolean b=Ad1.equals(Ld1);
         boolean c=Ld1.equals(Ad1);
-        assertEquals(true,b);
-        assertEquals(true,c);
 
+        assertEquals(true,c);
+        assertEquals(true,b);
 
         for (int i = 0; i < 9900; i++) {
             int d=Ad1.get(i);

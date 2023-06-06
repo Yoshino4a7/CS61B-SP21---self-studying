@@ -37,12 +37,34 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
     private void resize_remove(int capacity){
         T[] a=(T[])new Object[capacity];
         //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
+        int sp=(nextFirst+1)%items.length;
+        int dp_size;
+        if(nextEnd>nextFirst)
+        {
+            dp_size=nextEnd-1-nextFirst;
+        }
+        else{
+            dp_size= items.length-sp;
+        }
 
 
-        System.arraycopy(items,(nextFirst+1)%items.length,a,0, size);
+        int dp=capacity-dp_size;
+
+        int sp2=nextEnd-size+dp_size;
+        int dp2=sp2;
+
+
+        System.arraycopy(items,sp,a,dp, dp_size);
+        if(nextEnd<=nextFirst)
+
+        System.arraycopy(items,sp2,a,dp2, size-dp_size);
         items=a;//让指向原数组的指针指向更新了size的数组
-        nextFirst=a.length-1;//nextEnd-1才是数组的最后一个位置，这样计算出来的新数组的nextFirst才是正确位置
-        nextEnd=size;
+        nextFirst=(dp-1);//nextEnd-1才是数组的最后一个位置，这样计算出来的新数组的nextFirst才是正确位置
+        if(nextFirst<0)
+            nextFirst=capacity-1;
+
+
+        nextEnd=nextFirst;
 
 
 
@@ -96,7 +118,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
         nextFirst=remove;
         size=size-1;
-        if(size<items.length/4&&items.length>8){
+        if(size<(items.length/4)&&items.length>8){
             resize_remove(items.length/4);
         }
 
@@ -120,7 +142,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
         nextEnd=remove;
         size=size-1;
-        if(size<items.length/4&&items.length>8){
+        if(size<(items.length/4)&&items.length>8){
             resize_remove(items.length/4);
         }
 
@@ -204,18 +226,24 @@ private class arrayIterator<T> implements Iterator<T>{
         ArrayDeque<T> b;
         if (o instanceof LinkedListDeque) {
             a = (LinkedListDeque<T>) o;
-            if(a.size()!=size()){
+            if(a.size()!=this.size()){
                 return false;
             }
 
-            Iterator<T> i_a=a.iterator();
-
-            Iterator<T> i=iterator();
-
-            while(i_a.hasNext()&&i.hasNext())
+           int i=0;
+            boolean w;
+            int k;
+            int l;
+            while(i<size)
             {
-                if(i.next().equals(i_a.next()))
+              k=(int)a.get(i);
+              l=(int)this.get(i);
+                if(a.get(i).equals(this.get(i)))
+                {
+                    i=i+1;
                     continue;
+                }
+
                 else
                     return false;
             }
@@ -228,14 +256,17 @@ private class arrayIterator<T> implements Iterator<T>{
                 return false;
             }
 
-            Iterator<T> i_b=b.iterator();
+          int i=0;
 
-            Iterator<T> i=iterator();
-
-            while(i_b.hasNext()&&i.hasNext())
+            while(i<size)
             {
-                if(i.next().equals(i_b.next()))
+                if(b.get(i).equals(this.get(i)))
+                {
+                    i=i+1;
                     continue;
+
+                }
+
                 else
                     return false;
             }

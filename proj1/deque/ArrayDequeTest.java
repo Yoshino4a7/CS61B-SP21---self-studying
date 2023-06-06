@@ -99,6 +99,31 @@ for(int i=0;i<12;i++){
 
 
     }
+
+    @Test
+    public void remove_BigTest(){
+        ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
+        int get_num;
+        for(int i=0;i<100;i++)
+        {
+            Ad2.addLast(i);
+
+        }
+        for(int j=0;j<100;j++)
+        {
+            get_num=Ad2.get(j);
+            assertEquals(j,get_num);
+
+        }
+
+        for(int i=0;i<100;i++)
+        {
+            Ad2.removeLast();
+
+        }
+    }
+
+
     @Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.

@@ -199,18 +199,20 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
         ArrayDeque<T> b;
         if (o instanceof LinkedListDeque) {
             a = (LinkedListDeque<T>) o;
-            if(a.size()!=size()){
+            if(a.size()!=this.size()){
                 return false;
             }
 
-            Iterator<T> i_a=a.iterator();
+            int i=0;
 
-            Iterator<T> i=iterator();
-
-            while(i_a.hasNext()&&i.hasNext())
+            while(i<size)
             {
-                if(i.next().equals(i_a.next()))
+                if(a.get(i).equals(this.get(i)))
+                {
+                    i=i+1;
                     continue;
+                }
+
                 else
                     return false;
             }
@@ -223,14 +225,17 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
                 return false;
             }
 
-            Iterator<T> i_b=b.iterator();
+            int i=0;
 
-            Iterator<T> i=iterator();
-
-            while(i_b.hasNext()&&i.hasNext())
+            while(i<size)
             {
-                if(i.next().equals(i_b.next()))
+                if(b.get(i).equals(this.get(i)))
+                {
+                    i=i+1;
                     continue;
+
+                }
+
                 else
                     return false;
             }

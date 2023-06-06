@@ -103,6 +103,19 @@ for(int i=0;i<12;i++){
 public void fillupandEmptyTest(){
     ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
     int get_num;
+    for(int i=0;i<7;i++)
+    {
+        Ad2.addLast(i);
+
+    }
+    for(int i=0;i<7;i++)
+    {
+        Ad2.removeLast();
+
+    }
+
+
+
     for(int i=0;i<32;i++)
     {
         Ad2.addFirst(i);
@@ -114,19 +127,6 @@ public void fillupandEmptyTest(){
 
     }
 
-
-
-    for(int i=0;i<32;i++)
-    {
-        Ad2.addFirst(i);
-
-    }
-    for(int i=0;i<32;i++)
-    {
-        Ad2.removeLast();
-
-    }
-    
 }
     @Test
     public void remove_BigTest(){

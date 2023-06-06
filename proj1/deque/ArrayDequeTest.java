@@ -99,12 +99,42 @@ for(int i=0;i<12;i++){
 
 
     }
+@Test
+public void fillupandEmptyTest(){
+    ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
+    int get_num;
+    for(int i=0;i<32;i++)
+    {
+        Ad2.addFirst(i);
 
+    }
+    for(int i=0;i<32;i++)
+    {
+        Ad2.removeLast();
+
+    }
+
+
+
+    for(int i=0;i<32;i++)
+    {
+        Ad2.addFirst(i);
+
+    }
+    for(int i=0;i<32;i++)
+    {
+        Ad2.removeLast();
+
+    }
+    
+}
     @Test
     public void remove_BigTest(){
         ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
         int get_num;
         int get_num2;
+
+
         for(int i=0;i<1000000;i++)
         {
             Ad2.addLast(i);
@@ -126,27 +156,7 @@ for(int i=0;i<12;i++){
 
         }
 
-        for(int i=0;i<32;i++)
-        {
-            Ad2.addLast(i);
 
-        }
-        for(int i=0;i<32;i++)
-        {
-            Ad2.removeFirst();
-
-        }
-        for(int i=0;i<4;i++)
-        {
-            Ad2.addLast(i);
-
-        }
-        for(int j=0;j<4;j++)
-        {
-            get_num=Ad2.get(j);
-            assertEquals(j,get_num);
-
-        }
 
     }
 

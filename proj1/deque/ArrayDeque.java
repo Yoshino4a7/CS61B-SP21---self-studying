@@ -38,10 +38,8 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
     private void resize_remove(int capacity){
 
         //Java不允许建立泛型数组，只能先建立对象数组再转换为泛型
-        if(capacity<8)
-        {
-            capacity=8;
-        }
+
+
 
         T[] a=(T[])new Object[capacity];
         if(nextEnd>nextFirst)
@@ -133,7 +131,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
         nextFirst=remove;
         size=size-1;
-        if(size<(items.length/4)&&items.length>8){
+        if(size<(items.length/4)&&items.length>=8){
             resize_remove(items.length/4);
         }
 
@@ -157,7 +155,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
         nextEnd=remove;
         size=size-1;
-        if(size<(items.length/4)&&items.length>8){
+        if(size<(items.length/4)&&items.length>=8){
             resize_remove(items.length/4);
         }
 

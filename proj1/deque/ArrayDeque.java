@@ -64,9 +64,9 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
             }
             else{
                 int dp=0;
-                int dp_size=items.length-nextFirst;
+                int dp_size=items.length-nextFirst-1;
                 System.arraycopy(items,sp,a,dp, dp_size);
-
+                sp=0;
                 dp=dp+dp_size;
                 dp_size=size-dp_size;
                 System.arraycopy(items,sp,a,dp, dp_size);
@@ -131,7 +131,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
         nextFirst=remove;
         size=size-1;
-        if(size<(items.length/4)&&items.length>=8){
+        if(size<(items.length/4)&&items.length>16){
             resize_remove(items.length/4);
         }
 
@@ -155,7 +155,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
 
         nextEnd=remove;
         size=size-1;
-        if(size<(items.length/4)&&items.length>=8){
+        if(size<(items.length/4)&&items.length>16){
             resize_remove(items.length/4);
         }
 

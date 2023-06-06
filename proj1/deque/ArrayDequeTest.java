@@ -102,16 +102,21 @@ for(int i=0;i<12;i++){
 @Test
 public void fillupandEmptyTest(){
     ArrayDeque<Integer> Ad2 = new ArrayDeque<Integer>();
+
+    LinkedListDeque<Integer> Ld2 = new LinkedListDeque<Integer>();
     int get_num;
-    for(int i=0;i<7;i++)
+    for(int i=0;i<2048;i++)
     {
         Ad2.addLast(i);
+        Ld2.addLast(i);
 
     }
-    for(int i=0;i<7;i++)
+    boolean s=Ad2.equals(Ld2);
+    assertEquals(true,s);
+    for(int i=0;i<2048;i++)
     {
-        Ad2.removeLast();
-
+        Ad2.removeFirst();
+        Ld2.removeFirst();
     }
 
 
@@ -119,12 +124,14 @@ public void fillupandEmptyTest(){
     for(int i=0;i<32;i++)
     {
         Ad2.addFirst(i);
-
+        Ld2.addFirst(i);
     }
+     s=Ad2.equals(Ld2);
+    assertEquals(true,s);
     for(int i=0;i<32;i++)
     {
         Ad2.removeLast();
-
+        Ld2.removeLast();
     }
 
 }

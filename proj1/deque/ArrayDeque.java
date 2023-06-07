@@ -240,7 +240,7 @@ private class arrayIterator<T> implements Iterator<T>{
                 return true;
             return false;
         }
-        Deque<T> a;
+        Deque a;
         a=(Deque)o;
 
         if (a instanceof Deque) {
@@ -256,7 +256,7 @@ private class arrayIterator<T> implements Iterator<T>{
             while(i<size)
             {
                 T a_item=this.get(i);
-                T b_item=a.get(i);
+                T b_item=(T)a.get(i);
                 if(a_item.equals(b_item))
                 {
                     i=i+1;

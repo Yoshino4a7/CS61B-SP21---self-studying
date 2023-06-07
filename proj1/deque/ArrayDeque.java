@@ -249,7 +249,7 @@ private class arrayIterator<T> implements Iterator<T>{
             while(i<size)
             {
 
-                if(a.get(i).equals(this.get(i)))
+                if(this.get(i).equals(a.get(i)))
                 {
                     i=i+1;
                     continue;
@@ -271,7 +271,7 @@ private class arrayIterator<T> implements Iterator<T>{
 
             while(i<size)
             {
-                if(b.get(i).equals(this.get(i)))
+                if(this.get(i).equals(b.get(i)))
                 {
                     i=i+1;
                     continue;

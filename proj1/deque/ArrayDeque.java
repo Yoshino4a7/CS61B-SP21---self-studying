@@ -164,7 +164,7 @@ public class ArrayDeque<T>implements  Deque<T>,Iterable<T>{
     }
 
 
-
+    @Override
     public T get(int i){
         int p=nextFirst;
         return items[(p+i+1)% items.length];
@@ -240,34 +240,14 @@ private class arrayIterator<T> implements Iterator<T>{
                 return true;
             return false;
         }
-        LinkedListDeque<T> a;
-        ArrayDeque<T> b;
-        if (o instanceof LinkedListDeque) {
-            a = (LinkedListDeque<T>) o;
-            if(a.size()!=this.size()){
-                return false;
-            }
+        Deque<T> a;
+        a=(Deque)o;
 
-           int i=0;
-
-            while(i<size)
-            {
-
-                if(this.get(i).equals(a.get(i)))
-                {
-                    i=i+1;
-                    continue;
-                }
-
-                else
-                    return false;
-            }
-        }
-        else if (o instanceof ArrayDeque) {
-            b = (ArrayDeque<T>) o;
+        if (a instanceof Deque) {
 
 
-            if(b.size()!=size()){
+
+            if(a.size()!=size()){
                 return false;
             }
 
@@ -275,7 +255,9 @@ private class arrayIterator<T> implements Iterator<T>{
 
             while(i<size)
             {
-                if(this.get(i).equals(b.get(i)))
+                T a_item=this.get(i);
+                T b_item=a.get(i);
+                if(a_item.equals(b_item))
                 {
                     i=i+1;
                     continue;
@@ -285,11 +267,12 @@ private class arrayIterator<T> implements Iterator<T>{
                 else
                     return false;
             }
+            return true;
         }
         else{
             return false;
         }
-        return true;
+
     }
 
 

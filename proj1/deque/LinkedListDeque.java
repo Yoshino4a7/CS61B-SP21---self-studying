@@ -199,11 +199,14 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
                 return true;
             return false;
         }
-        LinkedListDeque<T> a;
-        ArrayDeque<T> b;
-        if (o instanceof LinkedListDeque) {
-            a = (LinkedListDeque<T>) o;
-            if(a.size()!=this.size()){
+        Deque<T> a;
+        a=(Deque)o;
+
+        if (a instanceof Deque) {
+
+
+
+            if(a.size()!=size()){
                 return false;
             }
 
@@ -211,29 +214,9 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
 
             while(i<size)
             {
-                if(this.get(i).equals(a.get(i)))
-                {
-                    i=i+1;
-                    continue;
-                }
-
-                else
-                    return false;
-            }
-        }
-        else if (o instanceof ArrayDeque) {
-            b = (ArrayDeque<T>) o;
-
-
-            if(b.size()!=this.size()){
-                return false;
-            }
-
-            int i=0;
-
-            while(i<size)
-            {
-                if(this.get(i).equals(b.get(i)))
+                T a_item=this.get(i);
+                T b_item=a.get(i);
+                if(a_item.equals(b_item))
                 {
                     i=i+1;
                     continue;
@@ -243,11 +226,12 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
                 else
                     return false;
             }
+            return true;
         }
         else{
             return false;
         }
-        return true;
+        //Linked和Array都是继承了Deque接口，所以可以直接用Deque指向o
 
 
 

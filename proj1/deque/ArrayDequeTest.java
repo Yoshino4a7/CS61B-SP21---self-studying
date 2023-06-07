@@ -343,10 +343,10 @@ public void fillupandEmptyTest(){
         LinkedListDeque<Integer> Ld1 = new LinkedListDeque<Integer>();
         ArrayDeque<Integer> Ad1 = new ArrayDeque<Integer>();
 
-        boolean l=Ld1.equals(Ad);
-        boolean o=Ad1.equals(Ld);
-        assertEquals(true,l);
-        assertEquals(true,o);
+        boolean l=Ld1.equals(Ad1);
+        boolean o=Ad1.equals(Ld1);
+//        assertEquals(true,l);
+//        assertEquals(true,o);
 
       l=Ld1.equals(Ad1);
          o=Ad1.equals(Ld1);
@@ -354,9 +354,9 @@ public void fillupandEmptyTest(){
         assertEquals(true,o);
 
 
-        Ld1.addLast(1);
+        Ld1.addLast(0);
         Ld1.addLast(2);
-        Ld1.addLast(3);
+        Ld1.addLast(0);
         Ld1.addLast(4);
         Ld1.addLast(5);
         Ld1.addLast(6);
@@ -369,9 +369,9 @@ public void fillupandEmptyTest(){
 
 
 
-        Ad1.addLast(1);
+        Ad1.addLast(0);
         Ad1.addLast(2);
-        Ad1.addLast(3);
+        Ad1.addLast(0);
         Ad1.addLast(4);
         Ad1.addLast(5);
         Ad1.addLast(6);

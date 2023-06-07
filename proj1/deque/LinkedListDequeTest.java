@@ -133,6 +133,42 @@ public class LinkedListDequeTest {
         boolean b=Ad1.equals(Ld1);
         assertFalse("这两个列表不应该相等",b);
 
+
+
+        LinkedListDeque<String> Ld2 = new LinkedListDeque<String>();
+        ArrayDeque<String> Ad2 = new  ArrayDeque<String>();
+
+        Ld2.addLast("abc");
+        Ld2.addLast("def");
+        Ld2.addLast("ghi");
+        Ld2.addLast("jkl");
+        Ld2.addLast("mno");
+        Ld2.addFirst("rst");
+        Ld2.addFirst("rs1");
+        Ld2.addFirst("rs2");
+        Ld2.addFirst("rs3");
+        Ld2.removeFirst();
+        Ld2.removeFirst();
+        Ld2.removeFirst();
+        Ld2.removeLast();
+
+        Ad2.addLast("abc");
+        Ad2.addLast("def");
+        Ad2.addLast("ghi");
+        Ad2.addLast("jkl");
+        Ad2.addLast("mno");
+        Ad2.addFirst("rst");
+        Ad2.addFirst("rs1");
+        Ad2.addFirst("rs2");
+        Ad2.addFirst("rs3");
+        Ad2.removeFirst();
+        Ad2.removeFirst();
+        Ad2.removeFirst();
+        Ad2.removeLast();
+        boolean r=Ld2.equals(Ad2);
+        assertTrue(r);
+
+
     }
     @Test
     public void equalsBigTest(){

@@ -231,6 +231,10 @@ private class arrayIterator<T> implements Iterator<T>{
     }
     @Override
     public boolean equals(Object o){
+        if(this==o)
+            return true;
+        //若o和当前对象的指向相同，则可以立刻返回true，可以避免遍历整个列表
+
         if (o == null) {
             if(this==null)
                 return true;

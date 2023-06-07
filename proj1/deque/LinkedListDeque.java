@@ -199,10 +199,10 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
                 return true;
             return false;
         }
-        Deque a=(Deque)o;
 
-        if (a instanceof Deque) {
 
+        if (o instanceof Deque) {
+            Deque a=(Deque)o;
 
 
             if(a.size()!=size()){

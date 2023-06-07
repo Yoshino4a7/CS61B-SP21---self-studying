@@ -199,8 +199,7 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
                 return true;
             return false;
         }
-        Deque a;
-        a=(Deque)o;
+        Deque a=(Deque)o;
 
         if (a instanceof Deque) {
 
@@ -214,9 +213,8 @@ public class LinkedListDeque<T>implements Deque<T>,Iterable<T> {
 
             while(i<size)
             {
-                T a_item=this.get(i);
-                T b_item=(T)a.get(i);
-                if(a_item.equals(b_item))
+
+                if(this.get(i).equals(a.get(i)))
                 {
                     i=i+1;
                     continue;

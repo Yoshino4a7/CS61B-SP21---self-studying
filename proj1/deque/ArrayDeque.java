@@ -229,7 +229,7 @@ private class arrayIterator<T> implements Iterator<T>{
 //            i++;
 //        }
     }
-
+    @Override
     public boolean equals(Object o){
         if (o == null) {
             if(this==null)

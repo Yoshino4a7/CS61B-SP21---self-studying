@@ -8,7 +8,7 @@ public class HorribleSteve {
                 throw new Exception(
                         String.format("i:%d not same as j:%d ??", i, j));
             }
-        }
+        }//S
         System.out.println("i is " + i);
     }
 }

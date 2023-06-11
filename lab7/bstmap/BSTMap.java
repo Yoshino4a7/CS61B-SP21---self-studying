@@ -12,7 +12,8 @@ import java.util.Set;
 
 //对泛型K继承Comparable的有效范围只在BSTMap类里，只有在BSTMap类里K才能使用compareTo方法
 public class BSTMap<K extends Comparable<K>,V > implements Map61B {
-
+    private BSTnode root;
+    private int size=0;
 
 
 
@@ -48,8 +49,7 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
 
     }
 
-    private BSTnode root;
-    private int size=0;
+
 
 
 

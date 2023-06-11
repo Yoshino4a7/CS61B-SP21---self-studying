@@ -1,19 +1,14 @@
 package bstmap;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
-import com.sun.tools.doclets.internal.toolkit.NestedClassWriter;
-import com.sun.tools.hat.internal.model.Root;
 
-import java.security.Key;
-import java.util.Comparator;
-import java.util.IllegalFormatCodePointException;
 import java.util.Iterator;
 import java.util.Set;
 
 //对泛型K继承Comparable的有效范围只在BSTMap类里，只有在BSTMap类里K才能使用compareTo方法
-public class BSTMap<K extends Comparable<K>,V > implements Map61B {
+public class BSTMap<K extends Comparable<K>,V > implements Map61B<K, V> {
     private BSTnode root;
     private int size=0;
+    private Object[] o=new Object[2];
 
 
 
@@ -32,6 +27,13 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
 
 
     }
+
+
+
+
+
+
+
     private BSTnode add(BSTnode T,K k,V i) {
         if (T == null)
         {
@@ -49,13 +51,6 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
 
     }
 
-
-
-
-
-
-
-
     private void insert(BSTnode T,K k,V i) {
         root=add(T,k,i);
         size++;
@@ -65,7 +60,7 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
         root = p;
     }
 
-    private void printTree() {
+    public void printTree() {
         preOrder(root);
     }
 
@@ -96,9 +91,33 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
             int cmp=key.compareTo(p.key);
 
             if(cmp>0)
-                p=p.right;
+            {
+                if(p.right==null)
+                {
+                    V i=null;
+                    K k=null;
+                    obj[0]=k;
+                    obj[1]=i;
+                    return obj;
+                }
+
+                    p=p.right;
+
+            }
+
             if(cmp<0)
+            {
+                if(p.left==null)
+                {
+                    V i=null;
+                    K k=null;
+                    obj[0]=k;
+                    obj[1]=i;
+                    return obj;
+                }
                 p=p.left;
+            }
+
             if(cmp==0)
             {
                 V i=p.item;
@@ -119,8 +138,9 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
             obj[1]=i;
             return obj;
         }
-
-        return null;
+        obj[0]=null;
+        obj[1]=null;
+        return obj;
     }
 
 
@@ -134,6 +154,7 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
             preOrder(p.right);
         }
     }
+
     private void preOrder_clear(BSTnode p) {
         if (p.left != null) {
             preOrder_clear(p.left);
@@ -166,14 +187,16 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
     private BSTnode del(BSTnode T, K k) {
         if (T == null)
             return null;
-        if (!k.equals(T.key)) {
-
+        if (k.equals(T.key)) {
+            o[0]=k;
+            o[1]=T.item;
             if (T.left == null && T.right == null) {
                 return null;
             }
 
             if (T.left == null && T.right != null) {
                 T = T.right;
+
                 return T;
             }
             if (T.right == null && T.left != null) {
@@ -212,22 +235,23 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
     }
 
 
-    private void delete(K key) {
+    private Object[] delete(K key) {
         root = del(root, key);
         size--;
+        return o;
     }
 
 
-    @Override
+
     public void clear() {
 
       preOrder_clear(root);
       size=0;
     }
 
-    @Override
-    public boolean containsKey(Object key) {
-        Object[] o=find_get(root,(K)key);
+
+    public boolean containsKey(K key) {
+        Object[] o=find_get(root,key);
 
         if(o[0]==null)
         return false;
@@ -238,10 +262,11 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
         return true;
     }
 
-    @Override
-    public Object get(Object key) {
-        Object[] o=find_get(root,(K)key);
-        return o[1];
+
+    public V get(K key) {
+        Object[] o=find_get(root,key);
+        V v=(V)o[1];
+        return v;
     }
 
     @Override
@@ -250,55 +275,70 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B {
     }
 
     @Override
-    public void put(Object key, Object value) {
-        K k=(K) key;
-        V v=(V) value;
+    public void put(K key, V value) {
+        K k= key;
+        V v=value;
 
         insert(root,k,v);
     }
 
     @Override
     public Iterator iterator() {
-        Iterator<K> i= new mapIterator();
+        Iterator<V> i= new mapIterator();
         return i;
     }
 
-    private class mapIterator implements Iterator<K>{
-        private Object[] tree_key=new Object[size];
+    private class mapIterator implements Iterator<V>{
+        private V[] tree_value=(V[]) new Object[size];
         private BSTnode cur;
-        private int index=size-1;
+        private int index=0;
+
+
+
+        private void preOrder(BSTnode p) {
+
+            if (p.left != null) {
+
+                preOrder(p.left);
+
+            }
+            tree_value[index]=p.item;
+            index++;
+            if (p.right != null) {
+
+                preOrder(p.right);
+
+            }
+
+        }
+
         mapIterator(){
             int i=0;
             cur=root;
-            while(i<size){
-                if(cur.right!=null){
-                    tree_key[i]=cur.right.key;
-                    i++;
-                }
+            preOrder(cur);
+            index=0;
 
-                tree_key[i]=cur.key;
-                cur=cur.left;
-            }
         }
 
         public boolean hasNext(){
-           return index!=0;
+           return index<size;
         }
-        public K next(){
-            K k=(K)tree_key[index];
-            index--;
-            return k;
+        public V next(){
+            V v=tree_value[index];
+            index++;
+            return v;
 
         }
     }
 
     @Override
-    public Object remove(Object key) {
+    public V remove(K key) {
+
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object remove(Object key, Object value) {
+    public V remove(K key,V value) {
         throw new UnsupportedOperationException();
     }
 

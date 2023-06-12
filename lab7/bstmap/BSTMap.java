@@ -60,7 +60,7 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B<K, V> {
         root = p;
     }
 
-    public void printTree() {
+    public void printInOrder() {
         preOrder(root);
     }
 
@@ -283,13 +283,13 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B<K, V> {
     }
 
     @Override
-    public Iterator iterator() {
-        Iterator<V> i= new mapIterator();
+    public Iterator<K> iterator() {
+        Iterator<K> i= new mapIterator();
         return i;
     }
 
-    private class mapIterator implements Iterator<V>{
-        private V[] tree_value=(V[]) new Object[size];
+    private class mapIterator implements Iterator<K>{
+        private K[] tree_value=(K[]) new Object[size];
         private BSTnode cur;
         private int index=0;
 
@@ -302,7 +302,7 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B<K, V> {
                 preOrder(p.left);
 
             }
-            tree_value[index]=p.item;
+            tree_value[index]=p.key;
             index++;
             if (p.right != null) {
 
@@ -323,8 +323,8 @@ public class BSTMap<K extends Comparable<K>,V > implements Map61B<K, V> {
         public boolean hasNext(){
            return index<size;
         }
-        public V next(){
-            V v=tree_value[index];
+        public K next(){
+            K v=tree_value[index];
             index++;
             return v;
 

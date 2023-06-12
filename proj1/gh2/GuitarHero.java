@@ -195,6 +195,126 @@ public class GuitarHero {
 
     }
 
+    public static void word_print(){
+        double halfWidth_w=0.02;
+        double halfHeight_w=0.15;
+
+        double halfWidth_b=0.012;
+        double halfHeight_b=0.075;
+
+        double x_w=0.04;
+        double y_w=0.25;
+
+        double x_b=0.06;
+        double y_b=0.575;
+
+        double x_factor_w=0.04;
+        double x_factor_b=0.04;
+        boolean loop=false;
+
+        StdDraw.setPenColor(StdDraw.BLACK);
+        String a="ABCDEFG";
+        int num=3;
+
+        for (int j=0;j<7;j++){
+
+            char c=a.charAt(j);
+
+            StdDraw.text(x_w+0.56+x_factor_w*j,y_w,);
+
+
+        }
+
+        for (int i=0;i<7;i++){
+
+
+            double x_actually=x_b+0.56+x_factor_b*i;
+
+            switch(i)
+            {
+                case 0:
+
+                    break;
+                case 2:
+
+                case 3:
+
+                    break;
+                case 5:
+
+                    break;
+                case 6:
+                    StdDraw.text(x_actually,y_b,"C");
+                    break;
+
+            }
+//
+//
+//
+//
+        }
+
+
+
+        for (int j=0;j<7;j++){
+
+            StdDraw.text(x_w+0.28+x_factor_w*j,y_w,a.charAt(j)+(num+j)+"");
+        }
+
+        for (int i=0;i<7;i++){
+
+
+            double x_actually=x_b+0.28+x_factor_b*i;
+
+            switch(i)
+            {
+                case 0:
+
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 5:
+
+                    break;
+                case 6:
+
+                    break;
+
+            }
+
+
+
+
+
+
+        }
+
+        for (int j=0;j<7;j++){
+
+            StdDraw.text(x_w+x_factor_w*j,y_w,a.charAt(j)+(num+j)+"");
+        }
+
+        for (int i=0;i<7;i++){
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+    }
+
     public static void keyboard_paint(int key){
 
 
@@ -505,6 +625,8 @@ public class GuitarHero {
         StdDraw.setCanvasSize(1024, 1024);
         StdDraw.enableDoubleBuffering();
         keyboard_print();
+        StdDraw.show();
+        word_print();
         StdDraw.show();
 //        StdDraw.setPenColor(255,215,0);
 //        StdDraw.filledRectangle(0.25+0.1,0.4,0.05,0.2);

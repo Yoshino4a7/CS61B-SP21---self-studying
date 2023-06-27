@@ -60,19 +60,27 @@ public class StagingArea {
         blobs=readObject(ADDAREA,HashMap.class);
         int size_cur=readObject(BLOBS_MAX,Integer.class);
 
+        if(checkFileWithCWCommit(name))
+        {
+            if(checkFileIsinTheStagingArea(name))
+            removeFromStagingArea(name);
+            return;
+        }
+
+
         if(blobs.containsKey(name)){
             if(checkFileIsinTheStagingArea(name)){
-                System.out.println("该文件已经在暂存区中");
+
                 return;
             }else{
-                System.out.println("修改文件");
+
                 add_create(name,hashcode,size_cur,false);
                 return;
             }
 
         }
         else {
-            System.out.println("添加文件");
+
             add_create(name,hashcode,size_cur,false);
         }
 
@@ -216,10 +224,15 @@ public class StagingArea {
 
     public static void remove(String filename){
 
+
+
         blobs=readObject(ADDAREA,HashMap.class);
         remove_blobs=readObject(REMOVEAREA,HashMap.class);
         link_remove=readObject(REMOVELIST,LinkedList.class);
         Commit head=ComTreeControler.getHead();
+
+        if(!head.isTracked(filename))
+            Repository.exit("No reason to remove the file.");
 
         if(link_remove.contains(filename)){
             System.out.println("this file has already removed and staging into the remove area");
@@ -458,6 +471,18 @@ public class StagingArea {
             return false;
 
 
+    }
+
+    private static boolean checkFileWithCWCommit(String filename){
+        Commit c=ComTreeControler.getHead();
+        return c.isTracked(filename);
+
+    }
+    private static void removeFromStagingArea(String filename){
+        link_add=readObject(ADDLIST,LinkedList.class);
+        if(link_add.contains(filename))
+            link_add.remove(filename);
+        writeObject(ADDLIST,link_add);
     }
 
 }

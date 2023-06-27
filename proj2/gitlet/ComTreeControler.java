@@ -45,6 +45,9 @@ public class ComTreeControler {
     }
 
     public static void commit(String msg){
+        if(msg==null)
+            Repository.exit("Please enter a commit message.");
+
 
         if(StagingArea.hasToCommit())
         {
@@ -71,7 +74,7 @@ public class ComTreeControler {
             head=commit;
             current_branch=head;
             commitmax++;
-            System.out.println(current_branch.getBranch());
+
             if(current_branch.getBranch().equals("master")){
                 master=head;
                 writeObject(MASTER,master);
@@ -88,7 +91,7 @@ public class ComTreeControler {
 
             StagingArea.clearStatus();
         }else{
-            System.out.println("暂存区没有需要提交的文件");
+            Repository.exit("No changes added to the commit.");
 
         }
 
@@ -245,7 +248,7 @@ public class ComTreeControler {
 
 
             String s=com_in.getHash();
-            System.out.println(s);
+
             commit_name.put("Commit0",s);
             commit_tree.put(s,com_in);
             commit_link.addFirst(com_in);
@@ -285,10 +288,12 @@ public class ComTreeControler {
                 System.out.println(s2);
 
             }
-
             i++;
         }
 
+        if(i==0){
+            Repository.exit("Found no commit with that message.");
+        }
 
     }
     public static boolean findtracked(String filename){
@@ -324,9 +329,15 @@ public class ComTreeControler {
             branch_name=readObject(BRANCH,LinkedList.class);
             current_branch=readObject(CURRENTBRANCH,Commit.class);
 
+            if(branch_name.contains("*"+branch))
+            {
+                Repository.exit("No need to checkout the current branch.");
+                return;
+            }
+
             if(!branch_name.contains(branch))
             {
-                System.out.println("A branch with that name does not exist.");
+                Repository.exit("No such branch exists.");
                 return;
             }
 
@@ -352,7 +363,7 @@ public class ComTreeControler {
 
 
         }else{
-            System.out.println("this branch does not exist");
+            Repository.exit("No such branch exists.");
         }
 
 
@@ -379,7 +390,7 @@ public class ComTreeControler {
             i++;
         }
         if(key.equals("")){
-            System.out.println("there is no Commit with this id");
+            System.out.println("No commit with that id exists.");
             return null;
         }
 
@@ -463,13 +474,13 @@ public class ComTreeControler {
         head=readObject(HEAD,Commit.class);
 
         if(!branch_name.contains(name)){
-            System.out.println("A branch with that name does not exist.");
+            Repository.exit("A branch with that name does not exist.");
             return ;
         }
 
         if(head.getBranch().equals(name))
         {
-            System.out.println("Cannot remove the current branch.");
+            Repository.exit("Cannot remove the current branch.");
         }
         else{
 
@@ -489,13 +500,18 @@ public class ComTreeControler {
         StagingArea.clearStatus();
 
         Commit c=getCommitwithId(commitid);
+        if(c!=null)
+        {
+            Repository.deleteAllfile();
+            c.writeAllblobs();
+            head=c;
+            current_branch=c;
+            writeObject(HEAD,head);
+            writeObject(CURRENTBRANCH,current_branch);
+        }
 
-        c.writeAllblobs();
 
-        head=c;
-        current_branch=c;
-        writeObject(HEAD,head);
-        writeObject(CURRENTBRANCH,current_branch);
+
 
 
     }
@@ -506,18 +522,24 @@ public class ComTreeControler {
         File c=new File(BRANCH_DIR,otherbranch);
         Commit other_branch=readObject(c,Commit.class);
         Commit split=findSplit(otherbranch);
-        System.out.println(split.getHash());
-        System.out.println(other_branch.getHash());
-        System.out.println(head.getHash());
+        branch_name=readObject(BRANCH,LinkedList.class);
+        if(!branch_name.contains(other_branch))
+            Repository.exit("A branch with that name does not exist.");
+        if(branch_name.contains("*"+otherbranch))
+            Repository.exit("Cannot merge a branch with itself.");
+        if(findUntracked(head.getblobsSet(),head))
+        {
+            Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
+        }
 
         if(split.getHash().equals(other_branch.getHash())){
 
-            System.out.println("the split commit and given branch is the same commit，merge complete");
+            System.out.println("Given branch is an ancestor of the current branch.");
             return ;
         }
         if(split.getHash().equals(head.getHash())){
 
-            System.out.println("fast forward");
+            System.out.println("Current branch fast-forwarded.");
             head=other_branch;
             writeObject(HEAD,head);
             return ;
@@ -556,19 +578,19 @@ public class ComTreeControler {
                         if(!head_hash.equals(split_hash)&&head_hash.equals(branch_hash))
                         {
                             //same way
-                            System.out.println("same way both have");
+
                         }
 
                         if(split_hash.equals(branch_hash)&&!head_hash.equals(split_hash)){
                             blobs.put(head_name,head_hash);
-                            System.out.println("head modified " + head_name);
+
                             //head modified
 
                         }
                         if(split_hash.equals(head_hash)&&!branch_hash.equals(split_hash)){
 
                             blobs.put(head_name,branch_hash);
-                            System.out.println("branch modified " + head_name);
+
                             //branch modified
                         }
                         if(!split_hash.equals(head_hash)&&
@@ -576,7 +598,7 @@ public class ComTreeControler {
                         {
 
                             conflict(head_hash,head_name,branch_hash,otherbranch);
-                            System.out.println("Encountered a merge conflict SP HAS");
+                            System.out.println("Encountered a merge conflict");
                             return;
                             //conflicted
 
@@ -584,7 +606,7 @@ public class ComTreeControler {
                         //checkout which has modified since split
                     }else{
                         conflict(head_hash,head_name,branch_hash,otherbranch);
-                        System.out.println("Encountered a merge conflict SP NULL");
+                        System.out.println("Encountered a merge conflict");
                         return;
                         //conflicted
                     }
@@ -602,18 +624,18 @@ public class ComTreeControler {
                     if (!head_hash.equals("NULL")&&split_hash.equals("NULL"))
                     {
                         blobs.put(head_name,head_hash);
-                        System.out.println("head add" + head_name);
+
                         //head add
                     }
                     else if (split_hash.equals(head_hash))
                     {
                         blobs.put(head_name,"NULL");
-                        System.out.println("remove6" + head_name);
+
                         //remove head_name
                     }
                     else if(head_hash.equals("NULL")){
                         //same way do nothing
-                        System.out.println("same way remove");
+
                     }
 
                 }
@@ -624,18 +646,18 @@ public class ComTreeControler {
                    if (!branch_hash.equals("NULL")&&split_hash.equals("NULL"))
                    {
                        blobs.put(head_name,branch_hash);
-                       System.out.println("branch add" + head_name);
+
                        //branch add
                    }
                    else if (split_hash.equals(branch_hash))
                    {
                        blobs.put(head_name,"NULL");
-                       System.out.println("remove7" + head_name);
+
                        //remove branch_name
                    }
                    else if (branch_hash.equals("NULL")){
                        //same way do nothing
-                       System.out.println("same way remove");
+
                    }
 
 
@@ -654,7 +676,7 @@ public class ComTreeControler {
             if(!blobs_head.containsKey(branch_name)){
 
                blobs.put(branch_name,branch_hash);
-                System.out.println("add file "+branch_name+"in the "+otherbranch+" branch");
+
                     //checkout if it exist in the head
                 }else{
 
@@ -679,7 +701,7 @@ public class ComTreeControler {
     private static Commit findSplit(String otherbranch){
         head=readObject(HEAD,Commit.class);
         File c=new File(BRANCH_DIR,otherbranch);
-        System.out.println(c.getName());
+
         Commit other_branch=readObject(c,Commit.class);
         Commit start=head;
         Commit branchc=other_branch;
@@ -709,7 +731,7 @@ public class ComTreeControler {
          branchc=head;
             while(i>0){
                 start=start.getParent();
-                System.out.println(start.getHash());
+
                 i--;
             }
 
@@ -739,6 +761,20 @@ public class ComTreeControler {
         String s=a+b+d+b2+d2+e;
         File cwd_file=new File(Repository.CWD,head_name);
         writeContents(cwd_file,s);
+
+    }
+
+    private static boolean findUntracked(Set<String> set,Commit head){
+            List<String> file_list=plainFilenamesIn(Repository.CWD);
+            Iterator<String> ite=file_list.iterator();
+            while(ite.hasNext())
+            {
+                if(!set.contains(ite.next()))
+                    return true;
+
+
+            }
+            return false;
 
     }
 

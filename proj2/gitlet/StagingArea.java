@@ -60,7 +60,9 @@ public class StagingArea {
         blobs=readObject(ADDAREA,HashMap.class);
         int size_cur=readObject(BLOBS_MAX,Integer.class);
 
+
         if(checkFileWithCWCommit(name,hashcode))
+
         {
             if(checkFileIsinTheStagingArea(name))
             removeFromStagingArea(name);
@@ -232,7 +234,9 @@ public class StagingArea {
         link_add=readObject(ADDLIST,LinkedList.class);
         Commit head=ComTreeControler.getHead();
 
+
         if(!head.isTracked(filename,blobs.get(filename)))
+
             Repository.exit("No reason to remove the file.");
 
         if(link_remove.contains(filename)){
@@ -480,9 +484,11 @@ public class StagingArea {
 
     }
 
+
     private static boolean checkFileWithCWCommit(String filename,String hashcode){
         Commit c=ComTreeControler.getHead();
         return c.isTracked(filename,hashcode);
+
 
     }
     private static void removeFromStagingArea(String filename){

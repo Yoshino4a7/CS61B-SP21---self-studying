@@ -117,7 +117,6 @@ public class Repository {
         String mod_info=readContentsAsString(StagingArea.MODSTATUS);
         String remove_info=readContentsAsString(StagingArea.REMOVESTATUS);
 
-
         System.out.println("=== Branches ===");
         Iterator<String> ite=branch_name.iterator();
         while(ite.hasNext()){

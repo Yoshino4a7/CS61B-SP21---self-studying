@@ -141,6 +141,8 @@ public class Commit implements Serializable {
         Set<String> blobs_set=blobs.keySet();
 
 
+
+
         return blobs_set;
 
 
@@ -151,7 +153,9 @@ public class Commit implements Serializable {
         if(blobs==null)
             return false;
         if(blobs.containsKey(filename))
+
         return !blobs.get(filename).equals("NULL")&&blobs.get(filename).equals(hashcode);
+
         else
             return false;
 
@@ -226,7 +230,9 @@ public class Commit implements Serializable {
         while(ite.hasNext()){
             File f=new File(Repository.CWD,ite.next());
 
+
             if(isTracked(f.getName(),blobs.get(f.getName())))
+
             {
                 try{
                     f.createNewFile();

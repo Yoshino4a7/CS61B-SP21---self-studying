@@ -39,6 +39,19 @@ public class puzzleDemo {
     public void generate_helper(int[][] world,Position p)
     {
         List l=serachAdjacentWall(p);
+        //1.选定当前的路
+        //2.获得当前路四周一格的墙壁，并将墙壁加到列表中  serachWall()
+        //while(墙壁>0)
+//        {
+            //3.随机将列表中的一个墙出队，
+            //4.坐标移动到与当前路相隔出队墙的路 Position searchRoad()
+            //if(这个坐标存在)
+            //{
+//             5. generate_helper(int[][] world,Position p)
+            //}
+
+
+//        }
 
 
 

@@ -273,20 +273,21 @@ public class ComTreeControler {
 
     public static void find(String msg){
         commit_tree=readObject(COMTREE,TreeMap.class);
+
         Iterator<Map.Entry<String,Commit>> ite=commit_tree.entrySet().iterator();
         int i=0;
         // Through the Map.Entry class ,get the hashmap's iterator
 
         while(ite.hasNext()){
             Map.Entry<String,Commit> m=ite.next();
-           Commit c=m.getValue();
+            Commit c=m.getValue();
             String s=c.message();
             if(s.equals(msg)){
                 String s2=c.getHash();
                 System.out.println(s2);
-
+                i++;
             }
-            i++;
+
         }
 
         if(i==0){

@@ -154,6 +154,10 @@ public class Commit implements Serializable {
 
     }
 
+    public String getBlobs(String filename){
+        return blobs.get(filename);
+    }
+
     public boolean isTracked(String filename,String hashcode){
         if(blobs==null)
             return false;

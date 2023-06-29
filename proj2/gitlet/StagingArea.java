@@ -65,7 +65,7 @@ public class StagingArea {
 
         {
             if(checkFileIsinTheStagingArea(name))
-            removeFromStagingArea(name);
+            removeFromStagingArea(name,hashcode);
             return;
         }
 
@@ -176,6 +176,7 @@ public class StagingArea {
             if(a==null){
                 s="";
             }else{
+
                 s=s+a+"\n";
             }
 
@@ -235,7 +236,7 @@ public class StagingArea {
         Commit head=ComTreeControler.getHead();
 
 
-        if(!head.isTracked(filename,blobs.get(filename)))
+        if(!head.isTracked(filename,blobs.get(filename))&&!blobs.containsKey(filename))
 
             Repository.exit("No reason to remove the file.");
 
@@ -244,6 +245,11 @@ public class StagingArea {
             return ;
         }
         if(link_add.contains(filename)){
+            Commit c=ComTreeControler.getHead();
+            File f=new File(Repository.CWD,filename);
+            File f1=new File(Repository.BLOBS_DIR,sha1(readContents(f)));
+            f1.delete();
+            blobs.put(filename,c.getBlobs(filename));
             link_add.remove(filename);
             writeObject(ADDLIST,link_add);
             writeContents(ADDSTATUS,getNameList(link_add));
@@ -253,7 +259,10 @@ public class StagingArea {
 
         if(!blobs.get(filename).equals("NULL")){
 
-            blobs.put(filename,"NULL");
+            Commit c=ComTreeControler.getHead();
+            File f1=new File(Repository.BLOBS_DIR,c.getBlobs(filename));
+            f1.delete();
+            blobs.put(filename,c.getBlobs(filename));
 
             save_remove(filename,false);
             File f=new File(Repository.CWD,filename);
@@ -491,8 +500,10 @@ public class StagingArea {
 
 
     }
-    private static void removeFromStagingArea(String filename){
+    private static void removeFromStagingArea(String filename,String new_hash){
         link_add=readObject(ADDLIST,LinkedList.class);
+        File f=new File(Repository.BLOBS_DIR,new_hash);
+        f.delete();
         if(link_add.contains(filename))
             link_add.remove(filename);
         writeObject(ADDLIST,link_add);

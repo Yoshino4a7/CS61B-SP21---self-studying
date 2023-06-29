@@ -75,7 +75,7 @@ public class Main {
                 Repository.remove(args[1]);
                 break;
             case "global-log":
-                if(args.length>1||args.length<=1)
+                if(args.length>2||args.length<1)
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);

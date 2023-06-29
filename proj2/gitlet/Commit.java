@@ -83,7 +83,7 @@ public class Commit implements Serializable {
         Date date=new Date();
 
         Formatter form=new Formatter();
-        timeStamp= form.format("%tA %tm %td %tT %tY %tz",date,date,date,date,date,date).toString();
+        timeStamp= form.format("%ta %tb %td %tT %tY %tz",date,date,date,date,date,date).toString();
 
     }
     public void setBlobs(HashMap<String,String> s){

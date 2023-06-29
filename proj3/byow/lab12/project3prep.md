@@ -4,7 +4,7 @@
 After looking at your own implementation, consider the implementation provided near the end of the lab.
 How did your implementation differ from the given one? What lessons can be learned from it?**
 
-Answer:
+Answer:多次循环一行一行输入
 
 -----
 
@@ -17,7 +17,7 @@ Answer:
 **If you were to start working on world generation, what kind of method would you think of writing first? 
 Think back to the lab and the process used to eventually get to tessellating hexagons.**
 
-Answer:
+Answer:用nothing填充世界，含有抽象步骤的抽象方法
 
 -----
 **What distinguishes a hallway from a room? How are they similar?**

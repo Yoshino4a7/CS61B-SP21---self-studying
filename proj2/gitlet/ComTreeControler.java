@@ -156,8 +156,6 @@ public class ComTreeControler {
 
         head=readObject(HEAD,Commit.class);
 
-        System.out.println("  ");
-        System.out.println("===Commit===");
 
         while(head!=null){
             head.printInfo();

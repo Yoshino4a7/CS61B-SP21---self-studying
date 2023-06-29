@@ -304,7 +304,7 @@ public class StagingArea {
                 i++;
                 continue;
             }
-            String file_hash=sha1(readContentsAsString(f));
+            String file_hash=sha1(readContents(f));
 
             boolean isModify=!blobs.containsValue(file_hash);
 

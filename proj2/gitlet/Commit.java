@@ -70,11 +70,10 @@ public class Commit implements Serializable {
     }
     public void printInfo(){
         System.out.println("===");
-        System.out.println("");
-        System.out.println("Commit  "+hashcode);
+        System.out.println("commit "+hashcode);
         System.out.println("Date:"+timeStamp);
         System.out.println(message);
-        System.out.println("\n");
+        System.out.println("");
     }
     public void timeSet(){
         Date date=new Date();
@@ -201,7 +200,7 @@ public class Commit implements Serializable {
             try{
                 f.createNewFile();
                 File f_blobs=new File(Repository.BLOBS_DIR,blobs.get(f.getName()));
-                writeContents(f,readContentsAsString(f_blobs));
+                writeContents(f,readContents(f_blobs));
 
             }catch (IOException o){
 

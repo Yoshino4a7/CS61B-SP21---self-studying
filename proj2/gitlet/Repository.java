@@ -74,7 +74,7 @@ public class Repository {
             exit("File does not exist.");
 
 
-        String new_name=sha1(readContentsAsString(addfile_new));
+        String new_name=sha1(readContents(addfile_new));
 
         StagingArea.add(filename,new_name);
 

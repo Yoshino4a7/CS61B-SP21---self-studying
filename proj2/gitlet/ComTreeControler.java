@@ -379,8 +379,8 @@ public class ComTreeControler {
             if(s.length()>6){
                 s=s.substring(0,6);
             }
-
-            if(id.equals(s)){
+			String s2=id.substring(0,6);
+            if(s2.equals(s)){
                 key=L.get(i);
                 break;
             }

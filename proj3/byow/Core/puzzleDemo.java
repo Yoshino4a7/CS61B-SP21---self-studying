@@ -1,25 +1,51 @@
 package byow.Core;
 
+import java.awt.*;
+import java.util.Queue;
+
 public class puzzleDemo {
 
-    private Position pos;
-    private boolean IsWall;
-    private boolean IsFloor;
 
 
-    public static void initial(int[][] world){
+    private int border_x_left;
+    private int border_x_right;
+    private int border_y_up;
+    private int border_y_down;
+
+
+    public  void initial(int[][] world){
         for(int x=0;x<world.length;x++){
 
             for(int y=0;y<world[x].length;y++)
                 world[x][y]=1;
 
-
         }
+        border_x_left=0;
+        border_x_right=world.length;
+        border_y_up=0;
+        border_y_down=world[0].length;
+
+    }
+
+    public void generateWorld(int[][] world){
+
+
 
 
 
 
     }
+
+    public void generate_helper(int[][] world,Position p)
+    {
+        List l=serachAdjacentWall(p);
+
+
+
+
+
+    }
+
 
 
 //    puzzleDemo(Position p,boolean IsWall,boolean IsFloor)
@@ -29,10 +55,10 @@ public class puzzleDemo {
 //        this.IsFloor=IsFloor;
 //    }
 
-    public void serachAdjacentWall(){
+    public List serachAdjacentWall(Position p){
 
 
-
+            return L;
     }
 
 
@@ -80,8 +106,9 @@ public class puzzleDemo {
 
     public static void main(String[] args) {
         int[][] world=new int[9][9];
-
-        puzzleDemo.
+        puzzleDemo pz=new puzzleDemo();
+        pz.initial(world);
+        puzzleDemo.printWorld(world);
 
 
 

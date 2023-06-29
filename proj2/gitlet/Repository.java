@@ -114,9 +114,10 @@ public class Repository {
         StagingArea.checkRemove();
         LinkedList<String> branch_name=readObject(ComTreeControler.BRANCH,LinkedList.class);
         String add_info=readContentsAsString(StagingArea.ADDSTATUS);
-
         String mod_info=readContentsAsString(StagingArea.MODSTATUS);
         String remove_info=readContentsAsString(StagingArea.REMOVESTATUS);
+
+
         System.out.println("=== Branches ===");
         Iterator<String> ite=branch_name.iterator();
         while(ite.hasNext()){

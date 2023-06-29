@@ -157,7 +157,7 @@ public class ComTreeControler {
         head=readObject(HEAD,Commit.class);
 
         System.out.println("  ");
-        System.out.println("----------------Commit-----------------");
+        System.out.println("===Commit===");
 
         while(head!=null){
             head.printInfo();
@@ -452,7 +452,7 @@ public class ComTreeControler {
                 s=a.substring(1);
         }
         File f=new File(BRANCH_DIR,s);
-        System.out.println(s);
+
         writeObject(f,current_branch);
 
 
@@ -568,8 +568,7 @@ public class ComTreeControler {
             String split_hash=blobs_split.get(head_name);
             boolean isExist= blobs_other_branch.containsKey(head_name)&&
                     !blobs_other_branch.get(head_name).equals("NULL") && !blobs_head.get(head_name).equals("NULL");
-            System.out.println(head_name);
-            System.out.println(split_hash);
+
             if(split_hash!=null){
                 if(isExist){
 

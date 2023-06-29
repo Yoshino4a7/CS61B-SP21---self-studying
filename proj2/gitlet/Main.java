@@ -14,7 +14,7 @@ public class Main {
         switch(firstArg) {
             case "init":
                 // TODO: handle the `init` command
-                if(args.length>1||args.length<=1)
+                if(args.length>2||args.length<1)
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
@@ -45,7 +45,7 @@ public class Main {
                 Repository.commit(args[1]);
                 break;
             case "status":
-                if(args.length>1||args.length<=1)
+                if(args.length>2||args.length<1)
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
@@ -53,7 +53,7 @@ public class Main {
                 Repository.status();
                 break;
             case "log":
-                if(args.length>1||args.length<=1)
+                if(args.length>2||args.length<1)
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);

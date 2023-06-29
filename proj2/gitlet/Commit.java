@@ -147,11 +147,11 @@ public class Commit implements Serializable {
 
     }
 
-    public boolean isTracked(String filename){
+    public boolean isTracked(String filename,String hashcode){
         if(blobs==null)
             return false;
         if(blobs.containsKey(filename))
-        return !blobs.get(filename).equals("NULL");
+        return !blobs.get(filename).equals("NULL")&&blobs.get(filename).equals(hashcode);
         else
             return false;
 
@@ -213,7 +213,7 @@ public class Commit implements Serializable {
 
     public void writeAllblobs(){
 
-        System.out.println(getHash());
+
 
         if(blobs==null)
         {
@@ -226,12 +226,12 @@ public class Commit implements Serializable {
         while(ite.hasNext()){
             File f=new File(Repository.CWD,ite.next());
 
-            if(isTracked(f.getName()))
+            if(isTracked(f.getName(),blobs.get(f.getName())))
             {
                 try{
                     f.createNewFile();
                     File f_blobs=new File(Repository.BLOBS_DIR,blobs.get(f.getName()));
-                    writeContents(f,readContentsAsString(f_blobs));
+                    writeContents(f,readContents(f_blobs));
 
                 }catch (IOException o){
 

@@ -60,7 +60,7 @@ public class StagingArea {
         blobs=readObject(ADDAREA,HashMap.class);
         int size_cur=readObject(BLOBS_MAX,Integer.class);
 
-        if(checkFileWithCWCommit(name))
+        if(checkFileWithCWCommit(name,hashcode))
         {
             if(checkFileIsinTheStagingArea(name))
             removeFromStagingArea(name);
@@ -103,7 +103,7 @@ public class StagingArea {
         }catch (IOException o){
 
         }
-        String s=readContentsAsString(addfile_new);
+        byte[] s=readContents(addfile_new);
         writeContents(addfilenew,s);
         save(hasModify,filename);
 
@@ -202,7 +202,7 @@ public class StagingArea {
 
         int i=0;
         while(i<link_add.size()){
-            System.out.println(link_add.get(i));
+           
             if(link_remove.contains(link_add.get(i))){
                 link_add.remove(i);
             }
@@ -232,7 +232,7 @@ public class StagingArea {
         link_add=readObject(ADDLIST,LinkedList.class);
         Commit head=ComTreeControler.getHead();
 
-        if(!head.isTracked(filename))
+        if(!head.isTracked(filename,blobs.get(filename)))
             Repository.exit("No reason to remove the file.");
 
         if(link_remove.contains(filename)){
@@ -254,13 +254,13 @@ public class StagingArea {
             save_remove(filename,false);
             File f=new File(Repository.CWD,filename);
             f.delete();
-            System.out.println("REMOVE");
+
             writeObject(ADDAREA,blobs);
         }
         else {
             if(head.isRemoved(filename)){
                 remove_blobs.put(filename,blobs.get(filename));
-                System.out.println("SSS");
+
                 writeObject(REMOVEAREA,remove_blobs);
 
                 save_remove(filename,true);
@@ -306,7 +306,7 @@ public class StagingArea {
 
 
             //Tracked in the current commit, changed in the working directory, but not staged
-            if(head.isTracked(s)&&!link_add.contains(s)&&isModify){
+            if(head.isTracked(s,blobs.get(s))&&!link_add.contains(s)&&isModify){
                 link_mod.addFirst(s);
                 i++;
                 continue;
@@ -480,9 +480,9 @@ public class StagingArea {
 
     }
 
-    private static boolean checkFileWithCWCommit(String filename){
+    private static boolean checkFileWithCWCommit(String filename,String hashcode){
         Commit c=ComTreeControler.getHead();
-        return c.isTracked(filename);
+        return c.isTracked(filename,hashcode);
 
     }
     private static void removeFromStagingArea(String filename){

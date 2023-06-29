@@ -3,6 +3,7 @@ package gitlet;
 // TODO: any imports you need here
 
 import java.io.*;
+
 import java.util.*;
 
 import static gitlet.Utils.*;
@@ -48,7 +49,7 @@ public class Commit implements Serializable {
     public Commit(String msg,Commit p){
         message=msg;
         if(p==null)
-        timeStamp="00:00:00 UTC, Thursday, 1 January 1970";
+        timeStamp="Wed Dec 31 16:00:00 1969 -0800";
         parent=p;
         if(p!=null)
             branch_size=p.getBranch_size();
@@ -71,14 +72,18 @@ public class Commit implements Serializable {
     public void printInfo(){
         System.out.println("===");
         System.out.println("commit "+hashcode);
-        System.out.println("Date:"+timeStamp);
+        System.out.println("Date: "+timeStamp);
         System.out.println(message);
+        if(this instanceof MergeCommit)
+            System.out.println("Merged development into "+branch+".");
         System.out.println("");
+
     }
     public void timeSet(){
         Date date=new Date();
 
-        timeStamp=date.toString();
+
+        timeStamp= String.format("E MMM dd H:mm:ss yyyy ",date)+"-0800";
     }
     public void setBlobs(HashMap<String,String> s){
         blobs=s;

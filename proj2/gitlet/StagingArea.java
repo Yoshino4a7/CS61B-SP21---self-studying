@@ -236,7 +236,7 @@ public class StagingArea {
         Commit head=ComTreeControler.getHead();
 
 
-        if(!head.isTracked(filename,blobs.get(filename))&&!blobs.containsKey(filename))
+        if(head.getBlobs(filename)==null&&!blobs.containsKey(filename))
 
             Repository.exit("No reason to remove the file.");
 
@@ -255,14 +255,14 @@ public class StagingArea {
             writeContents(ADDSTATUS,getNameList(link_add));
             return ;
         }
+        Commit c=ComTreeControler.getHead();
+
+        if(c.getBlobs(filename)!=null){
 
 
-        if(!blobs.get(filename).equals("NULL")){
-
-            Commit c=ComTreeControler.getHead();
             File f1=new File(Repository.BLOBS_DIR,c.getBlobs(filename));
             f1.delete();
-            blobs.put(filename,c.getBlobs(filename));
+            blobs.remove(filename);
 
             save_remove(filename,false);
             File f=new File(Repository.CWD,filename);

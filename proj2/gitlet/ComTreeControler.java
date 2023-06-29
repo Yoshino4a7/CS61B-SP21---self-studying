@@ -327,8 +327,8 @@ public class ComTreeControler {
 
             branch_name=readObject(BRANCH,LinkedList.class);
             current_branch=readObject(CURRENTBRANCH,Commit.class);
-
-            if(branch_name.contains("*"+branch))
+            head=getHead();
+            if(head.getBranch().equals("*"+branch))
             {
                 Repository.exit("No need to checkout the current branch.");
                 return;

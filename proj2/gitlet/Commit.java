@@ -116,7 +116,7 @@ public class Commit implements Serializable {
         }
 
 
-        System.out.println("A ");
+        
         return blobs.get(filename).equals("NULL");
     }
     public HashMap<String,String> getBlobs(){
@@ -155,6 +155,11 @@ public class Commit implements Serializable {
     }
 
     public String getBlobs(String filename){
+		if(blobs.get(filename)==null)
+			return null;
+		
+		if(blobs==null)
+			return null;
         return blobs.get(filename);
     }
 
@@ -237,16 +242,24 @@ public class Commit implements Serializable {
         Iterator<String> ite=blobs_key.iterator();
 
         while(ite.hasNext()){
-            File f=new File(Repository.CWD,ite.next());
+            String s=ite.next();
+            File f=new File(Repository.CWD,s);
 
 
-            if(isTracked(f.getName(),blobs.get(f.getName())))
+            if(!StagingArea.hasToCommit())
 
             {
+                String file_hash=blobs.get(s);
+
                 try{
                     f.createNewFile();
-                    File f_blobs=new File(Repository.BLOBS_DIR,blobs.get(f.getName()));
-                    writeContents(f,readContents(f_blobs));
+                    File f_blobs=new File(Repository.BLOBS_DIR,file_hash);
+                    if(file_hash.equals("da39a3ee5e6b4b0d3255bfef95601890afd80709"))
+                    {
+
+                    }
+                        else
+                        writeContents(f,readContents(f_blobs));
 
                 }catch (IOException o){
 
@@ -261,7 +274,25 @@ public class Commit implements Serializable {
 
     }
 
+    public void printBlobsSet(){
+        Set<String> blobs_key=blobs.keySet();
+        Iterator<String> ite=blobs_key.iterator();
 
+        while(ite.hasNext()) {
+            System.out.println(ite.next());
+        }
+
+    }
+
+    public void printBlobsValue(){
+        Set<String> blobs_key=blobs.keySet();
+        Iterator<String> ite=blobs_key.iterator();
+
+        while(ite.hasNext()) {
+            System.out.println(blobs.get(ite.next()));
+        }
+
+    }
 
 
 

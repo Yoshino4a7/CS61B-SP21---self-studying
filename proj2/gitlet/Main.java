@@ -39,11 +39,13 @@ public class Main {
                 break;
             // TODO: FILL THE REST IN
             case "commit":
-                if(args.length>2||args.length<=1)
+                if(args.length>2||args.length<1)
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
-                }else
+                }else if(args.length==1)
+                Repository.exit("Please enter a commit message.");
+                else
                 Repository.commit(args[1]);
                 break;
             case "status":

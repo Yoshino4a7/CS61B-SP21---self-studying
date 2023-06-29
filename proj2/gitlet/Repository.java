@@ -76,6 +76,8 @@ public class Repository {
 
         String new_name=sha1(readContents(addfile_new));
 
+
+
         StagingArea.add(filename,new_name);
 
 

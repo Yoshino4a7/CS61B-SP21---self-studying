@@ -135,13 +135,25 @@ public class Commit implements Serializable {
 
 
     }
+    public Set<String> getblobsSet(){
+        if(blobs==null)
+            return null;
+        Set<String> blobs_set=blobs.keySet();
+
+
+        return blobs_set;
+
+
+
+    }
 
     public boolean isTracked(String filename){
         if(blobs==null)
             return false;
-
-        return blobs.containsKey(filename);
-
+        if(blobs.containsKey(filename))
+        return !blobs.get(filename).equals("NULL");
+        else
+            return false;
 
 
     }
@@ -175,7 +187,7 @@ public class Commit implements Serializable {
 
         if(blobs==null)
         {
-            System.out.println("this file does not in the head or previous commit ");
+           Repository.exit("File does not exist in that commit.");
             return;
         }
 
@@ -192,7 +204,7 @@ public class Commit implements Serializable {
             }
 
         }else {
-            System.out.println("this file does not in the head or previous commit ");
+            Repository.exit("File does not exist in that commit.");
 
         }
 
@@ -205,7 +217,7 @@ public class Commit implements Serializable {
 
         if(blobs==null)
         {
-            System.out.println("this file does not in the head or previous commit ");
+            Repository.exit("File does not exist in that commit.");
             return;
         }
         Set<String> blobs_key=blobs.keySet();
@@ -214,7 +226,7 @@ public class Commit implements Serializable {
         while(ite.hasNext()){
             File f=new File(Repository.CWD,ite.next());
 
-            if(!blobs.get(f.getName()).equals("NULL"))
+            if(isTracked(f.getName()))
             {
                 try{
                     f.createNewFile();
@@ -225,7 +237,8 @@ public class Commit implements Serializable {
 
                 }
 
-            }
+            }else
+                Repository.exit("`There is an untracked file in the way; delete it, or add and commit it first.`");
 
 
         }

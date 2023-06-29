@@ -40,27 +40,40 @@ public class Repository {
 
 
     public static void init(){
-        GitletException ge=new GitletException("已经在当前目录建立gitlet仓库");
+
         if(GITLET_DIR.exists())
-            ge.printStackTrace();
-        else{
-            GITLET_DIR.mkdir();
-            COMMIT_DIR.mkdir();
-            BLOBS_DIR.mkdir();
-            HELPER_DIR.mkdir();
-            HELPERADD_DIR.mkdir();
-            StagingArea.init_Staging();
-            ComTreeControler.init();
-            System.out.print("该目录创建gitlet仓库完成");
+            exit("A Gitlet version-control system already exists in the current directory.");
 
 
-        }
+               GITLET_DIR.mkdir();
+               COMMIT_DIR.mkdir();
+               BLOBS_DIR.mkdir();
+               HELPER_DIR.mkdir();
+               HELPERADD_DIR.mkdir();
+               StagingArea.init_Staging();
+               ComTreeControler.init();
+
+
+
+
+
+
+
     }
 
 
     public static void add(String filename){
 
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
+
         File addfile_new=new File(CWD,filename);
+        if(!addfile_new.exists())
+            exit("File does not exist.");
+
+
         String new_name=sha1(readContentsAsString(addfile_new));
 
         StagingArea.add(filename,new_name);
@@ -68,15 +81,27 @@ public class Repository {
 
     }
     public static void commit(String msg){
-
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
         ComTreeControler.commit(msg);
 
 
     }
     public static void remove(String filename){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
         StagingArea.remove(filename);
     }
     public static void status(){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
+
         if(!StagingArea.ADDSTATUS.exists()){
             try{
                 StagingArea.ADDSTATUS.createNewFile();
@@ -92,21 +117,21 @@ public class Repository {
 
         String mod_info=readContentsAsString(StagingArea.MODSTATUS);
         String remove_info=readContentsAsString(StagingArea.REMOVESTATUS);
-        System.out.println("----------------branch-----------------");
+        System.out.println("=== Branches ===");
         Iterator<String> ite=branch_name.iterator();
         while(ite.hasNext()){
             System.out.println(ite.next());
         }
-        System.out.println("----------------Staging Files-----------------");
+        System.out.println("=== Staged Files ===");
         if(add_info!=null)
         System.out.println(add_info);
-        System.out.println("----------------Removed Files-----------------");
+        System.out.println("=== Removed Files ===");
         if(remove_info!=null)
         System.out.println(remove_info);
-        System.out.println("------------Modification Not Staged For Commit-----------------");
+        System.out.println("=== Modifications Not Staged For Commit ===");
         if(mod_info!=null)
             System.out.println(mod_info);
-        System.out.println("------------Untracked Files-----------------");
+        System.out.println("=== Untracked Files ===");
         LinkedList<String> L=StagingArea.findUntrackedFile();
         if(L!=null)
         printUntrackedFile(L);
@@ -116,11 +141,19 @@ public class Repository {
 
     }
     public static void log(){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
        ComTreeControler.commit_log_parent();
-        ComTreeControler.commit_log_parent_MASTER();
+
     }
 
     public static void globallog(){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
         List<String> L= Utils.plainFilenamesIn(COMMIT_DIR);
         int i=0;
         while(i<L.size()){
@@ -157,7 +190,10 @@ public class Repository {
     }
 
     public static void find(String msg){
-
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
         ComTreeControler.find(msg);
 
 
@@ -165,7 +201,10 @@ public class Repository {
     }
 
     public static void checkout(String filename){
-
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
 
         File f=new File(CWD,filename);
         ComTreeControler.checkoutFile(f);
@@ -173,7 +212,10 @@ public class Repository {
 
     }
     public static void checkout(String commitid,String filename){
-
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
 
         File f=new File(CWD,filename);
         ComTreeControler.checkoutFile(commitid,f);
@@ -185,7 +227,10 @@ public class Repository {
 
     public static void checkoutbranch(String branch){
 
-        System.out.println("切换分支");
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
 
         ComTreeControler.checkoutBranch(branch);
 
@@ -195,18 +240,36 @@ public class Repository {
     }
 
     public static void branch(String name){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
         ComTreeControler.branch(name);
     }
     public static void rmbranch(String name){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
         ComTreeControler.rmbranch(name);
     }
 
     public static void reset(String commitid){
-        deleteAllfile();
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
+
         ComTreeControler.reset(commitid);
     }
 
     public static void merge(String otherbranch){
+        if(!GITLET_DIR.exists()){
+            System.out.println("Not in an initialized Gitlet directory.");
+            return;
+        }
+        if(StagingArea.hasToCommit())
+            exit("You have uncommitted changes.");
 
         ComTreeControler.merge(otherbranch);
 
@@ -234,7 +297,7 @@ public class Repository {
         return sha1(s);
     }
 
-    private static void deleteAllfile(){
+    public static void deleteAllfile(){
         List<String> L= Utils.plainFilenamesIn(CWD);
 
         int i=0;
@@ -255,6 +318,11 @@ public class Repository {
 
     }
 
-
+    public static void exit(String msg){
+        if(msg!=null){
+            System.out.println(msg);
+        }
+        System.exit(0);
+    }
 
 }

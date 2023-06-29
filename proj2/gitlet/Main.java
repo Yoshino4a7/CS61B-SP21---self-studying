@@ -135,11 +135,18 @@ public class Main {
                     if(args[1].equals("--"))
                         Repository.checkout(args[2]);
                     else if(args.length==4){
-
+                        if(!args[2].equals("--"))
+                        {
+                            System.out.println("Incorrect operands.");
+                            System.exit(0);
+                        }
                         Repository.checkout(args[1],args[3]);
                     }
-                    else{
+                    else if(args.length<3){
                         Repository.checkoutbranch(args[1]);
+                    }else{
+                        System.out.println("Incorrect operands.");
+                        System.exit(0);
                     }
                 }
 

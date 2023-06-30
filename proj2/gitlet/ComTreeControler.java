@@ -195,13 +195,14 @@ public class ComTreeControler {
 
 
     private static Commit createMergeCommit(String msg,Commit parent,Commit parent2,
-                                            String branch,HashMap<String,String> blobs){
+                                            String branch,HashMap<String,String> blobs,String other){
 
         MergeCommit commit=new MergeCommit(msg,parent,parent2);
         commit.timeSet();
         commit.setBlobs(blobs);
         commit.calcHash();
         commit.setBranch(branch);
+        commit.setGiven_branch(other);
         String hashname=commit.getHash();
 
 
@@ -575,14 +576,14 @@ public class ComTreeControler {
         }
 
          HashMap<String ,String> blobs=head.getBlobs();
+        LinkedList<String> conflict_list=new LinkedList<>();
+
+       boolean IsConflict=selectFilesintoBlobs(blobs,otherbranch,head,other_branch,split,conflict_list);
 
 
-       boolean IsConflict=selectFilesintoBlobs(blobs,otherbranch,head,other_branch,split);
 
 
-
-
-        wirteMergeBlobs(blobs);
+        wirteMergeBlobs(blobs,conflict_list);
 
         if(IsConflict)
         {
@@ -594,7 +595,7 @@ public class ComTreeControler {
 
 
         String cbranch=head.getBranch();
-        Commit merge_commit=createMergeCommit("merge "+otherbranch,head,other_branch,cbranch,blobs);
+        Commit merge_commit=createMergeCommit("merge "+otherbranch,head,other_branch,cbranch,blobs,otherbranch);
 
         mergeCommit(merge_commit,otherbranch);
 
@@ -667,8 +668,14 @@ public class ComTreeControler {
         String d2=readContentsAsString(branch_file);
         String e="\n>>>>>>> "+otherbranch+"\n";
         String s=a+b+d+b2+d2+e;
-        File cwd_file=new File(Repository.BLOBS_DIR,head_hash);
-        writeContents(cwd_file,s);
+
+        File cwd_file=new File(Repository.CWD,head_name);
+        try{
+            cwd_file.createNewFile();
+            writeContents(cwd_file,s);
+        }catch (IOException o){
+
+        }
 
 
     }
@@ -688,7 +695,8 @@ public class ComTreeControler {
     }
 
     private static boolean selectFilesintoBlobs
-            (HashMap<String,String> blobs,String otherbranch,Commit head,Commit other_branch,Commit split){
+            (HashMap<String,String> blobs,String otherbranch,Commit head,Commit other_branch,
+             Commit split,LinkedList<String> conflict_list){
         boolean IsConflict=false;
         HashMap<String,String> blobs_head=head.getBlobs();
         HashMap<String,String> blobs_split=split.getBlobs();
@@ -713,7 +721,6 @@ public class ComTreeControler {
             if(split_hash!=null){
                 if(isExist){
 
-                    if(blobs_split.containsKey(head_name)&&!blobs_split.get(head_name).equals("NULL")){
 
                         if(!head_hash.equals(split_hash)&&head_hash.equals(branch_hash))
                         {
@@ -734,13 +741,13 @@ public class ComTreeControler {
                             //branch modified
                         }
 
-                        if(head.getBranch().equals(otherbranch))
-                        {
-                            ;
-                        }else{
+
                             if(!split_hash.equals(head_hash)&&
                                     !split_hash.equals(branch_hash)&&!head_hash.equals(branch_hash))
                             {
+
+                            conflict_list.add(head_name);
+
 
                                 conflict(head_hash,head_name,branch_hash,otherbranch,blobs);
 
@@ -749,24 +756,10 @@ public class ComTreeControler {
 
                             }
                             //checkout which has modified since split
-                        }
 
 
 
-                    }else{
-                        if(head.getBranch().equals(otherbranch))
-                        {
-                            IsConflict=true;
-                        }
-                        else{
-                            conflict(head_hash,head_name,split_hash,otherbranch,blobs);
 
-                            IsConflict=true;
-                            //conflicted
-                        }
-
-
-                    }
 
 
 
@@ -800,6 +793,8 @@ public class ComTreeControler {
                 if(split_hash!=null){
                     if(branch_hash==null&&!split_hash.equals(head_hash))
                     {
+
+                        conflict_list.add(head_name);
                         conflict(head_hash,head_name,split_hash,otherbranch,blobs);
                         IsConflict=true;
                         //conflicted
@@ -818,7 +813,8 @@ public class ComTreeControler {
             String split_hash=blobs_split.get(head_name);
             boolean isExist= blobs_other_branch.get(head_name)!=null && blobs_head.get(head_name)!=null;
 
-
+            if(set_head.contains(head_name))
+                continue;
 
             if(head_hash==null){
 
@@ -827,7 +823,7 @@ public class ComTreeControler {
                     {
 
                         blobs.put(head_name,null);
-                        //remove HEAD's File
+                        //remove Branch's File
                     }
                 }
 
@@ -847,6 +843,8 @@ public class ComTreeControler {
                 if(split_hash!=null){
                     if(branch_hash==null&&!split_hash.equals(head_hash))
                     {
+
+                        conflict_list.add(head_name);
                         conflict(head_hash,head_name,split_hash,otherbranch,blobs);
                         IsConflict=true;
                         //conflicted
@@ -862,11 +860,33 @@ public class ComTreeControler {
 
 
 
+    private static void deleteFile_withoutConflict(LinkedList<String> conflict_list){
+        List<String> L= Utils.plainFilenamesIn(Repository.CWD);
 
+        int i=0;
+        while(i<L.size()){
+            String s=L.get(i);
+            if(conflict_list.contains(s)){
+                i++;
+                continue;
+            }
 
- private static void wirteMergeBlobs(HashMap<String,String> blobs){
+            File f=new File(Repository.CWD,s);
+            if(!f.isFile())
+            {
+                i++;
 
-        Repository.deleteAllfile();
+                continue;
+
+            }
+            f.delete();
+            i++;
+        }
+    }
+
+ private static void wirteMergeBlobs(HashMap<String,String> blobs,LinkedList<String> conflict_list){
+        deleteFile_withoutConflict(conflict_list);
+
          if(blobs==null)
          {
 
@@ -878,11 +898,15 @@ public class ComTreeControler {
          while(ite.hasNext()){
              String s=ite.next();
              File f=new File(Repository.CWD,s);
+            if(conflict_list.contains(s)){
+                conflict_list.remove(s);
+                continue;
 
+            }
 
 
              String file_hash=blobs.get(s);
-
+          
              if(file_hash==null)
                  continue;
 

@@ -79,7 +79,8 @@ public class ComTreeControler {
                 master=head;
                 writeObject(MASTER,master);
             }
-
+            HashMap<String,String> remove=StagingArea.getRemoval();
+            StagingArea.clearRemoval(remove,StagingArea.getBlobs());
 
             writeObject(CURRENTBRANCH,current_branch);
             writeObject(HEAD,head);

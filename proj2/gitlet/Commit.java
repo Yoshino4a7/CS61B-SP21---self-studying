@@ -155,11 +155,13 @@ public class Commit implements Serializable {
     }
 
     public String getBlobs(String filename){
+
+        if(blobs==null)
+            return null;
 		if(blobs.get(filename)==null)
 			return null;
 		
-		if(blobs==null)
-			return null;
+
         return blobs.get(filename);
     }
 

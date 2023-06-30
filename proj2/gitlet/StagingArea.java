@@ -58,12 +58,41 @@ public class StagingArea {
             }
         }
         blobs=readObject(ADDAREA,HashMap.class);
+        remove_blobs=readObject(REMOVEAREA,HashMap.class);
         int size_cur=readObject(BLOBS_MAX,Integer.class);
 
+        link_remove=readObject(REMOVELIST,LinkedList.class);
+        System.out.println("A");
+        if(link_remove.contains(name))
+        {
+            System.out.print(getNameList(link_remove));
+            link_remove.remove(name);
+            remove_blobs.put(name,null);
+            System.out.print(getNameList(link_remove));
+            System.out.println("B");
+            writeObject(REMOVELIST,link_remove);
+            writeObject(REMOVESTATUS,getNameList(link_remove));
+            writeObject(REMOVEAREA,remove_blobs);
+            return;
+        }
 
         if(checkFileWithCWCommit(name,hashcode))
 
         {
+            System.out.println("C");
+            link_remove=readObject(REMOVELIST,LinkedList.class);
+            if(link_remove.contains(name))
+            {
+                remove_blobs.put(name,null);
+                link_remove.remove(name);
+                System.out.print(getNameList(link_remove));
+                System.out.println("D");
+                writeObject(REMOVELIST,link_remove);
+                writeObject(REMOVESTATUS,getNameList(link_remove));
+                writeObject(REMOVEAREA,remove_blobs);
+            }
+
+
             if(checkFileIsinTheStagingArea(name))
             removeFromStagingArea(name,hashcode);
             return;
@@ -86,12 +115,14 @@ public class StagingArea {
             add_create(name,hashcode,size_cur,false);
         }
 
+
     }
 
     private static void add_create(String filename,String hashname,int size_cur,boolean hasModify){
         File addfile_new=new File(Repository.CWD,filename);
         File addfilenew =new File(Repository.BLOBS_DIR,hashname);
 
+        link_remove=readObject(REMOVELIST,LinkedList.class);
 
 
 
@@ -168,25 +199,14 @@ public class StagingArea {
         writeContents(MODSTATUS,"");
         writeContents(REMOVESTATUS,"");
     }
-    private static String getNameList(LinkedList<String> L){
-        int i=0;
-        String s="";
-        while(i<L.size()){
-            String a=L.get(i);
-            if(a==null){
-                s="";
-            }else{
 
-                s=s+a+"\n";
-            }
-
-            i++;
-        }
-        return s;
-    }
 
     public static HashMap<String,String> getBlobs(){
         HashMap<String,String> b=readObject(ADDAREA,HashMap.class);
+        return b;
+    }
+    public static HashMap<String,String> getRemoval(){
+        HashMap<String,String> b=readObject(REMOVEAREA,HashMap.class);
         return b;
     }
 
@@ -259,16 +279,12 @@ public class StagingArea {
 
         if(c.getBlobs(filename)!=null){
 
+            remove_blobs.put(filename,blobs.get(filename));
+            writeObject(REMOVEAREA,remove_blobs);
 
-            File f1=new File(Repository.BLOBS_DIR,c.getBlobs(filename));
-            f1.delete();
-            blobs.remove(filename);
 
             save_remove(filename,false);
-            File f=new File(Repository.CWD,filename);
-            f.delete();
 
-            writeObject(ADDAREA,blobs);
         }
         else {
             if(head.isRemoved(filename)){
@@ -284,6 +300,24 @@ public class StagingArea {
         }
 
     }
+
+    private static String getNameList(LinkedList<String> L){
+        int i=0;
+        String s="";
+        while(i<L.size()){
+            String a=L.get(i);
+            if(a==null){
+                s="";
+            }else{
+
+                s=s+a+"\n";
+            }
+
+            i++;
+        }
+        return s;
+    }
+
 
     public static void clearArea(){
         HashMap<String,String> b=new HashMap<>();
@@ -426,7 +460,25 @@ public class StagingArea {
 
     }
 
+    public static void clearRemoval(HashMap<String,String> removeblobs,HashMap<String,String> blobs){
+        link_remove=readObject(REMOVELIST,LinkedList.class);
 
+        Iterator<String> ite=link_remove.iterator();
+
+        while(ite.hasNext()){
+            String name= ite.next();;
+            File f=new File(Repository.CWD,name);
+            f.delete();
+            File f1=new File(Repository.BLOBS_DIR,removeblobs.get(name));
+            f1.delete();
+            blobs.remove(name,removeblobs.get(name));
+            writeObject(ADDAREA,blobs);
+
+        }
+        writeObject(REMOVEAREA,new HashMap<String,String>());
+
+
+    }
 
     public static LinkedList<String> findUntrackedFile(){
 

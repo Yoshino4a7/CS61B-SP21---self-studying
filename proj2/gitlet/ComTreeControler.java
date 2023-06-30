@@ -547,10 +547,11 @@ public class ComTreeControler {
     public static void merge(String otherbranch){
         head=readObject(HEAD,Commit.class);
         File c=new File(BRANCH_DIR,otherbranch);
+        File branch=new File(BRANCH_DIR,otherbranch);
         Commit other_branch=readObject(c,Commit.class);
         Commit split=findSplit(otherbranch);
         branch_name=readObject(BRANCH,LinkedList.class);
-        if(!branch_name.contains(other_branch))
+        if(!branch.exists())
             Repository.exit("A branch with that name does not exist.");
         if(branch_name.contains("*"+otherbranch))
             Repository.exit("Cannot merge a branch with itself.");
@@ -572,149 +573,27 @@ public class ComTreeControler {
             return ;
         }
 
+         HashMap<String ,String> blobs=head.getBlobs();
 
 
-
-        HashMap<String,String> blobs_head=head.getBlobs();
-        HashMap<String,String> blobs_split=split.getBlobs();
-        HashMap<String,String> blobs_other_branch=other_branch.getBlobs();
-
-        SortedSet<String> set_head=  new TreeSet<>(blobs_head.keySet());
-        SortedSet<String> set_split=  new TreeSet<>(blobs_split.keySet());
-        SortedSet<String> set_other_branch=  new TreeSet<>(blobs_other_branch.keySet());
-        HashMap<String ,String> blobs=head.getBlobs();
-
-        Iterator<String> ite_head=set_head.iterator();
-        Iterator<String> ite_other_branch=set_other_branch.iterator();
-        Iterator<String> ite_split=set_split.iterator();
-
-        while(ite_head.hasNext()){
-            String head_name=ite_head.next();
-            String head_hash=blobs_head.get(head_name);
-            String branch_hash=blobs_other_branch.get(head_name);
-            String split_hash=blobs_split.get(head_name);
-            boolean isExist= blobs_other_branch.containsKey(head_name)&&
-                    !blobs_other_branch.get(head_name).equals("NULL") && !blobs_head.get(head_name).equals("NULL");
-
-            if(split_hash!=null){
-                if(isExist){
-
-                    if(blobs_split.containsKey(head_name)&&!blobs_split.get(head_name).equals("NULL")){
-
-                        if(!head_hash.equals(split_hash)&&head_hash.equals(branch_hash))
-                        {
-                            //same way
-
-                        }
-
-                        if(split_hash.equals(branch_hash)&&!head_hash.equals(split_hash)){
-                            blobs.put(head_name,head_hash);
-
-                            //head modified
-
-                        }
-                        if(split_hash.equals(head_hash)&&!branch_hash.equals(split_hash)){
-
-                            blobs.put(head_name,branch_hash);
-
-                            //branch modified
-                        }
-                        if(!split_hash.equals(head_hash)&&
-                                !split_hash.equals(branch_hash)&&!head_hash.equals(branch_hash))
-                        {
-
-                            conflict(head_hash,head_name,branch_hash,otherbranch);
-                            System.out.println("Encountered a merge conflict");
-                            return;
-                            //conflicted
-
-                        }
-                        //checkout which has modified since split
-                    }else{
-                        conflict(head_hash,head_name,branch_hash,otherbranch);
-                        System.out.println("Encountered a merge conflict");
-                        return;
-                        //conflicted
-                    }
+       boolean IsConflict=selectFilesintoBlobs(blobs,otherbranch,head,other_branch,split);
 
 
+        selectFilesintoBlobs(blobs,otherbranch,other_branch,head,split);
+        wirteMergeBlobs(blobs);
 
-                }
-            }
-
-
-
-            if(branch_hash!=null){
-                if(branch_hash.equals("NULL")&&split_hash!=null){
-
-                    if (!head_hash.equals("NULL")&&split_hash.equals("NULL"))
-                    {
-                        blobs.put(head_name,head_hash);
-
-                        //head add
-                    }
-                    else if (split_hash.equals(head_hash))
-                    {
-                        blobs.put(head_name,"NULL");
-
-                        //remove head_name
-                    }
-                    else if(head_hash.equals("NULL")){
-                        //same way do nothing
-
-                    }
-
-                }
-            }
-           if(head_hash!=null){
-               if(head_hash.equals("NULL")&&split_hash!=null){
-
-                   if (!branch_hash.equals("NULL")&&split_hash.equals("NULL"))
-                   {
-                       blobs.put(head_name,branch_hash);
-
-                       //branch add
-                   }
-                   else if (split_hash.equals(branch_hash))
-                   {
-                       blobs.put(head_name,"NULL");
-
-                       //remove branch_name
-                   }
-                   else if (branch_hash.equals("NULL")){
-                       //same way do nothing
-
-                   }
-
-
-               }
-           }
-
-
-
-
+        if(IsConflict)
+        {
+            System.out.println("Encountered a merge conflict");
+            return;
         }
-       //deal with head
-        while(ite_other_branch.hasNext()){
-            String branch_name=ite_other_branch.next();
-            String branch_hash=blobs_other_branch.get(branch_name);
 
-            if(!blobs_head.containsKey(branch_name)){
-
-               blobs.put(branch_name,branch_hash);
-
-                    //checkout if it exist in the head
-                }else{
-
-                    continue;
-                }
-
-            }
 
 
 
         String cbranch=head.getBranch();
         Commit merge_commit=createMergeCommit("merge "+otherbranch,head,other_branch,cbranch,blobs);
+
         mergeCommit(merge_commit,otherbranch);
 
 
@@ -774,7 +653,8 @@ public class ComTreeControler {
 
     }
 
-    private static void conflict(String head_hash,String head_name,String branch_hash,String otherbranch){
+    private static void conflict
+            (String head_hash,String head_name,String branch_hash,String otherbranch,HashMap<String,String> blobs){
 
         String a="Here is some content not affected by the conflict\n";
         String b="<<<<<<< HEAD\n";
@@ -785,8 +665,9 @@ public class ComTreeControler {
         String d2=readContentsAsString(branch_file);
         String e="\n>>>>>>> "+otherbranch+"\n";
         String s=a+b+d+b2+d2+e;
-        File cwd_file=new File(Repository.CWD,head_name);
+        File cwd_file=new File(Repository.BLOBS_DIR,head_hash);
         writeContents(cwd_file,s);
+
 
     }
 
@@ -804,6 +685,167 @@ public class ComTreeControler {
 
     }
 
+    private static boolean selectFilesintoBlobs
+            (HashMap<String,String> blobs,String otherbranch,Commit head,Commit other_branch,Commit split){
+        boolean IsConflict=false;
+        HashMap<String,String> blobs_head=head.getBlobs();
+        HashMap<String,String> blobs_split=split.getBlobs();
+        HashMap<String,String> blobs_other_branch=other_branch.getBlobs();
+
+        SortedSet<String> set_head=  new TreeSet<>(blobs_head.keySet());
+        SortedSet<String> set_split=  new TreeSet<>(blobs_split.keySet());
+        SortedSet<String> set_other_branch=  new TreeSet<>(blobs_other_branch.keySet());
+
+
+        Iterator<String> ite_head=set_head.iterator();
+
+
+        while(ite_head.hasNext()){
+
+            String head_name=ite_head.next();
+            String head_hash=blobs_head.get(head_name);
+            String branch_hash=blobs_other_branch.get(head_name);
+            String split_hash=blobs_split.get(head_name);
+            boolean isExist= blobs_other_branch.get(head_name)!=null && blobs_head.get(head_name)!=null;
+
+            if(split_hash!=null){
+                if(isExist){
+
+                    if(blobs_split.containsKey(head_name)&&!blobs_split.get(head_name).equals("NULL")){
+
+                        if(!head_hash.equals(split_hash)&&head_hash.equals(branch_hash))
+                        {
+                            //same way
+
+                        }
+
+                        if(split_hash.equals(branch_hash)&&!head_hash.equals(split_hash)){
+                            blobs.put(head_name,head_hash);
+
+                            //head modified
+
+                        }
+                        if(split_hash.equals(head_hash)&&!branch_hash.equals(split_hash)){
+
+                            blobs.put(head_name,branch_hash);
+
+                            //branch modified
+                        }
+
+                        if(head.getBranch().equals(otherbranch))
+                        {
+                            ;
+                        }else{
+                            if(!split_hash.equals(head_hash)&&
+                                    !split_hash.equals(branch_hash)&&!head_hash.equals(branch_hash))
+                            {
+
+                                conflict(head_hash,head_name,branch_hash,otherbranch,blobs);
+
+                                IsConflict=true;
+                                //conflicted
+
+                            }
+                            //checkout which has modified since split
+                        }
+
+
+
+                    }else{
+                        if(head.getBranch().equals(otherbranch))
+                        {
+                            IsConflict=true;
+                        }
+                        else{
+                            conflict(head_hash,head_name,split_hash,otherbranch,blobs);
+
+                            IsConflict=true;
+                            //conflicted
+                        }
+
+
+                    }
+
+
+
+                }
+            }
+
+            if(head_hash!=null){
+
+                if(split_hash!=null){
+                    if(branch_hash==null&&split_hash.equals(head_hash))
+                    {
+                        blobs.put(head_name,null);
+                        //remove HEAD's File
+                    }
+                }
+
+            }
+
+
+
+            if(head_hash!=null&&split_hash==null&&branch_hash==null)
+            {
+                blobs.put(head_name,head_hash);
+                //neither in other nor in split but in HEAD
+            }
+
+
+            if(head_hash!=null){
+
+                if(split_hash!=null){
+                    if(branch_hash==null&&!split_hash.equals(head_hash))
+                    {
+                        conflict(head_hash,head_name,split_hash,otherbranch,blobs);
+                        IsConflict=true;
+                        //conflicted
+                    }
+                }
+
+            }
+
+        }
+        return IsConflict;
+    }
+ private static void wirteMergeBlobs(HashMap<String,String> blobs){
+
+
+         if(blobs==null)
+         {
+
+             return;
+         }
+         Set<String> blobs_key=blobs.keySet();
+         Iterator<String> ite=blobs_key.iterator();
+
+         while(ite.hasNext()){
+             String s=ite.next();
+             File f=new File(Repository.CWD,s);
+
+
+
+             String file_hash=blobs.get(s);
+
+             if(file_hash==null)
+                 continue;
+
+             try{
+                 f.createNewFile();
+                 File f_blobs=new File(Repository.BLOBS_DIR,file_hash);
+                 if(file_hash.equals("da39a3ee5e6b4b0d3255bfef95601890afd80709"))
+                 {
+
+                 }
+                 else
+                     writeContents(f,readContents(f_blobs));
+
+             }catch (IOException o){
+
+             }
+
+         }
+ }
 
 }
 

@@ -120,6 +120,9 @@ public class Commit implements Serializable {
         return blobs.get(filename).equals("NULL");
     }
     public HashMap<String,String> getBlobs(){
+        if(blobs==null)
+            return new HashMap<String,String>();
+
         return blobs;
     }
 
@@ -252,6 +255,8 @@ public class Commit implements Serializable {
 
             
                 String file_hash=blobs.get(s);
+                if(file_hash==null)
+                    continue;
 
                 try{
                     f.createNewFile();
@@ -275,6 +280,8 @@ public class Commit implements Serializable {
 
 
     }
+
+
 
     public void printBlobsSet(){
         Set<String> blobs_key=blobs.keySet();

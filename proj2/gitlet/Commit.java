@@ -166,11 +166,13 @@ public class Commit implements Serializable {
     }
 
     public boolean isTracked(String filename,String hashcode){
+
+
         if(blobs==null)
             return false;
         if(blobs.containsKey(filename))
 
-        return !blobs.get(filename).equals("NULL")&&blobs.get(filename).equals(hashcode);
+        return blobs.get(filename).equals(hashcode);
 
         else
             return false;

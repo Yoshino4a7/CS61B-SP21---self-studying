@@ -65,7 +65,6 @@ public class ComTreeControler {
             }catch (IOException o){
 
             }
-
             commit_tree=readObject(COMTREE,TreeMap.class);
             commit_name=readObject(COMNAME,HashMap.class);
             int commitmax=readObject(COMMAX,Integer.class);
@@ -79,17 +78,12 @@ public class ComTreeControler {
                 master=head;
                 writeObject(MASTER,master);
             }
-            HashMap<String,String> remove=StagingArea.getRemoval();
-            StagingArea.clearRemoval(remove,StagingArea.getBlobs());
-
             writeObject(CURRENTBRANCH,current_branch);
             writeObject(HEAD,head);
             writeObject(newcommit,commit);
             writeObject(COMTREE,commit_tree);
             writeObject(COMNAME,commit_name);
             writeObject(COMMAX,commitmax);
-
-
             StagingArea.clearStatus();
         }else{
             Repository.exit("No changes added to the commit.");
@@ -181,18 +175,19 @@ public class ComTreeControler {
 
 
     private static Commit createCommit(String msg,Commit parent,String branch){
+
+        StagingArea.clearRemoval();
+
         HashMap<String,String>  blobs=StagingArea.getBlobs();
 
-
-
-
+        HashMap<String,String> remove=StagingArea.getRemoval();
 
         Commit commit=new Commit(msg,parent);
         commit.timeSet();
         commit.setBlobs(blobs);
         commit.calcHash();
         commit.setBranch(branch);
-        String hashname=commit.getHash();
+
 
 
         return commit;
@@ -310,7 +305,8 @@ public class ComTreeControler {
     }
     public static void checkoutFile(File f){
         head=ComTreeControler.getHead();
-
+        if(head==null)
+            return;
        head.writeblobs(f);
 
 
@@ -319,7 +315,8 @@ public class ComTreeControler {
 
     public static void checkoutFile(String commitid,File f){
         Commit c=getCommitwithId(commitid);
-
+        if(c==null)
+            return;
         c.writeblobs(f);
 
     }
@@ -329,7 +326,7 @@ public class ComTreeControler {
             branch_name=readObject(BRANCH,LinkedList.class);
             current_branch=readObject(CURRENTBRANCH,Commit.class);
             head=getHead();
-            if(head.getBranch().equals("*"+branch))
+            if(head.getBranch().equals(branch))
             {
                 Repository.exit("No need to checkout the current branch.");
                 return;
@@ -378,11 +375,13 @@ public class ComTreeControler {
         while(i<L.size()){
 
             String s=L.get(i);
+            String s2="";
             if(s.length()>6){
-                s=s.substring(0,6);
+
+                s2=s.substring(0,id.length());
             }
-			String s2=id.substring(0,6);
-            if(s2.equals(s)){
+
+            if(s2.equals(id)){
                 key=L.get(i);
                 break;
             }

@@ -62,16 +62,15 @@ public class StagingArea {
         int size_cur=readObject(BLOBS_MAX,Integer.class);
 
         link_remove=readObject(REMOVELIST,LinkedList.class);
-        System.out.println("A");
+
         if(link_remove.contains(name))
         {
-            System.out.print(getNameList(link_remove));
+
             link_remove.remove(name);
             remove_blobs.put(name,null);
-            System.out.print(getNameList(link_remove));
-            System.out.println("B");
+
             writeObject(REMOVELIST,link_remove);
-            writeObject(REMOVESTATUS,getNameList(link_remove));
+            writeContents(REMOVESTATUS,getNameList(link_remove));
             writeObject(REMOVEAREA,remove_blobs);
             return;
         }
@@ -79,19 +78,6 @@ public class StagingArea {
         if(checkFileWithCWCommit(name,hashcode))
 
         {
-            System.out.println("C");
-            link_remove=readObject(REMOVELIST,LinkedList.class);
-            if(link_remove.contains(name))
-            {
-                remove_blobs.put(name,null);
-                link_remove.remove(name);
-                System.out.print(getNameList(link_remove));
-                System.out.println("D");
-                writeObject(REMOVELIST,link_remove);
-                writeObject(REMOVESTATUS,getNameList(link_remove));
-                writeObject(REMOVEAREA,remove_blobs);
-            }
-
 
             if(checkFileIsinTheStagingArea(name))
             removeFromStagingArea(name,hashcode);
@@ -104,14 +90,14 @@ public class StagingArea {
 
                 return;
             }else{
-
+                save(false,name);
                 add_create(name,hashcode,size_cur,false);
                 return;
             }
 
         }
         else {
-
+            save(false,name);
             add_create(name,hashcode,size_cur,false);
         }
 
@@ -123,7 +109,9 @@ public class StagingArea {
         File addfilenew =new File(Repository.BLOBS_DIR,hashname);
 
         link_remove=readObject(REMOVELIST,LinkedList.class);
-
+        link_add=readObject(ADDLIST,LinkedList.class);
+        if(!link_add.contains(filename))
+            return;
 
 
         blobs.put(filename,hashname);
@@ -138,7 +126,7 @@ public class StagingArea {
         }
         byte[] s=readContents(addfile_new);
         writeContents(addfilenew,s);
-        save(hasModify,filename);
+
 
 
 
@@ -267,11 +255,11 @@ public class StagingArea {
         if(link_add.contains(filename)){
             Commit c=ComTreeControler.getHead();
             File f=new File(Repository.CWD,filename);
-            File f1=new File(Repository.BLOBS_DIR,sha1(readContents(f)));
-            f1.delete();
-            blobs.put(filename,c.getBlobs(filename));
+
+            blobs.remove(filename);
             link_add.remove(filename);
             writeObject(ADDLIST,link_add);
+            writeObject(ADDAREA,blobs);
             writeContents(ADDSTATUS,getNameList(link_add));
             return ;
         }
@@ -460,23 +448,38 @@ public class StagingArea {
 
     }
 
-    public static void clearRemoval(HashMap<String,String> removeblobs,HashMap<String,String> blobs){
+    public static void clearRemoval(){
         link_remove=readObject(REMOVELIST,LinkedList.class);
+        HashMap<String,String>  blobs=StagingArea.getBlobs();
+
+        HashMap<String,String> removeblobs=StagingArea.getRemoval();
+
+        if(blobs==null)
+            blobs=new HashMap<String,String>();
+        if(removeblobs==null)
+            removeblobs=new HashMap<String,String>();
+
 
         Iterator<String> ite=link_remove.iterator();
 
         while(ite.hasNext()){
-            String name= ite.next();;
+            String name= ite.next();
+            String hash_name=removeblobs.get(name);
+            if(name==null||hash_name==null)
+                continue;
+
+
             File f=new File(Repository.CWD,name);
             f.delete();
-            File f1=new File(Repository.BLOBS_DIR,removeblobs.get(name));
-            f1.delete();
-            blobs.remove(name,removeblobs.get(name));
-            writeObject(ADDAREA,blobs);
+
+            blobs.remove(name);
+            ite.remove();
 
         }
-        writeObject(REMOVEAREA,new HashMap<String,String>());
 
+        writeObject(ADDAREA,blobs);
+        writeObject(REMOVEAREA,new HashMap<String,String>());
+        writeObject(REMOVELIST,new LinkedList<String>());
 
     }
 

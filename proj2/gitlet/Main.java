@@ -41,8 +41,8 @@ public class Main {
             case "commit":
                 if(args.length>2||args.length<1)
                 {
-                    System.out.println("Incorrect operands.");
-                    System.exit(0);
+                    Repository.exit("Incorrect operands.");
+
                 }else if(args.length==1)
                 Repository.exit("Please enter a commit message.");
                 else

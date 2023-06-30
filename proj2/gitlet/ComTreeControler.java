@@ -327,22 +327,23 @@ public class ComTreeControler {
         File branch_file=new File(BRANCH_DIR,branch);
 
 
-
+        head=getHead();
 
         if(!branch_file.exists()){
 
             Repository.exit("No such branch exists.");
             return;
         }
+        if(head.findAllUntracked())
+        {
+            Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
+        }
 
-            branch_name=readObject(BRANCH,LinkedList.class);
+
+        branch_name=readObject(BRANCH,LinkedList.class);
             current_branch=readObject(CURRENTBRANCH,Commit.class);
-            head=getHead();
 
-            if(head.findAllUntracked())
-            {
-                Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
-            }
+
 
             if(head.getBranch().equals(branch))
             {
@@ -365,13 +366,18 @@ public class ComTreeControler {
 
         if(branch_file.exists()){
 
-
-
-
-
-
                 current_branch=readObject(branch_file,Commit.class);
                 head=current_branch;
+                if(head.getBlobs()==null)
+                {
+                    writeObject(StagingArea.ADDAREA,new HashMap<String,String>());
+                }
+                else{
+                    writeObject(StagingArea.ADDAREA,head.getBlobs());
+                }
+
+
+
                 Repository.deleteAllfile();
                 current_branch.writeAllblobs();
                 writeObject(HEAD,head);
@@ -423,8 +429,6 @@ public class ComTreeControler {
 
     public static void branch(String name){
 
-
-
         branch_name=readObject(BRANCH,LinkedList.class);
         current_branch=readObject(CURRENTBRANCH,Commit.class);
         head=readObject(HEAD,Commit.class);
@@ -443,9 +447,6 @@ public class ComTreeControler {
         else{
             Repository.exit("A branch with that name already exists.");
         }
-
-
-
 
         File f=new File(BRANCH_DIR,name);
         try{
@@ -520,8 +521,12 @@ public class ComTreeControler {
 
     public static void reset(String commitid){
         StagingArea.clearStatus();
-
+        head=ComTreeControler.getHead();
         Commit c=getCommitwithId(commitid);
+
+        if(head.findAllUntracked())
+            Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
+
         if(c!=null)
         {
             Repository.deleteAllfile();

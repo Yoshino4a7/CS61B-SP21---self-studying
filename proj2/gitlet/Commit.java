@@ -239,7 +239,7 @@ public class Commit implements Serializable {
 
         if(blobs==null)
         {
-            Repository.exit("File does not exist in that commit.");
+
             return;
         }
         Set<String> blobs_key=blobs.keySet();
@@ -273,9 +273,10 @@ public class Commit implements Serializable {
                 Repository.exit("`There is an untracked file in the way; delete it, or add and commit it first.`");
 
 
+
         }
 
-
+       
     }
 
     public void printBlobsSet(){

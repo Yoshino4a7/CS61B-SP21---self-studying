@@ -145,7 +145,9 @@ public class Main {
                         Repository.checkout(args[1],args[3]);
                     }
                     else if(args.length<3){
+
                         Repository.checkoutbranch(args[1]);
+
                     }else{
                         System.out.println("Incorrect operands.");
                         System.exit(0);

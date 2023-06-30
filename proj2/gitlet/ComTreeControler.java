@@ -235,10 +235,12 @@ public class ComTreeControler {
             COMMAX.createNewFile();
             int i=1;
 
+            head=com_in;
 
             Utils.writeObject(com,com_in);
             Utils.writeObject(MASTER,master);
             Utils.writeObject(HEAD,head);
+
 
 
             String s=com_in.getHash();
@@ -247,7 +249,7 @@ public class ComTreeControler {
             commit_tree.put(s,com_in);
             commit_link.addFirst(com_in);
 
-
+            current_branch=head;
             writeObject(BRANCH,branch_name);
             writeObject(CURRENTBRANCH,current_branch);
             branch("master");
@@ -332,7 +334,7 @@ public class ComTreeControler {
                 return;
             }
 
-            if(!branch_name.contains(branch))
+            if(!branch_name.contains(branch)&&!branch_name.getFirst().contains("*"))
             {
                 Repository.exit("No such branch exists.");
                 return;
@@ -354,6 +356,7 @@ public class ComTreeControler {
             File branch_file=new File(BRANCH_DIR,branch);
             current_branch=readObject(branch_file,Commit.class);
             head=current_branch;
+
             current_branch.writeAllblobs();
             writeObject(HEAD,head);
             writeObject(CURRENTBRANCH,current_branch);
@@ -407,21 +410,24 @@ public class ComTreeControler {
         branch_name=readObject(BRANCH,LinkedList.class);
         current_branch=readObject(CURRENTBRANCH,Commit.class);
         head=readObject(HEAD,Commit.class);
-        if(!name.equals("master"))
-        {
-            savebranch();
-            branch_name.remove("*"+current_branch.getBranch());
-            branch_name.addFirst(current_branch.getBranch());
-            branch_name.addFirst("*"+name);
+        if(branch_name.contains("*"+name)){
+            Repository.exit("A branch with that name already exists.");
+        }
+        if(!branch_name.contains(name)){
+            if(name.equals("master"))
+                branch_name.addLast("*"+name);
+            else{
+                branch_name.addLast(name);
+            }
 
+            writeObject(BRANCH,branch_name);
         }
         else{
-
-            branch_name.addFirst("*"+name);
+            Repository.exit("A branch with that name already exists.");
         }
 
 
-        current_branch=head;
+
 
         File f=new File(BRANCH_DIR,name);
         try{
@@ -431,7 +437,6 @@ public class ComTreeControler {
 
         }
 
-        writeObject(CURRENTBRANCH,current_branch);
         writeObject(BRANCH,branch_name);
 
 

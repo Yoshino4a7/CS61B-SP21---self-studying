@@ -70,11 +70,10 @@ public class Repository {
         }
 
         File addfile_new=new File(CWD,filename);
-        if(!addfile_new.exists())
-            exit("File does not exist.");
 
-
-        String new_name=sha1(readContents(addfile_new));
+        String new_name="";
+        if(addfile_new.exists())
+        new_name=sha1(readContents(addfile_new));
 
 
 

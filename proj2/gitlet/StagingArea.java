@@ -62,11 +62,23 @@ public class StagingArea {
         int size_cur=readObject(BLOBS_MAX,Integer.class);
 
         link_remove=readObject(REMOVELIST,LinkedList.class);
+        File addfile=new File(Repository.CWD,name);
+        if(!addfile.exists()&&!link_remove.contains(name))
+            Repository.exit("File does not exist.");
 
         if(link_remove.contains(name))
         {
 
             link_remove.remove(name);
+            File f=new File(Repository.CWD,name);
+            try{
+                f.createNewFile();
+                String con=remove_blobs.get(name);
+                File file_r=new File(Repository.BLOBS_DIR,con);
+                writeContents(f,readContents(file_r));
+            }catch (IOException o){
+
+            }
             remove_blobs.put(name,null);
 
             writeObject(REMOVELIST,link_remove);
@@ -268,6 +280,8 @@ public class StagingArea {
         if(c.getBlobs(filename)!=null){
 
             remove_blobs.put(filename,blobs.get(filename));
+            File f=new File(Repository.CWD,filename);
+            f.delete();
             writeObject(REMOVEAREA,remove_blobs);
 
 
@@ -277,7 +291,8 @@ public class StagingArea {
         else {
             if(head.isRemoved(filename)){
                 remove_blobs.put(filename,blobs.get(filename));
-
+                File f=new File(Repository.CWD,filename);
+                f.delete();
                 writeObject(REMOVEAREA,remove_blobs);
 
                 save_remove(filename,true);

@@ -324,19 +324,21 @@ public class ComTreeControler {
     }
 
     public static void checkoutBranch(String branch){
+        File branch_file=new File(BRANCH_DIR,branch);
+        if(!branch_file.exists()){
+
+            Repository.exit("No such branch exists.");
+            return;
+        }
 
             branch_name=readObject(BRANCH,LinkedList.class);
             current_branch=readObject(CURRENTBRANCH,Commit.class);
             head=getHead();
+
+
             if(head.getBranch().equals(branch))
             {
                 Repository.exit("No need to checkout the current branch.");
-                return;
-            }
-
-            if(!branch_name.contains(branch)&&!branch_name.getFirst().contains("*"))
-            {
-                Repository.exit("No such branch exists.");
                 return;
             }
 
@@ -351,15 +353,21 @@ public class ComTreeControler {
             writeObject(BRANCH,branch_name);
 
 
-        if(branch_name.contains("*"+branch)){
 
-            File branch_file=new File(BRANCH_DIR,branch);
-            current_branch=readObject(branch_file,Commit.class);
-            head=current_branch;
 
-            current_branch.writeAllblobs();
-            writeObject(HEAD,head);
-            writeObject(CURRENTBRANCH,current_branch);
+        if(branch_file.exists()){
+
+
+
+
+                current_branch=readObject(branch_file,Commit.class);
+                head=current_branch;
+
+                current_branch.writeAllblobs();
+                writeObject(HEAD,head);
+                writeObject(CURRENTBRANCH,current_branch);
+
+
 
 
         }else{

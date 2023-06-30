@@ -778,7 +778,7 @@ public class ComTreeControler {
                 if(split_hash!=null){
                     if(branch_hash==null&&split_hash.equals(head_hash))
                     {
-                        
+
                         blobs.put(head_name,null);
                         //remove HEAD's File
                     }

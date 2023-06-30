@@ -658,16 +658,29 @@ public class ComTreeControler {
 
     private static void conflict
             (String head_hash,String head_name,String branch_hash,String otherbranch,HashMap<String,String> blobs){
+        String s="";
+        if(head_hash==null||branch_hash==null){
+            String b="<<<<<<< HEAD\n";
+            File head_file=new File(Repository.BLOBS_DIR,head_hash);
+            File branch_file=new File(Repository.BLOBS_DIR,branch_hash);
+            String d=readContentsAsString(head_file);
+            String b2="=======\n";
+            String d2=readContentsAsString(branch_file);
+            String e=">>>>>>>";
+            s=b+d+b2+d2+e;
 
-        String a="Here is some content not affected by the conflict\n";
-        String b="<<<<<<< HEAD\n";
-        File head_file=new File(Repository.BLOBS_DIR,head_hash);
-        File branch_file=new File(Repository.BLOBS_DIR,branch_hash);
-        String d=readContentsAsString(head_file);
-        String b2="\n=======\n";
-        String d2=readContentsAsString(branch_file);
-        String e="\n>>>>>>> "+otherbranch+"\n";
-        String s=a+b+d+b2+d2+e;
+        }else
+        {
+
+            String b="<<<<<<< HEAD\n";
+            File head_file=new File(Repository.BLOBS_DIR,head_hash);
+            File branch_file=new File(Repository.BLOBS_DIR,branch_hash);
+            String d=readContentsAsString(head_file);
+            String b2="\n=======\n";
+            String d2=readContentsAsString(branch_file);
+            String e="\n>>>>>>>";
+            s=b+d+b2+d2+e;
+        }
 
         File cwd_file=new File(Repository.CWD,head_name);
         try{
@@ -906,7 +919,7 @@ public class ComTreeControler {
 
 
              String file_hash=blobs.get(s);
-          
+
              if(file_hash==null)
                  continue;
 

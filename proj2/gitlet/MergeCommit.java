@@ -16,7 +16,7 @@ public class MergeCommit extends Commit{
         System.out.println("===");
         System.out.println("commit "+getHash());
         if(this instanceof MergeCommit)
-            System.out.println("Merged [given branch name] into "+getBranch()+".");
+            System.out.println("Merged "+this.given_branch+" into "+getBranch()+".");
         System.out.println("");
 
     }

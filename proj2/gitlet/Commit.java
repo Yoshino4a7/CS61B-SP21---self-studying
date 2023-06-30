@@ -308,5 +308,27 @@ public class Commit implements Serializable {
 
     }
 
+    public boolean findAllUntracked(){
+        List<String> L=plainFilenamesIn(Repository.CWD);
+        Iterator<String> ite =L.iterator();
+
+
+        while(ite.hasNext()){
+            if(blobs==null)
+                return true;
+            String s=ite.next();
+            if(findUntracked(s))
+                return true;
+
+
+
+
+
+        }
+
+        return false;
+
+    }
+
 
 }

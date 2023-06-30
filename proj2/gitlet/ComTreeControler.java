@@ -325,6 +325,10 @@ public class ComTreeControler {
 
     public static void checkoutBranch(String branch){
         File branch_file=new File(BRANCH_DIR,branch);
+
+
+
+
         if(!branch_file.exists()){
 
             Repository.exit("No such branch exists.");
@@ -335,6 +339,10 @@ public class ComTreeControler {
             current_branch=readObject(CURRENTBRANCH,Commit.class);
             head=getHead();
 
+            if(head.findAllUntracked())
+            {
+                Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
+            }
 
             if(head.getBranch().equals(branch))
             {
@@ -487,7 +495,7 @@ public class ComTreeControler {
         branch_name=readObject(BRANCH,LinkedList.class);
         head=readObject(HEAD,Commit.class);
 
-        if(!branch_name.contains(name)){
+        if(!f.exists()){
             Repository.exit("A branch with that name does not exist.");
             return ;
         }

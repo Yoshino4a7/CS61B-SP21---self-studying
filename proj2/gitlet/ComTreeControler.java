@@ -548,11 +548,12 @@ public class ComTreeControler {
         head=readObject(HEAD,Commit.class);
         File c=new File(BRANCH_DIR,otherbranch);
         File branch=new File(BRANCH_DIR,otherbranch);
+        if(!branch.exists())
+            Repository.exit("A branch with that name does not exist.");
         Commit other_branch=readObject(c,Commit.class);
         Commit split=findSplit(otherbranch);
         branch_name=readObject(BRANCH,LinkedList.class);
-        if(!branch.exists())
-            Repository.exit("A branch with that name does not exist.");
+
         if(branch_name.contains("*"+otherbranch))
             Repository.exit("Cannot merge a branch with itself.");
         if(findUntracked(head.getblobsSet(),head))
@@ -579,7 +580,8 @@ public class ComTreeControler {
        boolean IsConflict=selectFilesintoBlobs(blobs,otherbranch,head,other_branch,split);
 
 
-        selectFilesintoBlobs(blobs,otherbranch,other_branch,head,split);
+
+
         wirteMergeBlobs(blobs);
 
         if(IsConflict)
@@ -699,7 +701,7 @@ public class ComTreeControler {
 
         Iterator<String> ite_head=set_head.iterator();
 
-
+        Iterator<String> ite_branch=set_other_branch.iterator();
         while(ite_head.hasNext()){
 
             String head_name=ite_head.next();
@@ -776,6 +778,7 @@ public class ComTreeControler {
                 if(split_hash!=null){
                     if(branch_hash==null&&split_hash.equals(head_hash))
                     {
+                        
                         blobs.put(head_name,null);
                         //remove HEAD's File
                     }
@@ -806,11 +809,64 @@ public class ComTreeControler {
             }
 
         }
+
+        while(ite_branch.hasNext()){
+
+            String head_name=ite_branch.next();
+            String head_hash=blobs_head.get(head_name);
+            String branch_hash=blobs_other_branch.get(head_name);
+            String split_hash=blobs_split.get(head_name);
+            boolean isExist= blobs_other_branch.get(head_name)!=null && blobs_head.get(head_name)!=null;
+
+
+
+            if(head_hash==null){
+
+                if(split_hash!=null){
+                    if(branch_hash!=null&&split_hash.equals(branch_hash))
+                    {
+
+                        blobs.put(head_name,null);
+                        //remove HEAD's File
+                    }
+                }
+
+            }
+
+
+
+            if(head_hash==null&&split_hash==null&&branch_hash!=null)
+            {
+                blobs.put(head_name,branch_hash);
+                //neither in head nor in split but in other
+            }
+
+
+            if(head_hash!=null){
+
+                if(split_hash!=null){
+                    if(branch_hash==null&&!split_hash.equals(head_hash))
+                    {
+                        conflict(head_hash,head_name,split_hash,otherbranch,blobs);
+                        IsConflict=true;
+                        //conflicted
+                    }
+                }
+
+            }
+
+        }
         return IsConflict;
     }
+
+
+
+
+
+
  private static void wirteMergeBlobs(HashMap<String,String> blobs){
 
-
+        Repository.deleteAllfile();
          if(blobs==null)
          {
 

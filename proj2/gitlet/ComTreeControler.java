@@ -360,9 +360,11 @@ public class ComTreeControler {
 
 
 
+
+
                 current_branch=readObject(branch_file,Commit.class);
                 head=current_branch;
-
+                Repository.deleteAllfile();
                 current_branch.writeAllblobs();
                 writeObject(HEAD,head);
                 writeObject(CURRENTBRANCH,current_branch);

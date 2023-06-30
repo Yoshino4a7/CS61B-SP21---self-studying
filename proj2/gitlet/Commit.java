@@ -250,7 +250,7 @@ public class Commit implements Serializable {
             File f=new File(Repository.CWD,s);
 
 
-            if(!StagingArea.hasToCommit())
+            if(!findUntracked(s))
 
             {
                 String file_hash=blobs.get(s);
@@ -299,7 +299,14 @@ public class Commit implements Serializable {
 
     }
 
+    public boolean findUntracked(String filename){
 
+        if(blobs==null)
+            return true;
+
+        return !blobs.containsKey(filename);
+
+    }
 
 
 }

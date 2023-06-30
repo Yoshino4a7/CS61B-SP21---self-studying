@@ -250,9 +250,7 @@ public class Commit implements Serializable {
             File f=new File(Repository.CWD,s);
 
 
-            if(!findUntracked(s))
-
-            {
+            
                 String file_hash=blobs.get(s);
 
                 try{
@@ -269,8 +267,7 @@ public class Commit implements Serializable {
 
                 }
 
-            }else
-                Repository.exit("`There is an untracked file in the way; delete it, or add and commit it first.`");
+            
 
 
 
@@ -311,13 +308,13 @@ public class Commit implements Serializable {
     public boolean findAllUntracked(){
         List<String> L=plainFilenamesIn(Repository.CWD);
         Iterator<String> ite =L.iterator();
-
+		
 
         while(ite.hasNext()){
             if(blobs==null)
                 return true;
             String s=ite.next();
-            if(findUntracked(s))
+            if(findUntracked(s)&&!IsinStagingArea(s))
                 return true;
 
 
@@ -329,6 +326,17 @@ public class Commit implements Serializable {
         return false;
 
     }
+	
+	public boolean IsinStagingArea(String s){
+		HashMap<String,String> b=readObject(StagingArea.ADDAREA,HashMap.class);
+		if(b==null)
+			return false;
+		
+		if(b.containsKey(s))
+			return true;
+        return false;
+		
+	}
 
 
 }

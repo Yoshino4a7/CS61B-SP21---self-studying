@@ -21,6 +21,7 @@ public class ComTreeControler {
     public static final File BRANCH_DIR = join(Repository.HELPER_DIR, "branch");
     public static final File CURRENTBRANCH = join(Repository.HELPER_DIR, "current_branch");
     public static final File CWBRANCH = join(Repository.HELPER_DIR, "c_branchname");
+
     private static LinkedList<String> branch_name=new LinkedList<String>();
     private static HashMap<String,String>commit_name=new HashMap<>();
     private static  LinkedList<Commit> commit_link=new LinkedList<>();
@@ -28,7 +29,8 @@ public class ComTreeControler {
     public  static  TreeMap<String,Commit> commit_tree=new TreeMap<>();
     private static Commit master;
     private static Commit head;
-    private static Commit current_branch;
+    private static String current_branch;
+    private static String branch_cname;
 
 
 
@@ -38,7 +40,7 @@ public class ComTreeControler {
         master=initial_com;
         head=initial_com;
 
-        current_branch=master;
+        current_branch=master.getHash();
 
         File commit_initial = join(Repository.COMMIT_DIR, initial_com.getHash());
 
@@ -54,9 +56,9 @@ public class ComTreeControler {
         {
             head=readObject(HEAD,Commit.class);
             branch_name=readObject(BRANCH,LinkedList.class);
-            current_branch=readObject(CURRENTBRANCH,Commit.class);
+            current_branch=readContentsAsString(CURRENTBRANCH);
             commit_tree=readObject(COMTREE,TreeMap.class);
-
+            branch_cname=readContentsAsString(CWBRANCH);
 
             String cbranch=findCurrentBranch(branch_name);
             LinkedList<String> parents=new LinkedList<String>();
@@ -74,14 +76,14 @@ public class ComTreeControler {
             commit_name.put("Commit"+commitmax,commit.getHash());
             commit_tree.put(commit.getHash(),commit);
             head=commit;
-            current_branch=head;
+            current_branch=head.getHash();
             commitmax++;
 
-            if(current_branch.getBranch().equals("master")){
+            if(branch_cname.equals("master")){
                 master=head;
                 writeObject(MASTER,master);
             }
-            writeObject(CURRENTBRANCH,current_branch);
+            writeContents(CURRENTBRANCH,current_branch);
             writeObject(HEAD,head);
             writeObject(newcommit,commit);
             writeObject(COMTREE,commit_tree);
@@ -99,8 +101,8 @@ public class ComTreeControler {
 
         head=readObject(HEAD,Commit.class);
         branch_name=readObject(BRANCH,LinkedList.class);
-
-        current_branch=readObject(CURRENTBRANCH,Commit.class);
+        branch_cname=readContentsAsString(CWBRANCH);
+        current_branch=readContentsAsString(CURRENTBRANCH);
         File newcommit=new File(Repository.COMMIT_DIR,commit.getHash());
         try{
             newcommit.createNewFile();
@@ -113,12 +115,13 @@ public class ComTreeControler {
         commit_name.put("Commit"+commitmax,commit.getHash());
         commit_tree.put(commit.getHash(),commit);
         head=commit;
-        current_branch=head;
-        if(current_branch.getBranch().equals("master")){
+        current_branch=head.getHash();
+
+        if( branch_cname.equals("master")){
             master=head;
             writeObject(MASTER,master);
         }
-        writeObject(CURRENTBRANCH,current_branch);
+        writeContents(CURRENTBRANCH,current_branch);
         writeObject(HEAD,head);
         writeObject(newcommit,commit);
         writeObject(COMTREE,commit_tree);
@@ -262,9 +265,9 @@ public class ComTreeControler {
             commit_tree.put(s,com_in);
             commit_link.addFirst(com_in);
 
-            current_branch=head;
+            current_branch=head.getHash();
             writeObject(BRANCH,branch_name);
-            writeObject(CURRENTBRANCH,current_branch);
+            writeContents(CURRENTBRANCH,current_branch);
 
             writeContents(CWBRANCH,"master");
             writeObject(COMTREE,commit_tree);
@@ -340,7 +343,7 @@ public class ComTreeControler {
 
     public static void checkoutBranch(String branch){
         File branch_file=new File(BRANCH_DIR,branch);
-
+        branch_cname=readContentsAsString(CWBRANCH);
 
         head=getHead();
 
@@ -356,7 +359,7 @@ public class ComTreeControler {
 
 
             branch_name=readObject(BRANCH,LinkedList.class);
-            current_branch=readObject(CURRENTBRANCH,Commit.class);
+            current_branch=readContentsAsString(CURRENTBRANCH);
 
 
 
@@ -371,8 +374,8 @@ public class ComTreeControler {
 
 
             branch_name.remove(branch);
-            branch_name.remove("*"+current_branch.getBranch());
-            branch_name.addFirst(current_branch.getBranch());
+            branch_name.remove("*"+branch_cname);
+            branch_name.addFirst(branch_cname);
             branch_name.addFirst("*"+branch);
             writeObject(BRANCH,branch_name);
 
@@ -381,8 +384,8 @@ public class ComTreeControler {
 
         if(branch_file.exists()){
 
-                current_branch=readObject(branch_file,Commit.class);
-                head=current_branch;
+                current_branch=readContentsAsString(CURRENTBRANCH);
+                head=getCommitwithId(current_branch);
                 if(head.getBlobs()==null)
                 {
                     writeObject(StagingArea.ADDAREA,new HashMap<String,String>());
@@ -394,10 +397,10 @@ public class ComTreeControler {
 
 
                 Repository.deleteAllfile();
-                current_branch.writeAllblobs();
+                getCommitwithId(current_branch).writeAllblobs();
 
                 writeObject(HEAD,head);
-                writeObject(CURRENTBRANCH,current_branch);
+            writeContents(CURRENTBRANCH,current_branch);
 
 
 
@@ -446,7 +449,7 @@ public class ComTreeControler {
     public static void branch(String name){
         commit_tree=readObject(COMTREE,TreeMap.class);
         branch_name=readObject(BRANCH,LinkedList.class);
-        current_branch=readObject(CURRENTBRANCH,Commit.class);
+        current_branch=readContentsAsString(CURRENTBRANCH);
         head=readObject(HEAD,Commit.class);
         if(branch_name.contains("*"+name)){
             Repository.exit("A branch with that name already exists.");
@@ -458,12 +461,12 @@ public class ComTreeControler {
                 branch_name.addLast(name);
             }
             head.addBranch(name);
-            current_branch.addBranch(name);
+
             writeObject(HEAD,head);
             File newcommit=new File(Repository.COMMIT_DIR,head.getHash());
             commit_tree.put(head.getHash(),head);
             writeObject(newcommit,head);
-            writeObject(CURRENTBRANCH,current_branch);
+            writeContents(CURRENTBRANCH,current_branch);
             writeObject(BRANCH,branch_name);
         }
         else{
@@ -473,7 +476,7 @@ public class ComTreeControler {
         File f=new File(BRANCH_DIR,name);
         try{
             f.createNewFile();
-            writeObject(f,current_branch);
+            writeContents(f,current_branch);
         }catch (IOException o){
 
         }
@@ -484,7 +487,7 @@ public class ComTreeControler {
     }
 
     private static void savebranch(){
-        current_branch=readObject(CURRENTBRANCH,Commit.class);
+        current_branch=readContentsAsString(CURRENTBRANCH);
         branch_name=readObject(BRANCH,LinkedList.class);
         String s="";
         Iterator<String> ite=branch_name.iterator();
@@ -498,7 +501,7 @@ public class ComTreeControler {
         }
         File f=new File(BRANCH_DIR,s);
 
-        writeObject(f,current_branch);
+        writeContents(f,current_branch);
 
 
     }
@@ -554,9 +557,9 @@ public class ComTreeControler {
             Repository.deleteAllfile();
             c.writeAllblobs();
             head=c;
-            current_branch=c;
+            current_branch=c.getHash();
             writeObject(HEAD,head);
-            writeObject(CURRENTBRANCH,current_branch);
+            writeContents(CURRENTBRANCH,current_branch);
         }
 
 

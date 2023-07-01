@@ -29,7 +29,9 @@ public class Commit implements Serializable {
     private String message;
     private String timeStamp;
     private int hash;
-    private List<String> parents;
+    private LinkedList<String> parents;
+    private LinkedList<String> branchs= new LinkedList<String>();
+
     private HashMap<String,String> blobs;
     private String hashcode;
     private String branch;
@@ -44,17 +46,19 @@ public class Commit implements Serializable {
         branch="master";
         parents=new LinkedList<String>();
         calcHash();
+
     }
 
     public Commit(String msg,LinkedList<String> p){
         message=msg;
-        if(p==null)
+        if(p.isEmpty())
         timeStamp="Wed Dec 31 16:00:00 1969 -0800";
         parents=p;
         if(p!=null&&p.size()==1)
             branch_size=ComTreeControler.getCommitwithId(p.get(0)).getBranch_size();
         sizeUp();
         branch="master";
+
 
         //In order to store the info with file,you should make the parent to String type
     }
@@ -77,6 +81,7 @@ public class Commit implements Serializable {
         if(this instanceof MergeCommit)
             System.out.println("Merged development into "+branch+".");
         System.out.println("");
+        printbranch();
 
     }
     public void timeSet(){
@@ -132,6 +137,33 @@ public class Commit implements Serializable {
     public void setBranch(String branch1){
         branch=branch1;
 
+
+    }
+    public void addBranch(String branch){
+
+
+        branchs.addLast(branch);
+
+    }
+    public void printbranch(){
+        if(branchs!=null){
+            Iterator<String> ite=branchs.iterator();
+            while(ite.hasNext()){
+                System.out.println(ite.next());
+            }
+        }
+
+
+
+    }
+    public boolean isSplit(String branch){
+
+        if(branchs==null||branchs.isEmpty())
+            return false;
+
+        if(branchs.contains(branch))
+            return true;
+         return false;
     }
 
     public boolean findtracked(String filename){

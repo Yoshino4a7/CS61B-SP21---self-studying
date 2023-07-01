@@ -58,7 +58,9 @@ public class ComTreeControler {
 
 
             String cbranch=findCurrentBranch(branch_name);
-            Commit commit=createCommit(msg,head,cbranch);
+            LinkedList<String> parents=new LinkedList<String>();
+            parents.addLast(head.getHash());
+            Commit commit=createCommit(msg,parents,cbranch);
             File newcommit=new File(Repository.COMMIT_DIR,commit.getHash());
             try{
                 newcommit.createNewFile();
@@ -153,8 +155,11 @@ public class ComTreeControler {
 
 
         while(head!=null){
+
+
+
             head.printInfo();
-            head=head.getParent();
+            head=getCommitwithId(head.getParent().get(0));
         }
 
     }
@@ -167,14 +172,14 @@ public class ComTreeControler {
 
         while(c!=null){
             c.printInfo();
-            c=c.getParent();
+//            c=c.getParent();
         }
 
     }
 
 
 
-    private static Commit createCommit(String msg,Commit parent,String branch){
+    private static Commit createCommit(String msg,LinkedList<String> parent,String branch){
 
         StagingArea.clearRemoval();
 
@@ -194,10 +199,10 @@ public class ComTreeControler {
     }
 
 
-    private static Commit createMergeCommit(String msg,Commit parent,Commit parent2,
+    private static Commit createMergeCommit(String msg,LinkedList<String> parent_list,
                                             String branch,HashMap<String,String> blobs,String other){
 
-        MergeCommit commit=new MergeCommit(msg,parent,parent2);
+        MergeCommit commit=new MergeCommit(msg,parent_list);
         commit.timeSet();
         commit.setBlobs(blobs);
         commit.calcHash();
@@ -395,7 +400,7 @@ public class ComTreeControler {
 
     }
 
-    private static Commit getCommitwithId(String id){
+    public static Commit getCommitwithId(String id){
         commit_tree=readObject(COMTREE,TreeMap.class);
         String key="";
         List<String> L=Utils.plainFilenamesIn(Repository.COMMIT_DIR);
@@ -595,7 +600,12 @@ public class ComTreeControler {
 
 
         String cbranch=head.getBranch();
-        Commit merge_commit=createMergeCommit("merge "+otherbranch,head,other_branch,cbranch,blobs,otherbranch);
+        LinkedList<String> parent_list=new LinkedList<String>();
+        parent_list.addLast(head.getHash());
+        parent_list.addLast(other_branch.getHash());
+        Commit merge_commit=
+                createMergeCommit
+                        ("Merged " + otherbranch + " into " + cbranch + ".",parent_list,cbranch,blobs,otherbranch);
 
         mergeCommit(merge_commit,otherbranch);
 
@@ -627,7 +637,7 @@ public class ComTreeControler {
            branchc=other_branch;
 
             while(i>0){
-                start=start.getParent();
+          start=getCommitwithId(start.getParent().get(0));
                 i--;
             }
 
@@ -638,7 +648,7 @@ public class ComTreeControler {
           start=other_branch;
          branchc=head;
             while(i>0){
-                start=start.getParent();
+                start=getCommitwithId(start.getParent().get(0));
 
                 i--;
             }
@@ -647,8 +657,8 @@ public class ComTreeControler {
 
 
             while(!branchc.getHash().equals(start.getHash())){
-                start=start.getParent();
-                branchc=branchc.getParent();
+                start=getCommitwithId(start.getParent().get(0));
+                branchc=getCommitwithId(branchc.getParent().get(0));
 
             }
             return start;

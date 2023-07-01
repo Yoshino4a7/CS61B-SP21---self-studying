@@ -29,7 +29,7 @@ public class Commit implements Serializable {
     private String message;
     private String timeStamp;
     private int hash;
-    private Commit parent;
+    private List<String> parents;
     private HashMap<String,String> blobs;
     private String hashcode;
     private String branch;
@@ -42,17 +42,17 @@ public class Commit implements Serializable {
         message="";
         timeStamp="";
         branch="master";
-        parent=null;
+        parents=new LinkedList<String>();
         calcHash();
     }
 
-    public Commit(String msg,Commit p){
+    public Commit(String msg,LinkedList<String> p){
         message=msg;
         if(p==null)
         timeStamp="Wed Dec 31 16:00:00 1969 -0800";
-        parent=p;
-        if(p!=null)
-            branch_size=p.getBranch_size();
+        parents=p;
+        if(p!=null&&p.size()==1)
+            branch_size=ComTreeControler.getCommitwithId(p.get(0)).getBranch_size();
         sizeUp();
         branch="master";
 
@@ -66,8 +66,8 @@ public class Commit implements Serializable {
     public String message(){
         return this.message;
     }
-    public Commit getParent(){
-        return parent;
+    public List<String> getParent(){
+        return parents;
     }
     public void printInfo(){
         System.out.println("===");
@@ -117,7 +117,7 @@ public class Commit implements Serializable {
 
 
         
-        return blobs.get(filename).equals("NULL");
+        return blobs.get(filename)==null;
     }
     public HashMap<String,String> getBlobs(){
         if(blobs==null)

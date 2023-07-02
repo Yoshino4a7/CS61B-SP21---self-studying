@@ -707,9 +707,9 @@ public class ComTreeControler {
             String d = readContents(head_file).toString();
             String b2 = "=======\n";
             String d2 = readContents(branch_file).toString();
-            String e = ">>>>>>>";
+            String e = ">>>>>>>\n";
             s = b + d + b2 + d2 + e;
-            
+
         File cwd_file = new File(Repository.CWD, head_name);
         try {
             cwd_file.createNewFile();

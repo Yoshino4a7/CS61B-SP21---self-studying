@@ -829,7 +829,7 @@ public class ComTreeControler {
                 if (split_hash != null) {
                     if (branch_hash == null && split_hash.equals(head_hash)) {
 
-                        blobs.put(head_name, null);
+                        blobs.remove(head_name);
                         //remove HEAD's File
                     }
                 }
@@ -875,7 +875,7 @@ public class ComTreeControler {
                 if (split_hash != null) {
                     if (branch_hash != null && split_hash.equals(branch_hash)) {
 
-                        blobs.put(head_name, null);
+                        blobs.remove(head_name);
                         //remove Branch's File
                     }
                 }

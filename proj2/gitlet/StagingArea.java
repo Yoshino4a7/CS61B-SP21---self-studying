@@ -80,7 +80,7 @@ public class StagingArea {
             }catch (IOException o){
 
             }
-            remove_blobs.put(name,null);
+            remove_blobs.remove(name);
 
             writeObject(REMOVELIST,link_remove);
             writeContents(REMOVESTATUS,getNameList(link_remove));
@@ -573,6 +573,7 @@ public class StagingArea {
     }
     private static void removeFromStagingArea(String filename,String new_hash){
         link_add=readObject(ADDLIST,LinkedList.class);
+
         File f=new File(Repository.BLOBS_DIR,new_hash);
         f.delete();
         if(link_add.contains(filename))

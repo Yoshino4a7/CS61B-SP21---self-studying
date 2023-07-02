@@ -40,6 +40,25 @@ public class Main {
                 }else
                 Repository.add(args[1]);
                 break;
+
+            case "add-remote":
+                // TODO: handle the `add [filename]` command
+                if(args.length>3||args.length<=1)
+                {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }else
+                    Repository.addremote(args[1],args[2]);
+                break;
+            case "push":
+                // TODO: handle the `add [filename]` command
+                if(args.length>3||args.length<=1)
+                {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }else
+                    Repository.push(args[1],args[2]);
+                break;
             // TODO: FILL THE REST IN
             case "commit":
                 if(args.length>2||args.length<1)
@@ -110,6 +129,15 @@ public class Main {
                     System.exit(0);
                 }else
                 Repository.rmbranch(args[1]);
+                break;
+
+            case "rm-remote":
+                if(args.length>2||args.length<=1)
+                {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }else
+                    Repository.rmremote(args[1]);
                 break;
 
             case "reset":

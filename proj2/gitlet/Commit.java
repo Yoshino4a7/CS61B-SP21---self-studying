@@ -248,6 +248,25 @@ public class Commit implements Serializable {
         return branch_size;
     }
 
+    public void resetParent(String hash){
+        if(parents.isEmpty())
+            parents.addLast(hash);
+        else{
+
+            parents=new LinkedList<>();
+            parents.addFirst(hash);
+
+        }
+
+
+
+    }
+    public void resetBranch(String hash){
+
+       branch=hash;
+
+
+    }
 
     public void writeblobs(File f){
 

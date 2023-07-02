@@ -132,25 +132,7 @@ public class ComTreeControler {
 
     }
 
-    public static void commit_log() {
 
-        commit_tree = readObject(COMTREE, TreeMap.class);
-        commit_name = readObject(COMNAME, HashMap.class);
-        int i = commit_tree.size() - 1;
-        System.out.println("  ");
-        System.out.println("----------------Commit-----------------");
-
-        while (i >= 0) {
-
-            String hashname = commit_name.get("Commit" + i);
-
-            Commit c = commit_tree.get(hashname);
-            c.printInfo();
-            i--;
-        }
-
-
-    }
 
     public static void commit_log_parent() {
 
@@ -171,19 +153,7 @@ public class ComTreeControler {
 
     }
 
-    public static void commit_log_parent_MASTER() {
 
-        Commit c = readObject(MASTER, Commit.class);
-
-        System.out.println("  ");
-        System.out.println("----------------MASTER Commit-----------------");
-
-        while (c != null) {
-            c.printInfo();
-//            c=c.getParent();
-        }
-
-    }
 
 
     private static Commit createCommit(String msg, LinkedList<String> parent, String branch) {

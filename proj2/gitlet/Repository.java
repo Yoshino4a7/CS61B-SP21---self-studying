@@ -34,6 +34,8 @@ public class Repository {
     public static final File BLOBS_DIR = join(GITLET_DIR, "blobs");
     public static final File HELPER_DIR = join(COMMIT_DIR, "helper");
     public static final File HELPERADD_DIR = join(BLOBS_DIR, "helper");
+    public static final File REMOTE_DIR = join(GITLET_DIR, "remote");
+
 
 
     /* TODO: fill in the rest of this class. */
@@ -50,9 +52,10 @@ public class Repository {
                BLOBS_DIR.mkdir();
                HELPER_DIR.mkdir();
                HELPERADD_DIR.mkdir();
+
                StagingArea.init_Staging();
                ComTreeControler.init();
-
+               Remote.init();
 
 
 
@@ -287,6 +290,29 @@ public class Repository {
         ComTreeControler.merge(otherbranch);
 
 
+
+    }
+
+    public static void addremote(String otherremote,String remotepath){
+
+
+    Remote.addremote(otherremote,remotepath);
+
+
+
+    }
+    public static void rmremote(String otherremote){
+
+
+        Remote.rmremote(otherremote);
+
+
+
+    }
+
+    public static void push(String remote,String branch){
+
+        Remote.push(remote,branch);
 
     }
 

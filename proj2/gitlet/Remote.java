@@ -9,7 +9,7 @@ import static gitlet.ComTreeControler.*;
 
 public class Remote {
 
-    public static Map<String,File> remote_list=new HashMap<>();
+    public static HashMap<String,File> remote_list=new HashMap<>();
     public static final File  REMOTE=join(Repository.REMOTE_DIR, "remote");;
 
     public static void init(){
@@ -38,7 +38,7 @@ public class Remote {
             Repository.exit("A remote with that name already exists.");
 
         remote_list.put(remotename,remote_gitlet);
-        writeObject(REMOTE,remote_gitlet);
+        writeObject(REMOTE,remote_list);
 
 
 
@@ -54,7 +54,7 @@ public class Remote {
 
         remote_list.remove(remotename);
 
-
+        writeObject(REMOTE,remote_list);
 
 
     }
@@ -104,6 +104,7 @@ public class Remote {
 
         copyCommit(head,remote_branch_commit);
         copyBlobs(head,remote_branch_commit,remote);
+
 
 
 

@@ -155,7 +155,6 @@ public class ComTreeControler {
 
 
 
-
     private static Commit createCommit(String msg, LinkedList<String> parent, String branch) {
 
         StagingArea.clearRemoval();
@@ -276,17 +275,7 @@ public class ComTreeControler {
 
     }
 
-    public static boolean findtracked(String filename) {
-        Commit c = getHead();
 
-        if (c.findtracked(filename)) {
-            return true;
-        } else {
-            return false;
-        }
-
-
-    }
 
     public static void checkoutFile(File f) {
         head = ComTreeControler.getHead();
@@ -669,15 +658,22 @@ public class ComTreeControler {
     private static void conflict
             (String head_hash, String head_name, String branch_hash, String otherbranch, HashMap<String, String> blobs) {
         String s = "";
-
+        String d = "";
+        String d2 = "";
+        File head_file;
+        File branch_file;
+        if (head_hash != null) {
+            head_file = new File(Repository.BLOBS_DIR, head_hash);
+            d = readContents(head_file).toString();
+        }
+        if (branch_hash != null) {
+            branch_file = new File(Repository.BLOBS_DIR, branch_hash);
+            d2 = readContents(branch_file).toString();
+        }
 
             String b = "<<<<<<< HEAD\n";
-            File head_file = new File(Repository.BLOBS_DIR, head_hash);
-            File branch_file = new File(Repository.BLOBS_DIR, branch_hash);
-            String d = readContents(head_file).toString();
-            String b2 = "=======\n";
-            String d2 = readContents(branch_file).toString();
-            String e = ">>>>>>>\n";
+            String b2 = "\n=======\n";
+            String e = "\n>>>>>>>";
             s = b + d + b2 + d2 + e;
 
         File cwd_file = new File(Repository.CWD, head_name);
@@ -687,7 +683,6 @@ public class ComTreeControler {
         } catch (IOException o) {
 
         }
-
 
     }
 

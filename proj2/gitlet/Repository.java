@@ -52,6 +52,7 @@ public class Repository {
                BLOBS_DIR.mkdir();
                HELPER_DIR.mkdir();
                HELPERADD_DIR.mkdir();
+               REMOTE_DIR.mkdir();
 
                StagingArea.init_Staging();
                ComTreeControler.init();
@@ -313,6 +314,14 @@ public class Repository {
     public static void push(String remote,String branch){
 
         Remote.push(remote,branch);
+
+    }
+
+    public static void fetch(String remote,String branch){
+
+
+        Remote.fetch(remote,branch);
+
 
     }
 

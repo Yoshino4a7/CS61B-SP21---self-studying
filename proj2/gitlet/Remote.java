@@ -10,7 +10,7 @@ import static gitlet.ComTreeControler.*;
 public class Remote {
 
     public static Map<String,File> remote_list=new HashMap<>();
-    public static final File  REMOTE=new File(Repository.REMOTE_DIR,"REMOTE");
+    public static final File  REMOTE=join(Repository.REMOTE_DIR, "remote");;
 
     public static void init(){
 
@@ -80,6 +80,39 @@ public class Remote {
 
     }
 
+    public static void fetch (String remote,String branch){
+        LinkedList<String> branch_name=readObject(BRANCH,LinkedList.class);
+        File remote_branchname=join(getRemoteRepo(remote),"commit","helper","branch_list");
+        LinkedList<String> remote_branchname_list=readObject(remote_branchname,LinkedList.class);
+
+        if(!remote_branchname_list.contains(branch))
+        Repository.exit("That remote does not have that branch.");
+
+
+        String current_branch=remote+"/"+branch;
+        String curbranch=readContentsAsString(CWBRANCH);
+        if(!branch_name.contains(branch)){
+
+            branch(current_branch);
+            checkoutBranch(current_branch);
+        }
+        if(!curbranch.equals(current_branch))
+        checkoutBranch(current_branch);
+
+        Commit head=readObject(HEAD,Commit.class);
+        Commit remote_branch_commit=getCommitwithId(readContentsAsString(CURRENTBRANCH));
+
+        copyCommit(head,remote_branch_commit);
+        copyBlobs(head,remote_branch_commit,remote);
+
+
+
+
+
+
+
+    }
+
 
     private static void changeRemote(File remote_repo,String branch,Commit current_head){
 
@@ -114,5 +147,101 @@ public class Remote {
 
     }
 
+    private static void copyCommit(Commit head,Commit remote){
+        Stack<String> stack=new Stack<>();
+        Commit c_remote=remote;
+
+        while(!c_remote.getHash().equals(head.getHash())){
+            stack.push(c_remote.getHash());
+            File f=new File(Repository.COMMIT_DIR,c_remote.getHash());
+            if(f.exists()){
+                stack.pop();
+                if(!c_remote.getParent().isEmpty())
+                    c_remote=getCommitwithId(c_remote.getParent().get(0));
+                continue;
+            }else{
+                try{
+                    f.createNewFile();
+
+
+                }catch (IOException o){
+
+                }
+            }
+
+            if(!c_remote.getParent().isEmpty())
+                c_remote=getCommitwithId(c_remote.getParent().get(0));
+
+
+        }
+
+        while(!stack.isEmpty()){
+            String hash=stack.pop();
+            Commit c=getCommitwithId(hash);
+            c.resetParent(head.getHash());
+            File f=new File(Repository.COMMIT_DIR,c.getHash());
+            writeObject(f,c);
+            head=c;
+        }
+        writeObject(HEAD,head);
+
+    }
+
+    private static void copyBlobs(Commit head,Commit remote,String remotename){
+        List<String> file_list=plainFilenamesIn(Repository.BLOBS_DIR);
+        Commit c_remote=remote;
+
+        while(!c_remote.getParent().isEmpty()){
+            Set<String> blobs_set=c_remote.getblobsSet();
+            Iterator<String> ite=blobs_set.iterator();
+
+            while(ite.hasNext()){
+                HashMap<String,String> blob=c_remote.getBlobs();
+                if(blob!=null)
+                {
+                    String hash=blob.get(ite.next());
+                    if(!file_list.contains(hash))
+                    {
+                        File f=getRemoteBlobs(remotename,hash);
+                        createBlobs(hash,readContents(f));
+                    }
+
+                }
+            }
+
+            if(!c_remote.getParent().isEmpty())
+                c_remote=getCommitwithId(c_remote.getParent().get(0));
+
+        }
+
+
+
+
+    }
+    private static void createBlobs(String hash,byte[] data){
+        File f=new File(Repository.BLOBS_DIR,hash);
+        try{
+            f.createNewFile();
+            writeContents(f,data);
+        }catch (IOException o){
+
+        }
+
+    }
+    private static File getRemoteBlobs(String remote,String hash){
+            File remote_repo=getRemoteRepo(remote);
+            return join(remote_repo,"blobs",hash);
+
+    }
+    private static File getRemoteRepo(String remote){
+        remote_list=readObject(REMOTE,HashMap.class);
+
+        if(remote_list.containsKey(remote))
+            return remote_list.get(remote);
+
+        return null;
+
+
+    }
 
 }

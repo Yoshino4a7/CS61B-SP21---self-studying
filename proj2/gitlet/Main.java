@@ -50,6 +50,15 @@ public class Main {
                 }else
                     Repository.addremote(args[1],args[2]);
                 break;
+            case "fetch":
+                // TODO: handle the `add [filename]` command
+                if(args.length>3||args.length<=1)
+                {
+                    System.out.println("Incorrect operands.");
+                    System.exit(0);
+                }else
+                    Repository.fetch(args[1],args[2]);
+                break;
             case "push":
                 // TODO: handle the `add [filename]` command
                 if(args.length>3||args.length<=1)

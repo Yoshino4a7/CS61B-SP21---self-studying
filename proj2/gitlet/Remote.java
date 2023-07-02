@@ -82,22 +82,39 @@ public class Remote {
 
     public static void fetch (String remote,String branch){
         LinkedList<String> branch_name=readObject(BRANCH,LinkedList.class);
-        File remote_branchname=join(getRemoteRepo(remote),"commit","helper","branch_list");
-        LinkedList<String> remote_branchname_list=readObject(remote_branchname,LinkedList.class);
+
         File remote_repo=getRemoteRepo(remote);
-        if(!remote_branchname_list.contains(branch))
+        File remote_branchfloder=join(remote_repo,"commit","helper","branch");
+        File remote_branch=join(remote_branchfloder,branch) ;
+
+
+
+
+
+        if(!remote_branchfloder.exists())
         Repository.exit("That remote does not have that branch.");
+
         if(!remote_repo.exists())
         Repository.exit("Remote directory not found.");
+
         String current_branch=remote+"/"+branch;
         String curbranch=readContentsAsString(CWBRANCH);
-        if(!branch_name.contains(branch)){
 
-            branch(current_branch);
-            checkoutBranch(current_branch);
-        }
+
+
         if(!curbranch.equals(current_branch))
-        checkoutBranch(current_branch);
+        {
+            if(!branch_name.contains(current_branch)){
+
+                ComTreeControler.branch(current_branch);
+                File f = new File(BRANCH_DIR, branch);
+
+
+
+            }
+            ComTreeControler.checkoutBranch(current_branch);
+        }
+
 
         Commit head=readObject(HEAD,Commit.class);
         Commit remote_branch_commit=getCommitwithId(readContentsAsString(CURRENTBRANCH));
@@ -105,6 +122,7 @@ public class Remote {
         copyCommit(head,remote_branch_commit);
         copyBlobs(head,remote_branch_commit,remote);
 
+        ComTreeControler.checkoutBranch(curbranch);
 
 
 

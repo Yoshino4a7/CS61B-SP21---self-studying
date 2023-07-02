@@ -699,41 +699,17 @@ public class ComTreeControler {
     private static void conflict
             (String head_hash, String head_name, String branch_hash, String otherbranch, HashMap<String, String> blobs) {
         String s = "";
-        if (head_hash == null || branch_hash == null) {
-            String d = "";
-            String d2 = "";
-            File head_file;
-            File branch_file;
-            String b = "<<<<<<< HEAD\n";
-            if (head_hash != null) {
-                head_file = new File(Repository.BLOBS_DIR, head_hash);
-                d = readContentsAsString(head_file);
-            }
 
-            if (branch_hash != null) {
-                branch_file = new File(Repository.BLOBS_DIR, branch_hash);
-                d2 = readContentsAsString(branch_file);
-            }
-
-            String b2 = "=======\n";
-
-            String e = ">>>>>>>";
-
-            s = b + d + b2 + d2 + e;
-
-        } else {
 
             String b = "<<<<<<< HEAD\n";
             File head_file = new File(Repository.BLOBS_DIR, head_hash);
             File branch_file = new File(Repository.BLOBS_DIR, branch_hash);
-            String d = readContentsAsString(head_file);
+            String d = readContents(head_file).toString();
             String b2 = "=======\n";
-            String d2 = readContentsAsString(branch_file);
+            String d2 = readContents(branch_file).toString();
             String e = ">>>>>>>";
             s = b + d + b2 + d2 + e;
-
-        }
-
+            
         File cwd_file = new File(Repository.CWD, head_name);
         try {
             cwd_file.createNewFile();

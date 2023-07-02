@@ -31,6 +31,7 @@ public class ComTreeControler {
 
     private static Commit master;
     private static Commit head;
+    private static Commit common;
     private static String current_branch;
     private static String branch_cname;
 
@@ -552,19 +553,21 @@ public class ComTreeControler {
         if (findUntracked(head.getblobsSet(), head)) {
             Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
-
+        System.out.println(split.getHash());
         if (split.getHash().equals(other_branch.getHash())) {
+
 
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
         }
-//        if(split.getHash().equals(head.getHash())){
-//
-//            System.out.println("Current branch fast-forwarded.");
-//            head=other_branch;
-//            writeObject(HEAD,head);
-//            return ;
-//        }
+        if(checkisfast(other_branch,head)){
+
+            System.out.println("Current branch fast-forwarded.");
+            head=other_branch;
+            head.writeAllblobs();
+            writeObject(HEAD,head);
+            return ;
+        }
 
         HashMap<String, String> blobs = head.getBlobs();
         LinkedList<String> conflict_list = new LinkedList<>();
@@ -685,9 +688,9 @@ public class ComTreeControler {
 //            }
 //
 //        }
+        findSplit_help(head, branch_cname, other_branch, otherbranch);
 
-
-        return findSplit_help(head, branch_cname, other_branch, otherbranch);
+        return common;
 
 
     }
@@ -903,35 +906,7 @@ public class ComTreeControler {
     }
 
 
-    private static int[] mergeCommitChange(Commit head, Commit other) {
-        int[] select = new int[3];
 
-        if (!(head instanceof MergeCommit) && !(other instanceof MergeCommit)) {
-            int branch_select = 0;
-
-            int a_size = head.getBranch_size();
-            int b_size = other.getBranch_size();
-            select[0] = branch_select;
-            select[1] = a_size;
-            select[2] = b_size;
-
-        } else {
-
-            if (head instanceof MergeCommit) {
-
-
-                return select;
-
-            }
-
-
-            return select;
-
-        }
-
-
-        return select;
-    }
 
     private static void deleteFile_withoutConflict(LinkedList<String> conflict_list) {
         List<String> L = Utils.plainFilenamesIn(Repository.CWD);
@@ -996,13 +971,14 @@ public class ComTreeControler {
         }
     }
 
-    private static Commit findSplit_help(Commit head, String head_split, Commit other, String branch_split) {
+    private static void findSplit_help(Commit head, String head_split, Commit other, String branch_split) {
 
 
         isMarked=new TreeMap<>();
 
         MarkCommit(head);
-        return findcommon(other);
+
+        findcommon(other);
 //        Commit head_com = findcommon(start, branch_split);
 
 //        if(head_com.getHash().equals(other_com.getHash()))
@@ -1024,7 +1000,7 @@ public class ComTreeControler {
 
         if(c!=null||isMarked.get(c.getHash())!=true){
             String c_hash=c.getHash();
-           
+
                 if(c instanceof MergeCommit){
                     isMarked.put(c_hash,true);
                     String c_p0_hash=c.getParent().get(0);
@@ -1074,23 +1050,32 @@ public class ComTreeControler {
         }
 
 
-        private static Commit findcommon(Commit c){
+        private static void findcommon(Commit c){
 
             if(c!=null){
                 String c_hash=c.getHash();
 
+                if(isMarked.get(c_hash)!=null){
+                    if(isMarked.get(c_hash))
+                    {
+
+                        common=getCommitwithId(c_hash);
+                        return;
+                    }
+
+                }
                 if(c instanceof MergeCommit){
                     isMarked.put(c_hash,true);
                     String c_p0_hash=c.getParent().get(0);
                     String c_p1_hash=c.getParent().get(1);
                     Queue<String> parents_commit= new ArrayDeque<>();
                     if(isMarked.get(c_p0_hash))
-                        return getCommitwithId(c_p0_hash);
+                        common=getCommitwithId(c_p0_hash);
                     else{
                         parents_commit.add(c_p0_hash);
                     }
                     if(isMarked.get(c_p1_hash))
-                        return getCommitwithId(c_p1_hash);
+                        common=getCommitwithId(c_p1_hash);
                     else{
                         parents_commit.add(c_p1_hash);
                     }
@@ -1107,28 +1092,46 @@ public class ComTreeControler {
                     isMarked.put(c_hash,true);
                     if(!c.getParent().isEmpty())
                     {
-                        if(isMarked.get(c.getParent().get(0)))
-                            return getCommitwithId(c.getParent().get(0));
-                        else{
+
                             findcommon(getCommitwithId(c.getParent().get(0)));
-                        }
+
                     }
 
                     else
-                        return null;
+                        common=getCommitwithId(c_hash);
                 }
-
-
-
-
-
 
             }
 
-            return null;
+            return ;
+
         }
 
 
+    private static boolean checkisfast(Commit head,Commit split){
 
+        Commit c=head;
+
+            while(c!=null){
+                if(c.getHash().equals(split.getHash()))
+                    return true;
+                if(c.getParent()!=null)
+                {
+                    if(!c.getParent().isEmpty())
+                        c=getCommitwithId(c.getParent().get(0));
+
+                }
+                if(c.getParent().isEmpty())
+                    break;
+
+            }
+            if(c.getHash().equals(split))
+                return true;
+            else
+            return false;
+
+
+
+    }
 }
 

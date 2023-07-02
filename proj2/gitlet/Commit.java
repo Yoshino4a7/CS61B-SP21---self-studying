@@ -158,7 +158,7 @@ public class Commit implements Serializable {
     }
     public Set<String> getblobsSet(){
         if(blobs==null)
-            return null;
+            return new HashMap<String,String>().keySet();
         Set<String> blobs_set=blobs.keySet();
 
 
@@ -166,6 +166,21 @@ public class Commit implements Serializable {
 
         return blobs_set;
 
+
+
+    }
+    public boolean isDifferent(String filename,String hash){
+        if(blobs==null)
+            return false;
+
+       String c_hash=blobs.get(filename);
+
+       if(c_hash==null)
+           return false;
+       if(!c_hash.equals(hash))
+           return true;
+       else
+           return false;
 
 
     }
@@ -195,6 +210,19 @@ public class Commit implements Serializable {
 
 
     }
+    public boolean istracked(String filename){
+
+        if(blobs==null)
+            return false;
+        if(blobs.containsKey(filename))
+
+            return true;
+
+        else
+            return false;
+
+    }
+
     public LinkedList getTrackedName(){
         LinkedList<String> L=new LinkedList<>();
         Set<String> s=blobs.keySet();

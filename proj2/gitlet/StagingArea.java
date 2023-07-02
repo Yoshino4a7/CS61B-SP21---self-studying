@@ -305,7 +305,7 @@ public class StagingArea {
 
     }
 
-    private static String getNameList(LinkedList<String> L){
+    public static String getNameList(LinkedList<String> L){
         int i=0;
         String s="";
         while(i<L.size()){
@@ -580,4 +580,111 @@ public class StagingArea {
         writeObject(ADDLIST,link_add);
     }
 
+
+    public static LinkedList<String> getModify(Commit head){
+        LinkedList<String> L=new LinkedList<>();
+        blobs=readObject(ADDAREA,HashMap.class);
+        remove_blobs=readObject(REMOVEAREA,HashMap.class);
+        List<String> file_list = plainFilenamesIn(Repository.CWD);
+        Set<String> set=head.getblobsSet();
+        Set<String> set_stagingarea=blobs.keySet();
+        Set<String> set_removearea=remove_blobs.keySet();
+        Iterator<String> ite = file_list.iterator();
+        while (ite.hasNext()) {
+            String s=ite.next();
+            File f=new File(Repository.CWD,s);
+            String cw_hash=sha1(readContents(f));
+            //Tracked in the current commit, changed in the working directory, but not staged;
+            if(!checkFileIsinTheStagingArea(s)&&head.isDifferent(s,cw_hash))
+            {
+                s=s+" (modified)";
+                L.addLast(s);
+            }
+
+            //Staged for addition, but with different contents than in the working directory
+            if(checkFileIsinTheStagingArea(s)&&!getStagingAreahash(s).equals(cw_hash))
+            {
+                s=s+" (modified)";
+                L.addLast(s);
+            }
+
+
+        }
+
+
+       ite = set_stagingarea.iterator();
+
+        while (ite.hasNext()) {
+            String s=ite.next();
+            //Staged for addition, but deleted in the working directory
+            if(checkFileIsinTheStagingArea(s)&&!file_list.contains(s))
+            {
+                s=s+" (deleted)";
+                L.addLast(s);
+            }
+
+
+        }
+        ite = set.iterator();
+
+        while (ite.hasNext()) {
+            String s=ite.next();
+            //Not staged for removal, but tracked in the current commit and deleted from the working directory.
+            if(!set_removearea.contains(s)&&!file_list.contains(s))
+            {
+                s=s+" (deleted)";
+                L.addLast(s);
+            }
+
+
+        }
+
+
+
+
+
+    return L;
+
+
+
+
+    }
+    public static LinkedList<String> getUntrack(Commit head){
+        LinkedList<String> L=new LinkedList<>();
+        blobs=readObject(ADDAREA,HashMap.class);
+        remove_blobs=readObject(REMOVEAREA,HashMap.class);
+        List<String> file_list = plainFilenamesIn(Repository.CWD);
+        Set<String> set=head.getblobsSet();
+        Set<String> set_stagingarea=blobs.keySet();
+        Set<String> set_removearea=remove_blobs.keySet();
+        Iterator<String> ite = file_list.iterator();
+
+        while (ite.hasNext()) {
+            String s=ite.next();
+            File f=new File(Repository.CWD,s);
+            String cw_hash=sha1(readContents(f));
+            //The final category ("Untracked Files") is for files present in the working directory
+            // but neither staged for addition nor tracked.
+            if(!checkFileIsinTheStagingArea(s)&&!head.istracked(s))
+                L.addLast(s);
+           //This includes files that have been staged for removal, but then re-created without Gitlet’s knowledge.
+            if(set_removearea.contains(s))
+                L.addLast(s);
+
+        }
+        return L;
+    }
+    public static String getStagingAreahash(String filename){
+        blobs=readObject(ADDAREA,HashMap.class);
+
+        if(blobs==null)
+            return "";
+
+        if(blobs.containsKey(filename))
+            return blobs.get(filename);
+
+        return "";
+
+
+    }
 }

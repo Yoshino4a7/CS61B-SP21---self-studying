@@ -117,10 +117,14 @@ public class Repository {
 
 
         StagingArea.checkRemove();
+        Commit head=ComTreeControler.getHead();
         LinkedList<String> branch_name=readObject(ComTreeControler.BRANCH,LinkedList.class);
+        LinkedList<String> untrackfile=StagingArea.getUntrack(head);
+        LinkedList<String> modify=StagingArea.getModify(head);
         String add_info=readContentsAsString(StagingArea.ADDSTATUS);
-        String mod_info=readContentsAsString(StagingArea.MODSTATUS);
+        String mod_info=StagingArea.getNameList(modify);
         String remove_info=readContentsAsString(StagingArea.REMOVESTATUS);
+        String untrack_info=StagingArea.getNameList(untrackfile);
 
         System.out.println("=== Branches ===");
         Iterator<String> ite=branch_name.iterator();
@@ -137,13 +141,12 @@ public class Repository {
         System.out.print(remove_info);
         System.out.println("");
         System.out.println("=== Modifications Not Staged For Commit ===");
-//        if(mod_info!=null)
-//            System.out.print(mod_info);
+        if(mod_info!=null)
+            System.out.print(mod_info);
         System.out.println("");
         System.out.println("=== Untracked Files ===");
-//        LinkedList<String> L=StagingArea.findUntrackedFile();
-//        if(L!=null)
-//        printUntrackedFile(L);
+        if(mod_info!=null)
+            System.out.print(untrack_info);
         System.out.println("");
 
 

@@ -553,7 +553,7 @@ public class ComTreeControler {
         if (findUntracked(head.getblobsSet(), head)) {
             Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
-        
+
         if (split.getHash().equals(other_branch.getHash())) {
 
 
@@ -757,6 +757,7 @@ public class ComTreeControler {
         return false;
 
     }
+
 
     private static boolean selectFilesintoBlobs
             (HashMap<String, String> blobs, String otherbranch, Commit head, Commit other_branch,

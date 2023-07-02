@@ -84,11 +84,11 @@ public class Remote {
         LinkedList<String> branch_name=readObject(BRANCH,LinkedList.class);
         File remote_branchname=join(getRemoteRepo(remote),"commit","helper","branch_list");
         LinkedList<String> remote_branchname_list=readObject(remote_branchname,LinkedList.class);
-
+        File remote_repo=getRemoteRepo(remote);
         if(!remote_branchname_list.contains(branch))
         Repository.exit("That remote does not have that branch.");
-
-
+        if(!remote_repo.exists())
+        Repository.exit("Remote directory not found.");
         String current_branch=remote+"/"+branch;
         String curbranch=readContentsAsString(CWBRANCH);
         if(!branch_name.contains(branch)){

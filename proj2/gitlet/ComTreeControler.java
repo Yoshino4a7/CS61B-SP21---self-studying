@@ -675,7 +675,7 @@ public class ComTreeControler {
 
             String b = "<<<<<<< HEAD\n";
             String b2 = "=======\n";
-            String e = ">>>>>>>\n";
+            String e = ">>>>>>>";
 
 
             s = b + d+ b2 + d2 + e;

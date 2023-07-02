@@ -564,6 +564,7 @@ public class ComTreeControler {
 
             System.out.println("Current branch fast-forwarded.");
             head=other_branch;
+            Repository.deleteAllfile();
             head.writeAllblobs();
             writeObject(HEAD,head);
             return ;
@@ -1113,6 +1114,7 @@ public class ComTreeControler {
         Commit c=head;
 
             while(c!=null){
+
                 if(c.getHash().equals(split.getHash()))
                     return true;
                 if(c.getParent()!=null)

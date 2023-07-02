@@ -22,164 +22,162 @@ public class ComTreeControler {
     public static final File CURRENTBRANCH = join(Repository.HELPER_DIR, "current_branch");
     public static final File CWBRANCH = join(Repository.HELPER_DIR, "c_branchname");
 
-    private static LinkedList<String> branch_name=new LinkedList<String>();
-    private static HashMap<String,String>commit_name=new HashMap<>();
-    private static  LinkedList<Commit> commit_link=new LinkedList<>();
+    private static LinkedList<String> branch_name = new LinkedList<String>();
+    private static HashMap<String, String> commit_name = new HashMap<>();
+    private static LinkedList<Commit> commit_link = new LinkedList<>();
 
-    public  static  TreeMap<String,Commit> commit_tree=new TreeMap<>();
+    public static TreeMap<String, Commit> commit_tree = new TreeMap<>();
+    public static TreeMap<String, Boolean> isMarked = new TreeMap<>();
+
     private static Commit master;
     private static Commit head;
     private static String current_branch;
     private static String branch_cname;
 
 
-
-    public static void init(){
-        Commit initial_com=new Commit("initial commit",new LinkedList<String>());
+    public static void init() {
+        Commit initial_com = new Commit("initial commit", new LinkedList<String>());
         initial_com.calcHash();
-        master=initial_com;
-        head=initial_com;
+        master = initial_com;
+        head = initial_com;
 
-        current_branch=master.getHash();
+        current_branch = master.getHash();
 
         File commit_initial = join(Repository.COMMIT_DIR, initial_com.getHash());
 
-        init_create(commit_initial,initial_com);
+        init_create(commit_initial, initial_com);
     }
 
-    public static void commit(String msg){
-        if(msg==null)
+    public static void commit(String msg) {
+        if (msg == null)
             Repository.exit("Please enter a commit message.");
 
 
-        if(StagingArea.hasToCommit())
-        {
-            head=readObject(HEAD,Commit.class);
-            branch_name=readObject(BRANCH,LinkedList.class);
-            current_branch=readContentsAsString(CURRENTBRANCH);
-            commit_tree=readObject(COMTREE,TreeMap.class);
-            branch_cname=readContentsAsString(CWBRANCH);
+        if (StagingArea.hasToCommit()) {
+            head = readObject(HEAD, Commit.class);
+            branch_name = readObject(BRANCH, LinkedList.class);
+            current_branch = readContentsAsString(CURRENTBRANCH);
+            commit_tree = readObject(COMTREE, TreeMap.class);
+            branch_cname = readContentsAsString(CWBRANCH);
 
-            String cbranch=findCurrentBranch(branch_name);
-            LinkedList<String> parents=new LinkedList<String>();
+            String cbranch = findCurrentBranch(branch_name);
+            LinkedList<String> parents = new LinkedList<String>();
             parents.addLast(head.getHash());
-            Commit commit=createCommit(msg,parents,cbranch);
-            File newcommit=new File(Repository.COMMIT_DIR,commit.getHash());
-            try{
+            Commit commit = createCommit(msg, parents, cbranch);
+            File newcommit = new File(Repository.COMMIT_DIR, commit.getHash());
+            try {
                 newcommit.createNewFile();
-            }catch (IOException o){
+            } catch (IOException o) {
 
             }
-            commit_tree=readObject(COMTREE,TreeMap.class);
-            commit_name=readObject(COMNAME,HashMap.class);
-            int commitmax=readObject(COMMAX,Integer.class);
-            commit_name.put("Commit"+commitmax,commit.getHash());
-            commit_tree.put(commit.getHash(),commit);
-            head=commit;
-            current_branch=head.getHash();
+            commit_tree = readObject(COMTREE, TreeMap.class);
+            commit_name = readObject(COMNAME, HashMap.class);
+            int commitmax = readObject(COMMAX, Integer.class);
+            commit_name.put("Commit" + commitmax, commit.getHash());
+            commit_tree.put(commit.getHash(), commit);
+            head = commit;
+            current_branch = head.getHash();
             commitmax++;
 
-            if(branch_cname.equals("master")){
-                master=head;
-                writeObject(MASTER,master);
+            if (branch_cname.equals("master")) {
+                master = head;
+                writeObject(MASTER, master);
             }
-            writeContents(CURRENTBRANCH,current_branch);
-            writeObject(HEAD,head);
-            writeObject(newcommit,commit);
-            writeObject(COMTREE,commit_tree);
-            writeObject(COMNAME,commit_name);
-            writeObject(COMMAX,commitmax);
+            writeContents(CURRENTBRANCH, current_branch);
+            writeObject(HEAD, head);
+            writeObject(newcommit, commit);
+            writeObject(COMTREE, commit_tree);
+            writeObject(COMNAME, commit_name);
+            writeObject(COMMAX, commitmax);
             StagingArea.clearStatus();
-        }else{
+        } else {
             Repository.exit("No changes added to the commit.");
 
         }
 
     }
 
-    public static void mergeCommit(Commit commit,String otherbranch){
+    public static void mergeCommit(Commit commit, String otherbranch) {
 
-        head=readObject(HEAD,Commit.class);
-        branch_name=readObject(BRANCH,LinkedList.class);
-        branch_cname=readContentsAsString(CWBRANCH);
-        current_branch=readContentsAsString(CURRENTBRANCH);
-        File newcommit=new File(Repository.COMMIT_DIR,commit.getHash());
-        try{
+        head = readObject(HEAD, Commit.class);
+        branch_name = readObject(BRANCH, LinkedList.class);
+        branch_cname = readContentsAsString(CWBRANCH);
+        current_branch = readContentsAsString(CURRENTBRANCH);
+        File newcommit = new File(Repository.COMMIT_DIR, commit.getHash());
+        try {
             newcommit.createNewFile();
-        }catch (IOException o){
+        } catch (IOException o) {
 
         }
-        commit_tree=readObject(COMTREE,TreeMap.class);
-        commit_name=readObject(COMNAME,HashMap.class);
-        int commitmax=readObject(COMMAX,Integer.class);
-        commit_name.put("Commit"+commitmax,commit.getHash());
-        commit_tree.put(commit.getHash(),commit);
-        head=commit;
-        current_branch=head.getHash();
+        commit_tree = readObject(COMTREE, TreeMap.class);
+        commit_name = readObject(COMNAME, HashMap.class);
+        int commitmax = readObject(COMMAX, Integer.class);
+        commit_name.put("Commit" + commitmax, commit.getHash());
+        commit_tree.put(commit.getHash(), commit);
+        head = commit;
+        current_branch = head.getHash();
 
-        if( branch_cname.equals("master")){
-            master=head;
-            writeObject(MASTER,master);
+        if (branch_cname.equals("master")) {
+            master = head;
+            writeObject(MASTER, master);
         }
-        writeContents(CURRENTBRANCH,current_branch);
-        writeObject(HEAD,head);
-        writeObject(newcommit,commit);
-        writeObject(COMTREE,commit_tree);
-        writeObject(COMNAME,commit_name);
-        writeObject(COMMAX,commitmax);
-        writeObject(BRANCH,branch_name);
+        writeContents(CURRENTBRANCH, current_branch);
+        writeObject(HEAD, head);
+        writeObject(newcommit, commit);
+        writeObject(COMTREE, commit_tree);
+        writeObject(COMNAME, commit_name);
+        writeObject(COMMAX, commitmax);
+        writeObject(BRANCH, branch_name);
 
     }
 
-    public static void commit_log(){
+    public static void commit_log() {
 
-        commit_tree=readObject(COMTREE,TreeMap.class);
-        commit_name=readObject(COMNAME,HashMap.class);
-        int i=commit_tree.size()-1;
+        commit_tree = readObject(COMTREE, TreeMap.class);
+        commit_name = readObject(COMNAME, HashMap.class);
+        int i = commit_tree.size() - 1;
         System.out.println("  ");
         System.out.println("----------------Commit-----------------");
 
-        while(i>=0){
+        while (i >= 0) {
 
-            String hashname=commit_name.get("Commit"+i);
+            String hashname = commit_name.get("Commit" + i);
 
-            Commit c= commit_tree.get(hashname);
+            Commit c = commit_tree.get(hashname);
             c.printInfo();
             i--;
         }
 
 
-
-
     }
 
-    public static void commit_log_parent(){
+    public static void commit_log_parent() {
 
-        head=readObject(HEAD,Commit.class);
+        head = readObject(HEAD, Commit.class);
 
 
-        while(head!=null){
-
+        while (head != null) {
 
 
             head.printInfo();
-           List<String> parents=head.getParent();
-            if(!parents.isEmpty())
-            head=getCommitwithId(parents.get(0));
+            List<String> parents = head.getParent();
+            if (!parents.isEmpty())
+                head = getCommitwithId(parents.get(0));
             else
-                head=null;
+                head = null;
 
         }
 
     }
-    public static void commit_log_parent_MASTER(){
 
-        Commit c=readObject(MASTER,Commit.class);
+    public static void commit_log_parent_MASTER() {
+
+        Commit c = readObject(MASTER, Commit.class);
 
         System.out.println("  ");
         System.out.println("----------------MASTER Commit-----------------");
 
-        while(c!=null){
+        while (c != null) {
             c.printInfo();
 //            c=c.getParent();
         }
@@ -187,54 +185,49 @@ public class ComTreeControler {
     }
 
 
-
-    private static Commit createCommit(String msg,LinkedList<String> parent,String branch){
+    private static Commit createCommit(String msg, LinkedList<String> parent, String branch) {
 
         StagingArea.clearRemoval();
 
-        HashMap<String,String>  blobs=StagingArea.getBlobs();
+        HashMap<String, String> blobs = StagingArea.getBlobs();
 
-        HashMap<String,String> remove=StagingArea.getRemoval();
+        HashMap<String, String> remove = StagingArea.getRemoval();
 
-        Commit commit=new Commit(msg,parent);
+        Commit commit = new Commit(msg, parent);
         commit.timeSet();
         commit.setBlobs(blobs);
         commit.calcHash();
         commit.setBranch(branch);
 
 
-
         return commit;
     }
 
 
-    private static Commit createMergeCommit(String msg,LinkedList<String> parent_list,
-                                            String branch,HashMap<String,String> blobs,String other){
+    private static Commit createMergeCommit(String msg, LinkedList<String> parent_list,
+                                            String branch, HashMap<String, String> blobs, String other) {
 
-        MergeCommit commit=new MergeCommit(msg,parent_list);
+        MergeCommit commit = new MergeCommit(msg, parent_list);
         commit.timeSet();
         commit.setBlobs(blobs);
         commit.calcHash();
         commit.setBranch(branch);
         commit.setGiven_branch(other);
-        String hashname=commit.getHash();
+        String hashname = commit.getHash();
 
 
         return commit;
     }
 
 
-
-
-
-    public static Commit getHead(){
-        Commit c=readObject(HEAD,Commit.class);
+    public static Commit getHead() {
+        Commit c = readObject(HEAD, Commit.class);
         return c;
     }
 
 
-    public static void init_create(File com,Commit com_in){
-        try{
+    public static void init_create(File com, Commit com_in) {
+        try {
             BRANCH_DIR.mkdir();
             COMNAME.createNewFile();
             COMTREE.createNewFile();
@@ -249,192 +242,181 @@ public class ComTreeControler {
             StagingArea.REMOVESTATUS.createNewFile();
             COMLINK.createNewFile();
             COMMAX.createNewFile();
-            int i=1;
+            int i = 1;
 
-            head=com_in;
+            head = com_in;
 
-            Utils.writeObject(com,com_in);
-            Utils.writeObject(MASTER,master);
-            Utils.writeObject(HEAD,head);
+            Utils.writeObject(com, com_in);
+            Utils.writeObject(MASTER, master);
+            Utils.writeObject(HEAD, head);
 
 
+            String s = com_in.getHash();
 
-            String s=com_in.getHash();
-
-            commit_name.put("Commit0",s);
-            commit_tree.put(s,com_in);
+            commit_name.put("Commit0", s);
+            commit_tree.put(s, com_in);
             commit_link.addFirst(com_in);
 
-            current_branch=head.getHash();
-            writeObject(BRANCH,branch_name);
-            writeContents(CURRENTBRANCH,current_branch);
+            current_branch = head.getHash();
+            writeObject(BRANCH, branch_name);
+            writeContents(CURRENTBRANCH, current_branch);
 
-            writeContents(CWBRANCH,"master");
-            writeObject(COMTREE,commit_tree);
-            writeObject(COMNAME,commit_name);
-            writeObject(COMLINK,commit_link);
+            writeContents(CWBRANCH, "master");
+            writeObject(COMTREE, commit_tree);
+            writeObject(COMNAME, commit_name);
+            writeObject(COMLINK, commit_link);
             branch("master");
-            writeObject(COMMAX,i);
+            writeObject(COMMAX, i);
 
 
-        }catch (IOException o){
+        } catch (IOException o) {
         }
     }
-    public static Commit load(String id){
-        commit_tree=readObject(COMTREE,TreeMap.class);
 
-        Commit c=commit_tree.get(id);
+    public static Commit load(String id) {
+        commit_tree = readObject(COMTREE, TreeMap.class);
+
+        Commit c = commit_tree.get(id);
         return c;
     }
 
-    public static void find(String msg){
-        commit_tree=readObject(COMTREE,TreeMap.class);
+    public static void find(String msg) {
+        commit_tree = readObject(COMTREE, TreeMap.class);
 
-        Iterator<Map.Entry<String,Commit>> ite=commit_tree.entrySet().iterator();
-        int i=0;
+        Iterator<Map.Entry<String, Commit>> ite = commit_tree.entrySet().iterator();
+        int i = 0;
         // Through the Map.Entry class ,get the hashmap's iterator
 
-        while(ite.hasNext()){
-            Map.Entry<String,Commit> m=ite.next();
-            Commit c=m.getValue();
-            String s=c.message();
-            if(s.equals(msg)){
-                String s2=c.getHash();
+        while (ite.hasNext()) {
+            Map.Entry<String, Commit> m = ite.next();
+            Commit c = m.getValue();
+            String s = c.message();
+            if (s.equals(msg)) {
+                String s2 = c.getHash();
                 System.out.println(s2);
                 i++;
             }
 
         }
 
-        if(i==0){
+        if (i == 0) {
             Repository.exit("Found no commit with that message.");
         }
 
     }
-    public static boolean findtracked(String filename){
-       Commit c=getHead();
 
-        if(c.findtracked(filename))
-        {
+    public static boolean findtracked(String filename) {
+        Commit c = getHead();
+
+        if (c.findtracked(filename)) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
 
     }
-    public static void checkoutFile(File f){
-        head=ComTreeControler.getHead();
-        if(head==null)
-            return;
-       head.writeblobs(f);
 
+    public static void checkoutFile(File f) {
+        head = ComTreeControler.getHead();
+        if (head == null)
+            return;
+        head.writeblobs(f);
 
 
     }
 
-    public static void checkoutFile(String commitid,File f){
-        Commit c=getCommitwithId(commitid);
-        if(c==null)
+    public static void checkoutFile(String commitid, File f) {
+        Commit c = getCommitwithId(commitid);
+        if (c == null)
             return;
         c.writeblobs(f);
 
     }
 
-    public static void checkoutBranch(String branch){
-        File branch_file=new File(BRANCH_DIR,branch);
-        branch_cname=readContentsAsString(CWBRANCH);
+    public static void checkoutBranch(String branch) {
+        File branch_file = new File(BRANCH_DIR, branch);
+        branch_cname = readContentsAsString(CWBRANCH);
+        current_branch = readContentsAsString(CURRENTBRANCH);
+        head = getHead();
 
-        head=getHead();
-
-        if(!branch_file.exists()){
+        if (!branch_file.exists()) {
 
             Repository.exit("No such branch exists.");
             return;
         }
-        if(head.findAllUntracked())
-        {
+        if (head.findAllUntracked()) {
             Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
 
 
-            branch_name=readObject(BRANCH,LinkedList.class);
-            current_branch=readContentsAsString(CURRENTBRANCH);
+        branch_name = readObject(BRANCH, LinkedList.class);
 
 
+        if (getCurrentBranch().equals(branch)) {
+            Repository.exit("No need to checkout the current branch.");
+            return;
+        }
 
-            if(getCurrentBranch().equals(branch))
-            {
-                Repository.exit("No need to checkout the current branch.");
-                return;
+        savebranch();
+        writeContents(CWBRANCH, branch);
+        File newbranch = new File(BRANCH_DIR, branch);
+        current_branch = readContentsAsString(newbranch);
+        writeContents(CURRENTBRANCH, current_branch);
+
+        branch_name.remove(branch);
+        branch_name.remove("*" + branch_cname);
+        branch_name.addFirst(branch_cname);
+        branch_name.addFirst("*" + branch);
+        writeObject(BRANCH, branch_name);
+
+
+        if (branch_file.exists()) {
+
+
+            head = getCommitwithId(current_branch);
+            if (head.getBlobs() == null) {
+                writeObject(StagingArea.ADDAREA, new HashMap<String, String>());
+            } else {
+                writeObject(StagingArea.ADDAREA, head.getBlobs());
             }
 
-            savebranch();
-            writeContents(CWBRANCH,branch);
+
+            Repository.deleteAllfile();
+            getCommitwithId(current_branch).writeAllblobs();
+
+            writeObject(HEAD, head);
 
 
-            branch_name.remove(branch);
-            branch_name.remove("*"+branch_cname);
-            branch_name.addFirst(branch_cname);
-            branch_name.addFirst("*"+branch);
-            writeObject(BRANCH,branch_name);
-
-
-
-
-        if(branch_file.exists()){
-
-                current_branch=readContentsAsString(CURRENTBRANCH);
-                head=getCommitwithId(current_branch);
-                if(head.getBlobs()==null)
-                {
-                    writeObject(StagingArea.ADDAREA,new HashMap<String,String>());
-                }
-                else{
-                    writeObject(StagingArea.ADDAREA,head.getBlobs());
-                }
-
-
-
-                Repository.deleteAllfile();
-                getCommitwithId(current_branch).writeAllblobs();
-
-                writeObject(HEAD,head);
-            writeContents(CURRENTBRANCH,current_branch);
-
-
-
-
-        }else{
+        } else {
             Repository.exit("No such branch exists.");
         }
 
 
-
     }
 
-    public static Commit getCommitwithId(String id){
-        commit_tree=readObject(COMTREE,TreeMap.class);
-        String key="";
-        List<String> L=Utils.plainFilenamesIn(Repository.COMMIT_DIR);
-        int i=0;
-        while(i<L.size()){
+    public static Commit getCommitwithId(String id) {
+        commit_tree = readObject(COMTREE, TreeMap.class);
+        String key = "";
+        List<String> L = Utils.plainFilenamesIn(Repository.COMMIT_DIR);
+        int i = 0;
+        while (i < L.size()) {
 
-            String s=L.get(i);
-            String s2="";
-            if(s.length()>6){
+            String s = L.get(i);
+            String s2 = "";
+            if (s.length() > 6) {
 
-                s2=s.substring(0,id.length());
+                s2 = s.substring(0, id.length());
             }
 
-            if(s2.equals(id)){
-                key=L.get(i);
+            if (s2.equals(id)) {
+                key = L.get(i);
                 break;
             }
 
             i++;
         }
-        if(key.equals("")){
+        if (key.equals("")) {
             System.out.println("No commit with that id exists.");
             return null;
         }
@@ -446,202 +428,179 @@ public class ComTreeControler {
     }
 
 
-    public static void branch(String name){
-        commit_tree=readObject(COMTREE,TreeMap.class);
-        branch_name=readObject(BRANCH,LinkedList.class);
-        current_branch=readContentsAsString(CURRENTBRANCH);
-        head=readObject(HEAD,Commit.class);
-        if(branch_name.contains("*"+name)){
+    public static void branch(String name) {
+        commit_tree = readObject(COMTREE, TreeMap.class);
+        branch_name = readObject(BRANCH, LinkedList.class);
+        branch_cname = readContentsAsString(CWBRANCH);
+        current_branch = readContentsAsString(CURRENTBRANCH);
+        head = readObject(HEAD, Commit.class);
+        if (branch_name.contains("*" + name)) {
             Repository.exit("A branch with that name already exists.");
         }
-        if(!branch_name.contains(name)){
-            if(name.equals("master"))
-                branch_name.addLast("*"+name);
-            else{
+        if (!branch_name.contains(name)) {
+            if (name.equals("master"))
+                branch_name.addLast("*" + name);
+            else {
                 branch_name.addLast(name);
             }
-            head.addBranch(name);
 
-            writeObject(HEAD,head);
-            File newcommit=new File(Repository.COMMIT_DIR,head.getHash());
-            commit_tree.put(head.getHash(),head);
-            writeObject(newcommit,head);
-            writeContents(CURRENTBRANCH,current_branch);
-            writeObject(BRANCH,branch_name);
-        }
-        else{
+            writeObject(BRANCH, branch_name);
+        } else {
             Repository.exit("A branch with that name already exists.");
         }
 
-        File f=new File(BRANCH_DIR,name);
-        try{
+        File f = new File(BRANCH_DIR, name);
+        try {
             f.createNewFile();
-            writeContents(f,current_branch);
-        }catch (IOException o){
+            writeContents(f, current_branch);
+        } catch (IOException o) {
 
         }
 
-        writeObject(BRANCH,branch_name);
+        writeObject(BRANCH, branch_name);
 
 
     }
 
-    private static void savebranch(){
-        current_branch=readContentsAsString(CURRENTBRANCH);
-        branch_name=readObject(BRANCH,LinkedList.class);
-        String s="";
-        Iterator<String> ite=branch_name.iterator();
-        while(ite.hasNext()){
-            String a=ite.next();
+    private static void savebranch() {
+        head = readObject(HEAD, Commit.class);
+
+        branch_name = readObject(BRANCH, LinkedList.class);
+        String s = "";
+        Iterator<String> ite = branch_name.iterator();
+        while (ite.hasNext()) {
+            String a = ite.next();
 
 
-
-            if(a.charAt(0)=='*')
-                s=a.substring(1);
+            if (a.charAt(0) == '*')
+                s = a.substring(1);
         }
-        File f=new File(BRANCH_DIR,s);
+        File f = new File(BRANCH_DIR, s);
 
-        writeContents(f,current_branch);
+        writeContents(f, head.getHash());
 
 
     }
-    private static String findCurrentBranch(LinkedList<String> L){
-        Iterator<String> ite=L.iterator();
-        while(ite.hasNext())
-        {
-            String s=ite.next();
-            if(s.charAt(0)=='*')
+
+    private static String findCurrentBranch(LinkedList<String> L) {
+        Iterator<String> ite = L.iterator();
+        while (ite.hasNext()) {
+            String s = ite.next();
+            if (s.charAt(0) == '*')
                 return s.substring(1);
         }
         return "";
     }
 
-    public static void rmbranch(String name){
-        File f=new File(BRANCH_DIR,name);
-        branch_name=readObject(BRANCH,LinkedList.class);
-        head=readObject(HEAD,Commit.class);
+    public static void rmbranch(String name) {
+        File f = new File(BRANCH_DIR, name);
+        branch_name = readObject(BRANCH, LinkedList.class);
+        head = readObject(HEAD, Commit.class);
 
-        if(!f.exists()){
+        if (!f.exists()) {
             Repository.exit("A branch with that name does not exist.");
-            return ;
+            return;
         }
 
-        if(head.getBranch().equals(name))
-        {
+        if (head.getBranch().equals(name)) {
             Repository.exit("Cannot remove the current branch.");
-        }
-        else{
+        } else {
 
             branch_name.remove(name);
             f.delete();
-            writeObject(BRANCH,branch_name);
+            writeObject(BRANCH, branch_name);
         }
-
-
-
-
 
 
     }
 
-    public static void reset(String commitid){
+    public static void reset(String commitid) {
         StagingArea.clearStatus();
-        head=ComTreeControler.getHead();
-        Commit c=getCommitwithId(commitid);
+        head = ComTreeControler.getHead();
+        Commit c = getCommitwithId(commitid);
 
-        if(head.findAllUntracked())
+        if (head.findAllUntracked())
             Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
 
-        if(c!=null)
-        {
+        if (c != null) {
             Repository.deleteAllfile();
             c.writeAllblobs();
-            head=c;
-            current_branch=c.getHash();
-            writeObject(HEAD,head);
-            writeContents(CURRENTBRANCH,current_branch);
+            head = c;
+            current_branch = c.getHash();
+            writeObject(HEAD, head);
+            writeContents(CURRENTBRANCH, current_branch);
         }
-
-
-
 
 
     }
 
 
-    public static void merge(String otherbranch){
-        head=readObject(HEAD,Commit.class);
-        File c=new File(BRANCH_DIR,otherbranch);
-        File branch=new File(BRANCH_DIR,otherbranch);
-        if(!branch.exists())
+    public static void merge(String otherbranch) {
+        head = readObject(HEAD, Commit.class);
+        String branchname = readContentsAsString(CWBRANCH);
+        File c = new File(BRANCH_DIR, otherbranch);
+        File branch = new File(BRANCH_DIR, otherbranch);
+        if (!branch.exists())
             Repository.exit("A branch with that name does not exist.");
-        Commit other_branch=readObject(c,Commit.class);
-        Commit split=findSplit(otherbranch);
-        branch_name=readObject(BRANCH,LinkedList.class);
+        Commit other_branch = getCommitwithId(readContentsAsString(c));
+        Commit split = findSplit(otherbranch);
 
-        if(branch_name.contains("*"+otherbranch))
+        branch_name = readObject(BRANCH, LinkedList.class);
+
+        if (branch_name.contains("*" + otherbranch))
             Repository.exit("Cannot merge a branch with itself.");
-        if(findUntracked(head.getblobsSet(),head))
-        {
+        if (findUntracked(head.getblobsSet(), head)) {
             Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
 
-        if(split.getHash().equals(other_branch.getHash())){
+        if (split.getHash().equals(other_branch.getHash())) {
 
             System.out.println("Given branch is an ancestor of the current branch.");
-            return ;
+            return;
         }
-        if(split.getHash().equals(head.getHash())){
+//        if(split.getHash().equals(head.getHash())){
+//
+//            System.out.println("Current branch fast-forwarded.");
+//            head=other_branch;
+//            writeObject(HEAD,head);
+//            return ;
+//        }
 
-            System.out.println("Current branch fast-forwarded.");
-            head=other_branch;
-            writeObject(HEAD,head);
-            return ;
-        }
+        HashMap<String, String> blobs = head.getBlobs();
+        LinkedList<String> conflict_list = new LinkedList<>();
 
-         HashMap<String ,String> blobs=head.getBlobs();
-        LinkedList<String> conflict_list=new LinkedList<>();
-
-       boolean IsConflict=selectFilesintoBlobs(blobs,otherbranch,head,other_branch,split,conflict_list);
-
-
+        boolean IsConflict = selectFilesintoBlobs(blobs, otherbranch, head, other_branch, split, conflict_list);
 
 
-        wirteMergeBlobs(blobs,conflict_list);
+        wirteMergeBlobs(blobs, conflict_list);
 
-        if(IsConflict)
-        {
+        if (IsConflict) {
             System.out.println("Encountered a merge conflict");
             return;
         }
 
 
-
-
-        String cbranch=head.getBranch();
-        LinkedList<String> parent_list=new LinkedList<String>();
+        String cbranch = head.getBranch();
+        LinkedList<String> parent_list = new LinkedList<String>();
         parent_list.addLast(head.getHash());
         parent_list.addLast(other_branch.getHash());
-        Commit merge_commit=
+        Commit merge_commit =
                 createMergeCommit
-                        ("Merged " + otherbranch + " into " + cbranch + ".",parent_list,cbranch,blobs,otherbranch);
+                        ("Merged " + otherbranch + " into " + cbranch + ".", parent_list, cbranch, blobs, otherbranch);
 
-        mergeCommit(merge_commit,otherbranch);
-
-
-        }
-        //find what is in other branch but not in the head
+        mergeCommit(merge_commit, otherbranch);
 
 
+    }
+    //find what is in other branch but not in the head
 
 
-    private static Commit findSplit(String otherbranch){
-        head=readObject(HEAD,Commit.class);
-        File c=new File(BRANCH_DIR,otherbranch);
+    private static Commit findSplit(String otherbranch) {
+        head = readObject(HEAD, Commit.class);
+        File c = new File(BRANCH_DIR, otherbranch);
+        branch_cname = readContentsAsString(CWBRANCH);
+        Commit other_branch = getCommitwithId(readContentsAsString(c));
 
-        Commit other_branch=readObject(c,Commit.class);
-        Commit start=head;
-        Commit branchc=other_branch;
 //        int start_i;
 //
 //        int[]select= mergeCommitChange(head,other_branch);
@@ -682,202 +641,190 @@ public class ComTreeControler {
 //
 //            }
 
-        if(start instanceof MergeCommit){
-            findSplit_help(start,otherbranch);
+//        if(start instanceof MergeCommit){
+//
+//
+//        }
+//        else{
+//            while(start!=null){
+//                System.out.println(start.getHash());
+//                if(start.isSplit(otherbranch))
+//                    return start;
+//                else
+//                {
+//                    if(!start.getParent().isEmpty())
+//                        start=getCommitwithId(start.getParent().get(0));
+//                    else
+//                        start=null;
+//                }
+//
+//
+//            }
+//
+//        }
 
 
-        }
-        else{
-            while(start!=null){
-                start.printbranch();
-                if(start.isSplit(otherbranch))
-                    return start;
-                else
-                {
-                    if(!start.getParent().isEmpty())
-                        start=getCommitwithId(start.getParent().get(0));
-                    else
-                        start=null;
-                }
+//        if(branchc instanceof MergeCommit){
+//            head_split_list=findAllSplit(start);
+//            other_split_list=findAllSplit(branchc);
+//        }
+//        else{
+//            while(branchc!=null){
+//
+//                if(branchc.isSplit(otherbranch))
+//                    return head;
+//                else{
+//                    if(!branchc.getParent().isEmpty())
+//                        branchc=getCommitwithId(branchc.getParent().get(0));
+//                    else
+//                        head=null;
+//                }
+//
+//
+//
+//            }
+//
+//        }
 
 
-            }
-            return null;
-        }
-
-
-
-        if(branchc instanceof MergeCommit){
-           return findSplit_help(branchc,otherbranch);
-        }
-        else{
-            while(branchc!=null){
-
-                if(branchc.isSplit(otherbranch))
-                    return head;
-                else{
-                    if(!branchc.getParent().isEmpty())
-                        branchc=getCommitwithId(branchc.getParent().get(0));
-                    else
-                        head=null;
-                }
-
-
-
-            }
-            return null;
-        }
-
-
+        return findSplit_help(head, branch_cname, other_branch, otherbranch);
 
 
     }
 
     private static void conflict
-            (String head_hash,String head_name,String branch_hash,String otherbranch,HashMap<String,String> blobs){
-        String s="";
-        if(head_hash==null||branch_hash==null){
-            String d="";
-            String d2="";
+            (String head_hash, String head_name, String branch_hash, String otherbranch, HashMap<String, String> blobs) {
+        String s = "";
+        if (head_hash == null || branch_hash == null) {
+            String d = "";
+            String d2 = "";
             File head_file;
             File branch_file;
-            String b="<<<<<<< HEAD\n";
-            if(head_hash!=null)
-            {
-                head_file=new File(Repository.BLOBS_DIR,head_hash);
-                d=readContentsAsString(head_file);
+            String b = "<<<<<<< HEAD\n";
+            if (head_hash != null) {
+                head_file = new File(Repository.BLOBS_DIR, head_hash);
+                d = readContentsAsString(head_file);
             }
 
-            if(branch_hash!=null)
-            {
-                branch_file=new File(Repository.BLOBS_DIR,branch_hash);
-                d2=readContentsAsString(branch_file);
+            if (branch_hash != null) {
+                branch_file = new File(Repository.BLOBS_DIR, branch_hash);
+                d2 = readContentsAsString(branch_file);
             }
 
-            String b2="\n=======\n";
+            String b2 = "\n=======\n";
 
-            String e=">>>>>>>";
+            String e = ">>>>>>>";
 
-            s=b+d+b2+d2+e;
+            s = b + d + b2 + d2 + e;
 
-        }else
-        {
+        } else {
 
-            String b="<<<<<<< HEAD\n";
-            File head_file=new File(Repository.BLOBS_DIR,head_hash);
-            File branch_file=new File(Repository.BLOBS_DIR,branch_hash);
-            String d=readContentsAsString(head_file);
-            String b2="\n=======\n";
-            String d2=readContentsAsString(branch_file);
-            String e="\n>>>>>>>";
-            s=b+d+b2+d2+e;
+            String b = "<<<<<<< HEAD\n";
+            File head_file = new File(Repository.BLOBS_DIR, head_hash);
+            File branch_file = new File(Repository.BLOBS_DIR, branch_hash);
+            String d = readContentsAsString(head_file);
+            String b2 = "\n=======\n";
+            String d2 = readContentsAsString(branch_file);
+            String e = "\n>>>>>>>";
+            s = b + d + b2 + d2 + e;
 
         }
 
-        File cwd_file=new File(Repository.CWD,head_name);
-        try{
+        File cwd_file = new File(Repository.CWD, head_name);
+        try {
             cwd_file.createNewFile();
-            writeContents(cwd_file,s);
-        }catch (IOException o){
+            writeContents(cwd_file, s);
+        } catch (IOException o) {
 
         }
 
 
     }
 
-    private static boolean findUntracked(Set<String> set,Commit head){
-            List<String> file_list=plainFilenamesIn(Repository.CWD);
-            Iterator<String> ite=file_list.iterator();
-            while(ite.hasNext())
-            {
-                if(!set.contains(ite.next()))
-                    return true;
+    private static boolean findUntracked(Set<String> set, Commit head) {
+        List<String> file_list = plainFilenamesIn(Repository.CWD);
+        Iterator<String> ite = file_list.iterator();
+        while (ite.hasNext()) {
+            if (!set.contains(ite.next()))
+                return true;
 
 
-            }
-            return false;
+        }
+        return false;
 
     }
 
     private static boolean selectFilesintoBlobs
-            (HashMap<String,String> blobs,String otherbranch,Commit head,Commit other_branch,
-             Commit split,LinkedList<String> conflict_list){
-        boolean IsConflict=false;
-        HashMap<String,String> blobs_head=head.getBlobs();
-        HashMap<String,String> blobs_split=split.getBlobs();
-        HashMap<String,String> blobs_other_branch=other_branch.getBlobs();
+            (HashMap<String, String> blobs, String otherbranch, Commit head, Commit other_branch,
+             Commit split, LinkedList<String> conflict_list) {
+        boolean IsConflict = false;
+        HashMap<String, String> blobs_head = head.getBlobs();
+        HashMap<String, String> blobs_split = split.getBlobs();
+        HashMap<String, String> blobs_other_branch = other_branch.getBlobs();
 
-        SortedSet<String> set_head=  new TreeSet<>(blobs_head.keySet());
-        SortedSet<String> set_split=  new TreeSet<>(blobs_split.keySet());
-        SortedSet<String> set_other_branch=  new TreeSet<>(blobs_other_branch.keySet());
-
-
-        Iterator<String> ite_head=set_head.iterator();
-
-        Iterator<String> ite_branch=set_other_branch.iterator();
-        while(ite_head.hasNext()){
-
-            String head_name=ite_head.next();
-            String head_hash=blobs_head.get(head_name);
-            String branch_hash=blobs_other_branch.get(head_name);
-            String split_hash=blobs_split.get(head_name);
-            boolean isExist= blobs_other_branch.get(head_name)!=null && blobs_head.get(head_name)!=null;
-
-            if(split_hash!=null){
-                if(isExist){
+        SortedSet<String> set_head = new TreeSet<>(blobs_head.keySet());
+        SortedSet<String> set_split = new TreeSet<>(blobs_split.keySet());
+        SortedSet<String> set_other_branch = new TreeSet<>(blobs_other_branch.keySet());
 
 
-                        if(!head_hash.equals(split_hash)&&head_hash.equals(branch_hash))
-                        {
-                            //same way
+        Iterator<String> ite_head = set_head.iterator();
 
-                        }
+        Iterator<String> ite_branch = set_other_branch.iterator();
+        while (ite_head.hasNext()) {
 
-                        if(split_hash.equals(branch_hash)&&!head_hash.equals(split_hash)){
-                            blobs.put(head_name,head_hash);
+            String head_name = ite_head.next();
+            String head_hash = blobs_head.get(head_name);
+            String branch_hash = blobs_other_branch.get(head_name);
+            String split_hash = blobs_split.get(head_name);
+            boolean isExist = blobs_other_branch.get(head_name) != null && blobs_head.get(head_name) != null;
 
-                            //head modified
-
-                        }
-                        if(split_hash.equals(head_hash)&&!branch_hash.equals(split_hash)){
-
-                            blobs.put(head_name,branch_hash);
-
-                            //branch modified
-                        }
+            if (split_hash != null) {
+                if (isExist) {
 
 
-                            if(!split_hash.equals(head_hash)&&
-                                    !split_hash.equals(branch_hash)&&!head_hash.equals(branch_hash))
-                            {
+                    if (!head_hash.equals(split_hash) && head_hash.equals(branch_hash)) {
+                        //same way
 
-                            conflict_list.add(head_name);
+                    }
+
+                    if (split_hash.equals(branch_hash) && !head_hash.equals(split_hash)) {
+                        blobs.put(head_name, head_hash);
+
+                        //head modified
+
+                    }
+                    if (split_hash.equals(head_hash) && !branch_hash.equals(split_hash)) {
+
+                        blobs.put(head_name, branch_hash);
+
+                        //branch modified
+                    }
 
 
-                                conflict(head_hash,head_name,branch_hash,otherbranch,blobs);
+                    if (!split_hash.equals(head_hash) &&
+                            !split_hash.equals(branch_hash) && !head_hash.equals(branch_hash)) {
 
-                                IsConflict=true;
-                                //conflicted
-
-                            }
-                            //checkout which has modified since split
+                        conflict_list.add(head_name);
 
 
+                        conflict(head_hash, head_name, branch_hash, otherbranch, blobs);
 
+                        IsConflict = true;
+                        //conflicted
 
-
+                    }
+                    //checkout which has modified since split
 
 
                 }
             }
 
-            if(head_hash!=null){
+            if (head_hash != null) {
 
-                if(split_hash!=null){
-                    if(branch_hash==null&&split_hash.equals(head_hash))
-                    {
+                if (split_hash != null) {
+                    if (branch_hash == null && split_hash.equals(head_hash)) {
 
-                        blobs.put(head_name,null);
+                        blobs.put(head_name, null);
                         //remove HEAD's File
                     }
                 }
@@ -885,23 +832,20 @@ public class ComTreeControler {
             }
 
 
-
-            if(head_hash!=null&&split_hash==null&&branch_hash==null)
-            {
-                blobs.put(head_name,head_hash);
+            if (head_hash != null && split_hash == null && branch_hash == null) {
+                blobs.put(head_name, head_hash);
                 //neither in other nor in split but in HEAD
             }
 
 
-            if(head_hash!=null){
+            if (head_hash != null) {
 
-                if(split_hash!=null){
-                    if(branch_hash==null&&!split_hash.equals(head_hash))
-                    {
+                if (split_hash != null) {
+                    if (branch_hash == null && !split_hash.equals(head_hash)) {
 
                         conflict_list.add(head_name);
-                        conflict(head_hash,head_name,branch_hash,otherbranch,blobs);
-                        IsConflict=true;
+                        conflict(head_hash, head_name, branch_hash, otherbranch, blobs);
+                        IsConflict = true;
                         //conflicted
                     }
                 }
@@ -910,24 +854,23 @@ public class ComTreeControler {
 
         }
 
-        while(ite_branch.hasNext()){
+        while (ite_branch.hasNext()) {
 
-            String head_name=ite_branch.next();
-            String head_hash=blobs_head.get(head_name);
-            String branch_hash=blobs_other_branch.get(head_name);
-            String split_hash=blobs_split.get(head_name);
-            boolean isExist= blobs_other_branch.get(head_name)!=null && blobs_head.get(head_name)!=null;
+            String head_name = ite_branch.next();
+            String head_hash = blobs_head.get(head_name);
+            String branch_hash = blobs_other_branch.get(head_name);
+            String split_hash = blobs_split.get(head_name);
+            boolean isExist = blobs_other_branch.get(head_name) != null && blobs_head.get(head_name) != null;
 
-            if(set_head.contains(head_name))
+            if (set_head.contains(head_name))
                 continue;
 
-            if(head_hash==null){
+            if (head_hash == null) {
 
-                if(split_hash!=null){
-                    if(branch_hash!=null&&split_hash.equals(branch_hash))
-                    {
+                if (split_hash != null) {
+                    if (branch_hash != null && split_hash.equals(branch_hash)) {
 
-                        blobs.put(head_name,null);
+                        blobs.put(head_name, null);
                         //remove Branch's File
                     }
                 }
@@ -935,23 +878,20 @@ public class ComTreeControler {
             }
 
 
-
-            if(head_hash==null&&split_hash==null&&branch_hash!=null)
-            {
-                blobs.put(head_name,branch_hash);
+            if (head_hash == null && split_hash == null && branch_hash != null) {
+                blobs.put(head_name, branch_hash);
                 //neither in head nor in split but in other
             }
 
 
-            if(head_hash!=null){
+            if (head_hash != null) {
 
-                if(split_hash!=null){
-                    if(branch_hash==null&&!split_hash.equals(head_hash))
-                    {
+                if (split_hash != null) {
+                    if (branch_hash == null && !split_hash.equals(head_hash)) {
 
                         conflict_list.add(head_name);
-                        conflict(head_hash,head_name,split_hash,otherbranch,blobs);
-                        IsConflict=true;
+                        conflict(head_hash, head_name, split_hash, otherbranch, blobs);
+                        IsConflict = true;
                         //conflicted
                     }
                 }
@@ -963,22 +903,21 @@ public class ComTreeControler {
     }
 
 
-    private static int[] mergeCommitChange(Commit head,Commit other){
-        int[] select=new int[3];
+    private static int[] mergeCommitChange(Commit head, Commit other) {
+        int[] select = new int[3];
 
-        if(!(head instanceof MergeCommit)&& !(other instanceof  MergeCommit)){
-            int branch_select=0;
+        if (!(head instanceof MergeCommit) && !(other instanceof MergeCommit)) {
+            int branch_select = 0;
 
-            int a_size=head.getBranch_size();
-            int b_size=other.getBranch_size();
-            select[0]=branch_select;
-            select[1]=a_size;
-            select[2]=b_size;
+            int a_size = head.getBranch_size();
+            int b_size = other.getBranch_size();
+            select[0] = branch_select;
+            select[1] = a_size;
+            select[2] = b_size;
 
-        }else{
+        } else {
 
-            if(head instanceof  MergeCommit){
-
+            if (head instanceof MergeCommit) {
 
 
                 return select;
@@ -986,41 +925,27 @@ public class ComTreeControler {
             }
 
 
-
-
-
-
-
-
             return select;
 
         }
 
 
-
-
-
-
-
-
-
         return select;
     }
 
-    private static void deleteFile_withoutConflict(LinkedList<String> conflict_list){
-        List<String> L= Utils.plainFilenamesIn(Repository.CWD);
+    private static void deleteFile_withoutConflict(LinkedList<String> conflict_list) {
+        List<String> L = Utils.plainFilenamesIn(Repository.CWD);
 
-        int i=0;
-        while(i<L.size()){
-            String s=L.get(i);
-            if(conflict_list.contains(s)){
+        int i = 0;
+        while (i < L.size()) {
+            String s = L.get(i);
+            if (conflict_list.contains(s)) {
                 i++;
                 continue;
             }
 
-            File f=new File(Repository.CWD,s);
-            if(!f.isFile())
-            {
+            File f = new File(Repository.CWD, s);
+            if (!f.isFile()) {
                 i++;
 
                 continue;
@@ -1031,74 +956,179 @@ public class ComTreeControler {
         }
     }
 
- private static void wirteMergeBlobs(HashMap<String,String> blobs,LinkedList<String> conflict_list){
+    private static void wirteMergeBlobs(HashMap<String, String> blobs, LinkedList<String> conflict_list) {
         deleteFile_withoutConflict(conflict_list);
 
-         if(blobs==null)
-         {
+        if (blobs == null) {
 
-             return;
-         }
-         Set<String> blobs_key=blobs.keySet();
-         Iterator<String> ite=blobs_key.iterator();
+            return;
+        }
+        Set<String> blobs_key = blobs.keySet();
+        Iterator<String> ite = blobs_key.iterator();
 
-         while(ite.hasNext()){
-             String s=ite.next();
-             File f=new File(Repository.CWD,s);
-            if(conflict_list.contains(s)){
+        while (ite.hasNext()) {
+            String s = ite.next();
+            File f = new File(Repository.CWD, s);
+            if (conflict_list.contains(s)) {
                 conflict_list.remove(s);
                 continue;
 
             }
 
 
-             String file_hash=blobs.get(s);
+            String file_hash = blobs.get(s);
 
-             if(file_hash==null)
-                 continue;
+            if (file_hash == null)
+                continue;
 
-             try{
-                 f.createNewFile();
-                 File f_blobs=new File(Repository.BLOBS_DIR,file_hash);
-                 if(file_hash.equals("da39a3ee5e6b4b0d3255bfef95601890afd80709"))
-                 {
+            try {
+                f.createNewFile();
+                File f_blobs = new File(Repository.BLOBS_DIR, file_hash);
+                if (file_hash.equals("da39a3ee5e6b4b0d3255bfef95601890afd80709")) {
 
-                 }
-                 else
-                     writeContents(f,readContents(f_blobs));
+                } else
+                    writeContents(f, readContents(f_blobs));
 
-             }catch (IOException o){
+            } catch (IOException o) {
 
-             }
+            }
 
-         }
- }
+        }
+    }
 
- private static Commit findSplit_help(Commit head,String otherbranch){
-     while(head!=null){
+    private static Commit findSplit_help(Commit head, String head_split, Commit other, String branch_split) {
 
-         if(head.isSplit(otherbranch))
-             return head;
-         else
-             head=getCommitwithId(head.getParent().get(0));
 
-     }
-     while(head!=null){
+        isMarked=new TreeMap<>();
 
-         if(head.isSplit(otherbranch))
-             return head;
-         else
-             head=getCommitwithId(head.getParent().get(1));
+        MarkCommit(head);
+        return findcommon(other);
+//        Commit head_com = findcommon(start, branch_split);
 
-     }
-     return null;
- }
+//        if(head_com.getHash().equals(other_com.getHash()))
+//            return head_com;
 
- public static String getCurrentBranch(){
-        String s=readContentsAsString(CWBRANCH);
+
+
+    }
+
+
+
+    public static String getCurrentBranch() {
+        String s = readContentsAsString(CWBRANCH);
 
         return s;
- }
+    }
+
+    private static void  MarkCommit(Commit c) {
+
+        if(c!=null||isMarked.get(c.getHash())!=true){
+            String c_hash=c.getHash();
+           
+                if(c instanceof MergeCommit){
+                    isMarked.put(c_hash,true);
+                    String c_p0_hash=c.getParent().get(0);
+                    String c_p1_hash=c.getParent().get(1);
+                    Queue<String> parents_commit= new ArrayDeque<>();
+
+
+
+                    if(isMarked.get(c_p0_hash)==null){
+
+                            parents_commit.add(c_p0_hash);
+                    }
+
+                    if(isMarked.get(c_p1_hash)==null)
+                    {
+
+                            parents_commit.add(c_p1_hash);
+                    }
+
+                    while(!parents_commit.isEmpty()){
+                        MarkCommit(getCommitwithId(parents_commit.remove()));
+
+                    }
+
+
+                }
+                else{
+
+                    isMarked.put(c_hash,true);
+                    if(!c.getParent().isEmpty())
+                    MarkCommit(getCommitwithId(c.getParent().get(0)));
+                    else
+                        return ;
+                }
+
+
+
+
+
+
+        }
+
+
+
+
+
+        }
+
+
+        private static Commit findcommon(Commit c){
+
+            if(c!=null){
+                String c_hash=c.getHash();
+
+                if(c instanceof MergeCommit){
+                    isMarked.put(c_hash,true);
+                    String c_p0_hash=c.getParent().get(0);
+                    String c_p1_hash=c.getParent().get(1);
+                    Queue<String> parents_commit= new ArrayDeque<>();
+                    if(isMarked.get(c_p0_hash))
+                        return getCommitwithId(c_p0_hash);
+                    else{
+                        parents_commit.add(c_p0_hash);
+                    }
+                    if(isMarked.get(c_p1_hash))
+                        return getCommitwithId(c_p1_hash);
+                    else{
+                        parents_commit.add(c_p1_hash);
+                    }
+
+                    while(!parents_commit.isEmpty()){
+                        findcommon(getCommitwithId(parents_commit.remove()));
+
+                    }
+
+
+                }
+                else{
+
+                    isMarked.put(c_hash,true);
+                    if(!c.getParent().isEmpty())
+                    {
+                        if(isMarked.get(c.getParent().get(0)))
+                            return getCommitwithId(c.getParent().get(0));
+                        else{
+                            findcommon(getCommitwithId(c.getParent().get(0)));
+                        }
+                    }
+
+                    else
+                        return null;
+                }
+
+
+
+
+
+
+            }
+
+            return null;
+        }
+
+
 
 }
 

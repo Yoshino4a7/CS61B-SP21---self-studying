@@ -30,7 +30,7 @@ public class Commit implements Serializable {
     private String timeStamp;
     private int hash;
     private LinkedList<String> parents;
-    private LinkedList<String> branchs= new LinkedList<String>();
+
 
     private HashMap<String,String> blobs;
     private String hashcode;
@@ -81,7 +81,7 @@ public class Commit implements Serializable {
         if(this instanceof MergeCommit)
             System.out.println("Merged development into "+branch+".");
         System.out.println("");
-        printbranch();
+
 
     }
     public void timeSet(){
@@ -139,32 +139,13 @@ public class Commit implements Serializable {
 
 
     }
-    public void addBranch(String branch){
-
-
-        branchs.addLast(branch);
-
-    }
-    public void printbranch(){
-        if(branchs!=null){
-            Iterator<String> ite=branchs.iterator();
-            while(ite.hasNext()){
-                System.out.println(ite.next());
-            }
-        }
 
 
 
-    }
-    public boolean isSplit(String branch){
 
-        if(branchs==null||branchs.isEmpty())
-            return false;
 
-        if(branchs.contains(branch))
-            return true;
-         return false;
-    }
+
+
 
     public boolean findtracked(String filename){
         if(blobs==null)

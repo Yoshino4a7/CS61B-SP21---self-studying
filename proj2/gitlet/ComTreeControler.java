@@ -553,7 +553,7 @@ public class ComTreeControler {
         if (findUntracked(head.getblobsSet(), head)) {
             Repository.exit("There is an untracked file in the way; delete it, or add and commit it first.");
         }
-        System.out.println(split.getHash());
+        
         if (split.getHash().equals(other_branch.getHash())) {
 
 

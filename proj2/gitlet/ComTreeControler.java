@@ -715,7 +715,7 @@ public class ComTreeControler {
                 d2 = readContentsAsString(branch_file);
             }
 
-            String b2 = "\n=======\n";
+            String b2 = "=======\n";
 
             String e = ">>>>>>>";
 
@@ -727,9 +727,9 @@ public class ComTreeControler {
             File head_file = new File(Repository.BLOBS_DIR, head_hash);
             File branch_file = new File(Repository.BLOBS_DIR, branch_hash);
             String d = readContentsAsString(head_file);
-            String b2 = "\n=======\n";
+            String b2 = "=======\n";
             String d2 = readContentsAsString(branch_file);
-            String e = "\n>>>>>>>";
+            String e = ">>>>>>>";
             s = b + d + b2 + d2 + e;
 
         }

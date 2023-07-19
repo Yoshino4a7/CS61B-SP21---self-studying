@@ -300,7 +300,7 @@ public class HexWorld {
         ter.initialize(WIDTH, HEIGHT);
         //获取渲染引擎对象并初始化
         TETile[][] Hex = new TETile[WIDTH][HEIGHT];
-        TETile[][] tiles=getHex(4,Tileset.FLOWER);
+
         darwTexWorld(Hex);
 //        darwWorld(Hex);
         ter.renderFrame(Hex);

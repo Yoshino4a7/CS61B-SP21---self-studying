@@ -52,13 +52,28 @@ public class MemoryGame {
         StdDraw.setYscale(0, this.height);
         StdDraw.clear(Color.BLACK);
         StdDraw.enableDoubleBuffering();
-
+//        StdDraw.text(400, 500, "CS61B: The Game",);
+        StdDraw.show();
+        rand.setSeed(seed);
         //TODO: Initialize random number generator
     }
 
     public String generateRandomString(int n) {
         //TODO: Generate random string of letters of length n
-        return null;
+        int i=0;
+        String result="";
+        while(i<n){
+
+            char c=CHARACTERS[rand.nextInt(26-1)];
+            result+=c;
+
+
+
+        }
+
+
+
+        return result;
     }
 
     public void drawFrame(String s) {

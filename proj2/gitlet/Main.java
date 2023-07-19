@@ -1,5 +1,9 @@
 package gitlet;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
  */
@@ -37,7 +41,21 @@ public class Main {
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
-                }else
+                }else if(args[1].equals("-A")){
+                    List<String> list=Utils.plainFilenamesIn(Repository.CWD);
+                    Iterator<String> ite=list.iterator();
+                    while(ite.hasNext()){
+                        String s=ite.next();
+                        File f =new File(Repository.CWD,s);
+                        if(f.isFile())
+                            Repository.add(s);
+
+                    }
+
+
+
+                }
+                    else
                 Repository.add(args[1]);
                 break;
 
@@ -104,7 +122,18 @@ public class Main {
                 {
                     System.out.println("Incorrect operands.");
                     System.exit(0);
-                }else
+                }else if(args[1].equals("-A")){
+                List<String> list=Utils.plainFilenamesIn(Repository.CWD);
+                Iterator<String> ite=list.iterator();
+                while(ite.hasNext()){
+                    String s=ite.next();
+                    File f =new File(Repository.CWD,s);
+                    if(f.isFile())
+                        Repository.remove(s);
+
+                }
+                }
+                else
                 Repository.remove(args[1]);
                 break;
             case "global-log":

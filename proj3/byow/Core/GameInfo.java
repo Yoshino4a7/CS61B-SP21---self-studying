@@ -14,8 +14,10 @@ public class GameInfo implements Serializable {
     private HashMap<Long, TETile[][]> info_world;
     private HashMap<Long, Long> info_time;
     private HashMap<Long, Position> info_vic;
+    private HashMap<Long, Boolean> info_sight;
+    private HashMap<Long, Enemy> info_enemy;
 
-    GameInfo(Position p,long seed,TETile[][] world,long time,Position vic){
+    GameInfo(Position p,long seed,TETile[][] world,long time,Position vic,boolean sightOn,Enemy enemy){
 
 
       this.info=new HashMap<>();
@@ -26,10 +28,14 @@ public class GameInfo implements Serializable {
         info_time.put(seed,time);
         this.info_vic=new HashMap<>();
         info_vic.put(seed,vic);
+        this.info_sight=new HashMap<>();
+        info_sight.put(seed,sightOn);
+        this.info_enemy=new HashMap<>();
+        info_enemy.put(seed,enemy);
 
 
     }
-    GameInfo(GameInfo old_info,Position p,long seed,TETile[][] world,long time,Position vic){
+    GameInfo(GameInfo old_info,Position p,long seed,TETile[][] world,long time,Position vic,boolean sightOn,Enemy enemy){
 
 
         this.info=old_info.getInfo();
@@ -40,7 +46,10 @@ public class GameInfo implements Serializable {
         info_time.put(seed,time);
         this.info_vic=old_info.getInfo_vic();
         info_vic.put(seed,vic);
-
+        this.info_sight=old_info.getInfo_sight();
+        info_sight.put(seed,sightOn);
+        this.info_enemy=old_info.getInfo_enemy();
+        info_enemy.put(seed,enemy);
     }
 
     public void saveInfo(Position p,long seed,TETile[][] world){
@@ -79,6 +88,21 @@ public class GameInfo implements Serializable {
             return null;
 
     }
+    public boolean getSightOn(long seed){
+        if(info_sight.containsKey(seed))
+            return info_sight.get(seed);
+        else
+            return false;
+
+    }
+    public Enemy getEnemy(long seed){
+        if(info_enemy.containsKey(seed))
+            return info_enemy.get(seed);
+        else
+            return null;
+
+    }
+
     public long getTime(long seed){
         if(info_time.containsKey(seed))
             return info_time.get(seed);
@@ -106,6 +130,12 @@ public class GameInfo implements Serializable {
     }
     public HashMap<Long,Long> getInfo_time(){
         return info_time;
+    }
+    public HashMap<Long,Boolean> getInfo_sight(){
+        return info_sight;
+    }
+    public HashMap<Long,Enemy> getInfo_enemy(){
+        return info_enemy;
     }
 
     public void remove(long seed){

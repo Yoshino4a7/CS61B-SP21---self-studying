@@ -13,8 +13,8 @@ public class Engine {
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 1000;
 
-    private static final int MAP_WIDTH = 61;
-    private static final int MAP_HEIGHT = 45;
+    private static final int MAP_WIDTH = mazeDemo.MAP_WIDTH;
+    private static final int MAP_HEIGHT = mazeDemo.MAP_HEIGHT;
 
 
     /**
@@ -30,12 +30,19 @@ public class Engine {
         boolean Ingame=false;
         boolean isVic=false;
         TETile[][] world=null;
+        TETile[][] new_world=null;
+        Position[][] sight=null;
         UI ui_controller=new UI(interactor);
+        Enemy enemy=null;
         while(true){
             if(Ingame){
 
                 UI.timeUI(interactor);
+                interactor.chase(enemy,ter);
+
                 StdDraw.show();
+
+
 
             }
             char key=input.getNextKey();
@@ -92,7 +99,19 @@ public class Engine {
                             world =interactor.create_newgame();
                             if(world==null)
                                 continue;
+
+
                             ter.initialize(mazeDemo.WIDTH,mazeDemo.HEIGHT);
+
+                            if(!interactor.isSightON)
+                            {
+                                sight=interactor.sight;
+                                world=interactor.updateWorld(interactor.getWorld(),sight);
+                            }
+                            else{
+                                world=interactor.getWorld();
+                            }
+                            enemy=interactor.getEnemy();
                             ter.renderFrame(world);
                             isVic=false;
                             Ingame=true;
@@ -105,23 +124,58 @@ public class Engine {
                             if(interactor.getWorld()==null)
                                 continue;
                             ter.initialize(mazeDemo.WIDTH,mazeDemo.HEIGHT);
-                            ter.renderFrame(interactor.getWorld());
+                            if(!interactor.isSightON)
+                            {
+                                sight=interactor.sight;
+                                world=interactor.updateWorld(interactor.getWorld(),sight);
+
+                            }
+                            else{
+                                world=interactor.getWorld();
+
+                            }
+                            ter.renderFrame(world);
                             Ingame=true;
                             isVic=false;
                         }
+                        else {
 
+                            interactor.setSightON();
+                            if(interactor.isSightON){
+                                world=interactor.getWorld();
+
+                            }else{
+
+                                    sight=interactor.sight;
+                                    world=interactor.updateWorld(interactor.getWorld(),sight);
+
+                            }
+                            ter.renderFrame(world);
+
+                        }
                         break;
                     case 'W':
                         if(Ingame){
+
                             interactor.moveUp();
+
+
                             if(interactor.isVic)
                             {
                                 isVic=true;
-                                UI.vic_UI(interactor.getTime());
+
                                 Ingame=false;
                             }
                             else{
-                                ter.renderFrame(interactor.getWorld());
+                                if(!interactor.isSightON)
+                                {
+                                    sight=interactor.sight;
+                                    world=interactor.updateWorld(interactor.getWorld(),sight);
+                                }
+                                else{
+                                    world=interactor.getWorld();
+                                }
+                                ter.renderFrame(world);
                             }
 
 
@@ -132,51 +186,107 @@ public class Engine {
                         break;
                     case 'S':
                         if(Ingame){
-                        interactor.moveDown();
+                            interactor.moveDown();
+
                             if(interactor.isVic)
                             {
                                 isVic=true;
                                 UI.vic_UI(interactor.getTime());
                                 Ingame=false;
+                            }else{
+
+                                if(!interactor.isSightON)
+                                {
+                                    sight=interactor.sight;
+                                    world=interactor.updateWorld(interactor.getWorld(),sight);
+                                }
+                                else{
+                                    world=interactor.getWorld();
+                                }
+                                ter.renderFrame(world);
                             }
-                            ter.renderFrame(interactor.getWorld());
+
                         }
                         break;
                     case 'A':
                         if(Ingame) {
                             interactor.moveLeft();
+
+
                             if(interactor.isVic)
                             {
                                 isVic=true;
                                 UI.vic_UI(interactor.getTime());
                                 Ingame=false;
                             }
-                            ter.renderFrame(interactor.getWorld());
+                          else{
+                                if(!interactor.isSightON)
+                                {
+                                    sight=interactor.sight;
+                                    world=interactor.updateWorld(interactor.getWorld(),sight);
+                                }
+                                else{
+                                    world=interactor.getWorld();
+                                }
+
+                                ter.renderFrame(world);
+                            }
                         }
                         break;
                     case 'D':
                         if(Ingame) {
                             interactor.moveRight();
+
                             if(interactor.isVic)
                             {
                                 isVic=true;
                                 UI.vic_UI(interactor.getTime());
                                 Ingame=false;
                             }
-                            ter.renderFrame(interactor.getWorld());
+                            else{
+                                if(!interactor.isSightON)
+                                {
+                                    sight=interactor.sight;
+                                    world=interactor.updateWorld(interactor.getWorld(),sight);
+                                }
+                                else{
+                                    world=interactor.getWorld();
+                                }
+
+                                ter.renderFrame(world);
+                            }
                         }
                         break;
 
                     case 'M':
                         if(Ingame) {
+                            Ingame=false;
+
                             interactor.save();
                             interactor.reset();
                             initial();
 
-                           Ingame=false;
+
 
                         }
                         break;
+                    case 'I':
+                        if(Ingame) {
+
+                            interactor.turnOnLight();
+                            ter.renderFrame(interactor.getWorld());
+
+                        }
+                        break;
+                    case 'U':
+                        if(Ingame) {
+                            interactor.setShowRoute();
+                            interactor.showRoute(enemy);
+                            ter.renderFrame(interactor.getWorld());
+
+                        }
+                        break;
+
 
 
 

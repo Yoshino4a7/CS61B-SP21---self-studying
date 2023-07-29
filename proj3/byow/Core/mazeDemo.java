@@ -263,14 +263,20 @@ public class mazeDemo {
                 if(block_p!=null){
                     if(block_correct(block_p,width,height,world,rand))//判断生成的方块是否处在合法范围
                     {
-
+                        int x_r=rand.nextInt(width-1);
+                        int y_r=rand.nextInt(height-1);
 
 
                                 for(int x= block_p.x;x<block_p.x+width;x++)
                                     for(int y=block_p.y;y<block_p.y+height;y++)
                                 {
+
+
                                     road_map[x-STARTX][y-STARTY]=true;
-                                    world[x][y]=ROAD;
+                                    if(x==x_r+block_p.x&&y==y_r+block_p.y)
+                                        world[x][y]=Tileset.LIGHT;
+                                    else
+                                         world[x][y]=ROAD;
                                 }
 
 
@@ -712,6 +718,32 @@ public class mazeDemo {
 
 
         if(world[p.x][p.y].description().equals("floor"))
+            return true;
+        else
+            return false;
+
+    }
+
+    public static boolean isLIGHT(Position p, TETile[][] world){
+
+        if(p==null)
+            return false;
+
+
+        if(world[p.x][p.y].description().equals("light"))
+            return true;
+        else
+            return false;
+
+    }
+
+    public static boolean isENEMY(Position p, TETile[][] world){
+
+        if(p==null)
+            return false;
+
+
+        if(world[p.x][p.y].description().equals("enemy"))
             return true;
         else
             return false;

@@ -190,4 +190,11 @@ public class TETile implements Serializable {
 
         return copy;
     }
+
+    public Color getBackgroundColor(){
+        return backgroundColor;
+    }
+    public Color getTextColor(){
+        return textColor;
+    }
 }

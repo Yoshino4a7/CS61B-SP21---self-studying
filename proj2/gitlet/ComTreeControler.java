@@ -564,90 +564,7 @@ public class ComTreeControler {
         branch_cname = readContentsAsString(CWBRANCH);
         Commit other_branch = getCommitwithId(readContentsAsString(c));
 
-//        int start_i;
-//
-//        int[]select= mergeCommitChange(head,other_branch);
-//
-//        int cmp= select[1]- select[2];
-//
-//        if(cmp>0){
-//            int i=cmp;
-//
-//           start=head;
-//           branchc=other_branch;
-//
-//            while(i>0){
-//
-//
-//          start=getCommitwithId(start.getParent().get(select[0]));
-//                i--;
-//            }
-//
-//
-//        }
-//        else if(cmp<0){
-//            int i=-cmp;
-//          start=other_branch;
-//         branchc=head;
-//            while(i>0){
-//                start=getCommitwithId(start.getParent().get(select[0]));
-//
-//                i--;
-//            }
-//
-//        }
-//
-//
-//            while(!branchc.getHash().equals(start.getHash())){
-//                start=getCommitwithId(start.getParent().get(select[0]));
-//                branchc=getCommitwithId(branchc.getParent().get(select[0]));
-//
-//            }
 
-//        if(start instanceof MergeCommit){
-//
-//
-//        }
-//        else{
-//            while(start!=null){
-//                System.out.println(start.getHash());
-//                if(start.isSplit(otherbranch))
-//                    return start;
-//                else
-//                {
-//                    if(!start.getParent().isEmpty())
-//                        start=getCommitwithId(start.getParent().get(0));
-//                    else
-//                        start=null;
-//                }
-//
-//
-//            }
-//
-//        }
-
-
-//        if(branchc instanceof MergeCommit){
-//            head_split_list=findAllSplit(start);
-//            other_split_list=findAllSplit(branchc);
-//        }
-//        else{
-//            while(branchc!=null){
-//
-//                if(branchc.isSplit(otherbranch))
-//                    return head;
-//                else{
-//                    if(!branchc.getParent().isEmpty())
-//                        branchc=getCommitwithId(branchc.getParent().get(0));
-//                    else
-//                        head=null;
-//                }
-//
-//
-//
-//            }
-//
-//        }
         findSplit_help(head, branch_cname, other_branch, otherbranch);
 
         return common;
@@ -926,10 +843,7 @@ public class ComTreeControler {
         MarkCommit(head);
 
         findcommon(other);
-//        Commit head_com = findcommon(start, branch_split);
 
-//        if(head_com.getHash().equals(other_com.getHash()))
-//            return head_com;
 
 
 

@@ -505,28 +505,7 @@ public class mazeDemo {
                         road_map[x][y]=true;
                         world[x+STARTX][y+STARTY]=WALL;
 
-//                      for(int i=0;i<L.size();i++){
-//                          Position wall=L.get(i);
-//                          p_left=wall.shift(-1,0);
-//                          p_right=wall.shift(1,0);
-//                          p_down=wall.shift(0,-1);
-//                          p_up=wall.shift(0,1);
-//
-//
-//
-//                          if(!isROAD(p_left,world)&&
-//                                  !isROAD(p_right,world)&&!isROAD(p_down,world)&&!isROAD(p_up,world))
-//                            world[wall.x][wall.y]=NOTHING;
-//
-//
-//                      }
-//                      p_left=p.shift(-1,0);
-//                        p_right=p.shift(1,0);
-//                        p_down=p.shift(0,-1);
-//                        p_up=p.shift(0,1);
-//                        if(isWall(p_left,world)&&
-//                                isWall(p_right,world)&&isWall(p_down,world)&&isWall(p_up,world))
-//                        world[x+STARTX][y+STARTY]=WALL;
+
                     }
 
 
